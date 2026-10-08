@@ -1,0 +1,28 @@
+{
+  "schema": "truerecall.object_archetypes.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "confirmed": {
+    "archetype_id_field": "object+0x2A",
+    "animation_descriptor_field": "object+0x2C",
+    "archetype_master_table": "0x079906",
+    "archetype_setter": "0x00F9D4",
+    "vm_archetype_native": "0x002436",
+    "difficulty_word": "FFFFFC4A",
+    "hp_field": "object+0x6C",
+    "damage_field": "object+0x6E",
+    "player_archetype_id": 191,
+    "player_hp": 23
+  },
+  "families": [
+    {"archetype_id":8,"animation_descriptor":"0x0DFD48","type_ids":[46],"placements":4,"scenes":[14],"hp_normal":6,"hp_hard":8,"damage_normal":0,"damage_hard":0},
+    {"archetype_id":166,"animation_descriptor":"0x12E720","type_ids":[6,11,20,37,41,49,50,84,86,89,90,91,99,102,103,105,108,109,110,111,119,120,128],"placements":260,"scenes":[0,1,2,4,5,6,7,8,9,10,11,12,13,15,16,17],"hp_normal":1,"hp_hard":1,"damage_normal":0,"damage_hard":0},
+    {"archetype_id":176,"animation_descriptor":"0x1008CE","type_ids":[26,29,31,113,130],"placements":229,"scenes":[5,6,7,8,12,13,15,16],"hp_normal":1,"hp_hard":1,"damage_normal":5,"damage_hard":5},
+    {"archetype_id":177,"animation_descriptor":"0x1008CE","type_ids":[44],"placements":137,"scenes":[5,6,9,11,15,16],"hp_normal":1,"hp_hard":1,"damage_normal":5,"damage_hard":5},
+    {"archetype_id":178,"animation_descriptor":"0x1008CE","type_ids":[19],"placements":16,"scenes":[0,5,6,9,13],"hp_normal":1,"hp_hard":1,"damage_normal":2,"damage_hard":2}
+  ],
+  "notes": {
+    "archetype_semantics": "object+0x2A is broader than a visual selector: it chooses an animation descriptor and indexes difficulty-dependent HP/damage tables",
+    "descriptor_alias": "archetype IDs 176, 177 and 178 intentionally share animation descriptor 0x1008CE while retaining separate stat identities",
+    "coverage": "Only constant archetype assignments reached through VM native 0x2436 are emitted; absence does not imply that a type has no archetype at runtime"
+  }
+}
