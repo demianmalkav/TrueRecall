@@ -1,0 +1,18 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "confidence_note": "Behavior proves an ambient mobile proximity-reactive actor; bird identity additionally uses independently reconstructed presentation evidence.",
+  "label": "ambient_bird_actor",
+  "mechanical_evidence": {
+    "damage_normal_hard": [0, 0],
+    "hp_normal_hard": [1, 1],
+    "motion_field_writes": ["object+0x58", "object+0x5A"],
+    "player_proximity_threshold_each_axis": 30,
+    "spread_fire": false,
+    "standard_ranged_fire": false,
+    "x_distance_native": "0x002208",
+    "y_distance_native": "0x00221A"
+  },
+  "schema": "truerecall.ambient_bird.v1",
+  "status": "HIGH_CONFIDENCE",
+  "type_id": 83
+}
