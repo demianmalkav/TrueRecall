@@ -60,7 +60,7 @@ Known normalized bits:
 | `FFFFFB90` | temporary invulnerability/blink duration counter | HIGH CONFIDENCE |
 | `FFFFFB92` | invulnerability/blink cadence counter | HIGH CONFIDENCE |
 | `FFFFFC4A` | difficulty: `0=Normal`, `1=Hard` | CONFIRMED |
-| `FFFFFC4E` | civilian-related counter/state; exact cause semantics still being reconstructed | HIGH CONFIDENCE relation, exact label UNRESOLVED |
+| `FFFFFC4E` | mission-scoped script counter/state; concrete meaning is assigned by the active mission/object scripts | CONFIRMED reusable semantics |
 
 ### Difficulty — `FC4A`
 
@@ -82,9 +82,21 @@ This is CONFIRMED by the scripted health pickup, which resolves the avatar point
 
 The historically observed absolute address `FFC69E` is compatible with a particular retail runtime allocation, but it is not the stable architectural symbol and should not be hard-coded into new engine tooling.
 
-### `FC4E` caution
+### `FC4E` mission-scoped reuse — CONFIRMED
 
-Community cheat documentation associated `FC4E` with civilians killed. Static script reachability confirms that several object types manipulate the word in civilian-related logic, but reachable scripts include increments, decrements and special-case comparisons. Until those paths are fully correlated with gameplay, the project uses the deliberately broader label `civilian-related counter/state` rather than freezing a one-way kill-counter interpretation.
+Community cheat documentation historically associated `FC4E` with civilians killed. That may describe its meaning in one mission/context, but it is not the architectural identity of the word.
+
+The HQ computer objective proves reuse directly:
+
+- scene 5 contains four `type_id 96` computer objects and one `type_id 125` objective controller;
+- each type 96 adds `+2` to `FC4E` during initialization at `0x17F890–0x17F8A1`;
+- reachable damage/destruction paths decrement the same word at `0x17F922`, `0x17FA04` and `0x17FA26`;
+- type 125 repeatedly reads `FC4E` and drives the mission state/messages;
+- message `0x3E` tells the player to “Destroy all of the computers”; message `0x40` confirms that the HQ was destroyed.
+
+Therefore tooling and documentation must treat `FC4E` as a reusable mission/script counter-state word. A scenario-specific label such as `civilians_killed` is allowed only inside the scope where the corresponding scripts prove that meaning.
+
+Reproducible evidence: `tools/rom_probe/computer_objective_probe.py`.
 
 ## Linked player-object model — M0.6B
 
