@@ -1,83 +1,53 @@
 # Object Type Catalog
 
-This document maps retail placement `type_id` values to functional identities only when the ROM itself provides enough evidence. Visual names are not assigned from guesswork.
+This document maps retail placement `type_id` values to functional identities only when the ROM itself provides enough evidence. Visual names are not frozen from appearance alone.
 
 ## Standard pickup family — CONFIRMED
 
-The standard inventory/survival pickups install actor-contact callback `0x009DF8`. Their identities and effects are recoverable from reachable object-VM code, inventory RAM, the weapon-ownership helper and the player-health field.
+The standard inventory/survival pickups install actor-contact callback `0x009DF8`. Their identities and effects are recoverable from reachable object-VM code, inventory RAM, the weapon-ownership helper and player-health field.
 
 | type_id | Working label | Confirmed effect |
 |---:|---|---|
-| 51 | Flamethrower weapon pickup | grants flamethrower ownership bit `0x20`; adds 30 fuel up to 99 |
-| 52 | Flamethrower fuel pickup | adds 50 fuel up to 99; no weapon-acquisition native |
+| 51 | Flamethrower weapon pickup | grants ownership bit `0x20`; adds 30 fuel up to 99 |
+| 52 | Flamethrower fuel pickup | adds 50 fuel up to 99 |
 | 53 | Grenade pickup | adds 3 grenades up to 9; sets ownership bit `0x08` |
-| 54 | Health pickup | heals 12 when health is low; otherwise clamps to maximum 23 |
-| 61 | Extra-life pickup | increments lives by 1 while current lives are `<=9` (effective post-pickup maximum 10) |
+| 54 | Health pickup | heals 12 when low; otherwise clamps to maximum 23 |
+| 61 | Extra-life pickup | increments lives by 1 while current lives are `<=9` |
 | 62 | Mine pickup | adds 3 mines up to 9; sets ownership bit `0x10` |
-| 68 | Shotgun-ammo pickup | adds 25 or 30 shells depending on `FC4A` difficulty; cap 99 |
-| 69 | Shotgun weapon pickup | grants shotgun ownership bit `0x02`; adds 5 shells up to 99 |
-| 70 | Uzi weapon pickup | grants Uzi ownership bit `0x04`; adds 15 rounds up to 999 |
-| 71 | Uzi-ammo pickup | adds 50 or 70 rounds depending on `FC4A` difficulty; cap 999 |
+| 68 | Shotgun-ammo pickup | adds 25 or 30 shells by difficulty; cap 99 |
+| 69 | Shotgun weapon pickup | grants ownership bit `0x02`; adds 5 shells |
+| 70 | Uzi weapon pickup | grants ownership bit `0x04`; adds 15 rounds |
+| 71 | Uzi-ammo pickup | adds 50 or 70 rounds by difficulty; cap 999 |
 
-Reproducible probes:
+Reproducible probes: `object_pickup_probe.py`, `pickup_type_probe.py`.
 
-- `tools/rom_probe/object_pickup_probe.py` — control-flow-aware identity/effect validation.
-- `tools/rom_probe/pickup_type_probe.py` — independent inventory/ownership signature validation.
-- `extracted_metadata/object_pickups.json` — non-asset structural output.
+### Health and weapon helpers — CONFIRMED
 
-### Health field — CONFIRMED
-
-The health pickup resolves the world/avatar pointer stored at `F9F8`, computes `avatar+0x6C`, reads and writes that word, and uses maximum `0x17` (23). The damage path independently subtracts an attacker's `object+0x6E` from the target's `object+0x6C`.
-
-Therefore:
-
-```text
-object+0x6C = HP / health
-object+0x6E = damage / impact value
-```
-
-The long-known fixed RAM cheat address `FFC69E` is consistent with the retail runtime layout, but authoring/reconstruction should use the architectural field identity rather than hard-code that absolute address.
-
-### Weapon-acquisition native — CONFIRMED
-
-VM native wrapper `0x00AEF8` calls engine helper `0x005CF4`. The helper indexes a selector-to-bit table:
-
-```text
-selector 0  -> 0x01 pistol
-selector 2  -> 0x02 shotgun
-selector 4  -> 0x04 Uzi
-selector 6  -> 0x08 grenade
-selector 8  -> 0x10 mine
-selector 10 -> 0x20 flamethrower
-```
-
-and ORs the selected bit into `FB8E`. This is the decisive distinction between a weapon pickup and an ammo-only refill.
+`object+0x6C` is HP/health and `object+0x6E` is damage/impact. VM native `0x00AEF8` calls helper `0x005CF4`, which maps weapon selectors `0,2,4,6,8,10` to ownership bits `1,2,4,8,0x10,0x20` and ORs the result into `FB8E`.
 
 ## Mission / key / objective objects — CONFIRMED
 
-Reachable VM control-flow analysis ties the following classes directly to mission flag word `FC54`, the game's message table and native message/display path around `0xAF08`.
+Reachable VM control-flow ties these classes directly to mission word `FC54`, the game's message table and native display path around `0xAF08`.
 
-### Collectible / activatable objective objects
+### Collectible / activatable objectives
 
-| type_id | Functional identity | `FC54` bit/progression | Retail placement evidence |
-|---:|---|---|---|
-| 63 | Security passcard | `0x8000` | scene 0 |
-| 58 | Gate key | `0x8000` | scene 4 |
-| 60 | Subway lever | `0x4000` | scenes 5–6 |
-| 55 | Palace key | `0x0400` | scene 11 |
-| 56 | Catacombs key | `0x0800` | scene 9 |
-| 57 | Brass key | `0x1000` | class exists; no recovered retail placement |
-| 64 | Alpha security pass | `0x1000` | scene 13 |
-| 65 | Beta security pass | `0x2000` | scene 13 |
-| 66 | Gamma security pass | `0x4000` | scene 13 |
-| 67 | Delta security pass | `0x8000` | scene 13 |
-| 9 | Bomb-disarming key | sequential `0x2000 → 0x4000 → 0x8000` progression | three placements across scenes 9, 10, 11 |
-
-The names above come from the game's own reachable message path and corresponding mission-flag behavior; they are not inferred solely from placement geography.
+| type_id | Functional identity | `FC54` bit/progression |
+|---:|---|---:|
+| 63 | Security passcard | `0x8000` |
+| 58 | Gate key | `0x8000` |
+| 60 | Subway lever | `0x4000` |
+| 55 | Palace key | `0x0400` |
+| 56 | Catacombs key | `0x0800` |
+| 57 | Brass key | `0x1000` — class exists, no recovered retail placement |
+| 64 | Alpha security pass | `0x1000` |
+| 65 | Beta security pass | `0x2000` |
+| 66 | Gamma security pass | `0x4000` |
+| 67 | Delta security pass | `0x8000` |
+| 9 | Bomb-disarming key | sequential `0x2000 → 0x4000 → 0x8000` |
 
 ### Doors / controllers gated by objective flags
 
-| type_id | Functional identity | Required `FC54` bit |
+| type_id | Functional identity | Required bit |
 |---:|---|---:|
 | 13 | Security-passcard door | `0x8000` |
 | 16 | Palace gate | `0x0400` |
@@ -87,51 +57,120 @@ The names above come from the game's own reachable message path and correspondin
 | 78 | Beta-pass door | `0x2000` |
 | 79 | Gamma-pass door | `0x4000` |
 | 80 | Delta-pass door | `0x8000` |
-| 87 | Subway signal box | `0x4000` lever state |
+| 87 | Subway signal box | `0x4000` |
 
 Reproducible probe: `tools/rom_probe/object_objective_probe.py`.
 
-The probe traverses reachable VM instructions, validates `FC54` reads/writes, checks the exact flag constants and verifies message IDs through the game's own message table. It deliberately avoids treating arbitrary bytes inside a script as semantic evidence.
+## Civilian actor family — CONFIRMED
 
-## Placement type versus archetype — CONFIRMED separation
+Thirteen placement classes are functionally civilians because their reachable scripts invoke the game's own civilian-hit penalty messages:
 
-A placement `type_id` is not itself the complete visual/combat identity. Scripted classes can call VM native `0x2436`, which invokes archetype setter `0xF9D4` and selects:
+- `0x1A`: Harry is warned to watch out for taxpayers/civilians.
+- `0x1C`: the game explicitly reports that another civilian was hit.
 
-```text
-object+0x2A = archetype ID
-object+0x2C = animation descriptor
-```
-
-The archetype ID also indexes Normal/Hard HP and damage tables. Multiple placement types may therefore share one archetype, and multiple archetype IDs may share one animation descriptor while retaining different stats.
-
-See `ARCHETYPE_SYSTEM.md` and `ANIMATION_FORMAT.md`.
-
-## Sprite/presentation layer — CONFIRMED structure, semantic labels still gated
-
-The mapping renderer is now recovered through 16×16 sprite chunks; see `SPRITE_RENDERER.md`. This enables visual cross-correlation, but presentation alone is not sufficient to assign a gameplay name.
-
-Current policy for freezing actor/prop identities requires at least two independent evidence paths, e.g.:
+The confirmed civilian `type_id` set is:
 
 ```text
-VM behavior / native calls / callbacks
-+
-archetype stats / visual frames / scene distribution
+11, 40, 49, 50, 84, 102, 105, 108, 109, 110, 119, 120, 128
 ```
 
-The current synthetic-palette renders suggest archetypes `166` and `176–178` are effect/prop-like rather than ordinary human actors, while archetype `8` is a large structured object. These remain descriptive observations, not final gameplay labels.
+This classification comes from reachable script/message behavior, not from sprite appearance. Their visuals may represent different civilian subtypes and should remain separately addressable.
+
+## Truck class — CONFIRMED
+
+`type_id 46` is a truck class.
+
+Independent evidence:
+
+1. Its recovered initial presentation is unambiguously a top-down truck/vehicle.
+2. Its reachable script triggers the game's own message referring to the last of the trucks.
+3. All four retail placements occur in scene 14, the scene whose placement composition is otherwise strongly vehicle/setpiece-specific.
+
+This satisfies the project's two-evidence rule for semantic naming.
+
+## Mission/controller objects — CONFIRMED or HIGH CONFIDENCE
+
+Not every placement is meant to render as a normal actor. The message/control-flow scan identifies classes whose primary role is level logic.
+
+### Confirmed controller logic by direct mission text/context
+
+| type_id | Working role | Evidence |
+|---:|---|---|
+| 81 | mission transition/controller | one placement; triggers warhead/mission-transition messaging rather than an actor presentation |
+| 100 | mission completion controller | one placement in scene 3; triggers the public-restroom/Aziz-escaped/Park transition message |
+| 133 | crate-count objective controller | one placement in scene 7; messages track many crates despite a single controller placement |
+| 134 | crate-count objective controller | one placement in scene 8; same count/controller pattern |
+
+These four classes also belong to the tiny set with no recovered initial presentation native, which independently supports their role as logical controllers rather than visible actors.
+
+### Strong controller/interactable candidates — HIGH CONFIDENCE
+
+- `88`: extraction/van controller — reachable message tells Harry to get in the van.
+- `97`: train-blockade/stronghold logic — mission guidance tied to the train/Crimson Jihad route.
+- `125`: computer-destruction objective/controller — messages instruct and confirm destruction of computers/HQ.
+- `129`: bomb-objective controller — key requirements and completion messaging.
+- `131`: modem/computer objective/interactable — message instructs attaching modem to computer.
+- `132`: objective completion trigger — reachable completion message.
+
+Exact authoring categories such as `trigger`, `controller`, `interactable` versus visible prop remain to be refined where presentation exists.
+
+## Special hostile / named-actor evidence — HIGH CONFIDENCE
+
+`type_id 3` is a unique hostile actor in scene 17 whose script triggers the Crimson Jihad threat message. Its recovered presentation is a human hostile. This is strongly consistent with the scene's Aziz/final-hostile role, but the exact proper-name label remains HIGH CONFIDENCE until the boss/mission-state linkage is independently closed.
+
+## Placement type versus archetype — CONFIRMED
+
+For generic scene placements the allocator sets:
+
+```text
+initial object+0x2A archetype = placement type_id
+object+0x2C = archetype descriptor table entry
+```
+
+Scripts may later switch archetype via VM native `0x2436`. Therefore a later explosion/death archetype must not be confused with the object's initial identity. See `ARCHETYPE_SYSTEM.md`.
+
+## Initial presentation coverage — CONFIRMED
+
+The recovered presentation API includes direct and facing/direction-aware animation natives. CFG analysis resolves the initial presentation family for:
+
+```text
+2,427 / 2,449 placements = 99.1%
+```
+
+Across 128 placed `type_id` values:
+
+```text
+106 unique presentation families
+14 branch-dependent initial variants
+6 no initial presentation native
+2 direct-code types
+```
+
+The six scripted types without a presentation native are `4,34,81,100,133,134`; four of these are already independently identified as mission/controller logic. Direct-code types are `10` and `101`.
+
+Reproducible probe: `tools/rom_probe/initial_presentation_cfg_probe.py`.
 
 ## Direct-code exceptions
 
-Among retail-range IDs `0..138`, direct-code representation is selected only by types `1`, `10` and `101`.
+Within retail range `0..138`, direct-code representation is selected only by types `1`, `10`, `101`.
 
-- type `1` is present in the engine tables but absent from recovered retail placements;
+- type `1` is absent from recovered retail placements;
 - types `10` and `101` each occur seven times, only in scene 14;
-- their routines are related/symmetric, but their gameplay names remain intentionally unresolved.
+- their routines are related/symmetric but their exact gameplay identity remains unresolved.
 
-## Next classification targets
+## Classification policy and next targets
 
-1. Use the recovered sprite renderer to export selectors actually reached by each placed archetype.
-2. Recover palette/priority provenance so frames can be rendered using scene CRAM rather than a synthetic palette.
-3. Cross-correlate the dominant callback families (`0x2568/0x28C8`, `0x2828/0x28C8`, etc.) with archetype assignment and VM-native use.
-4. Identify enemy/civilian/prop families only after behavioral and presentation evidence agree.
-5. Turn the confirmed catalog into a machine-readable authoring schema for level tools.
+A gameplay name should be frozen only after at least two independent paths agree, for example:
+
+```text
+VM behavior / messages / native calls / callbacks
++
+initial presentation / stats / scene distribution
+```
+
+Next targets:
+
+1. Recover projectile/fire spawning paths and classify hostile actor families mechanically.
+2. Split the civilian family into visual/behavioral subtypes without losing its shared civilian semantics.
+3. Resolve types `4`, `34`, `10`, `101` and remaining scene-specific special classes.
+4. Convert confirmed actors, props, pickups, doors and controllers into a machine-readable authoring schema for level tools.
