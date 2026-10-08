@@ -1,0 +1,26 @@
+{
+  "schema": "truerecall.object_callback_families.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "method": "conservative straight-line symbolic execution of object-script prefixes; stops before complex flow",
+  "total_placements": 2449,
+  "placed_type_ids": 128,
+  "callback_resolved_placements": 2215,
+  "callback_resolved_fraction": 0.9044507962433647,
+  "families": [
+    {"callback_34":"0x002568","callback_38":"0x0028C8","placements":1213,"type_ids":[0,5,6,7,11,20,21,24,25,28,37,38,39,41,43,49,50,76,82,84,86,98,99,102,103,104,105,107,108,109,110,111,112,116,117,118,121,123,124,126,127]},
+    {"callback_34":"0x009DF8","callback_38":null,"placements":409,"type_ids":[9,51,52,53,54,55,56,58,60,61,62,63,64,65,66,67,69,70,71]},
+    {"callback_34":"0x002828","callback_38":"0x0028C8","placements":168,"type_ids":[29,31]},
+    {"callback_34":"0x003FFF","callback_38":null,"placements":137,"type_ids":[44]},
+    {"callback_34":"0x0028B0","callback_38":null,"placements":89,"type_ids":[12,13,14,15,16,17,18,48,77,78,79,80,87,88,97,122,130,131,132,135,136,137,138]},
+    {"callback_34":"0x002828","callback_38":null,"placements":88,"type_ids":[35,36,72,73,74,75,93,94,95]},
+    {"callback_34":"0x002568","callback_38":null,"placements":67,"type_ids":[3,26,40,96,113,125,129]},
+    {"callback_34":"0x002698","callback_38":"0x002CB8","placements":27,"type_ids":[8,33,42,46]},
+    {"callback_34":"0x002568","callback_38":"0x002A18","placements":9,"type_ids":[92]},
+    {"callback_34":"0x002568","callback_38":"0x002970","placements":8,"type_ids":[89]}
+  ],
+  "unresolved": {
+    "placements": 234,
+    "type_ids": [4,10,19,34,47,68,81,83,90,91,100,101,106,114,115,119,120,128,133,134]
+  },
+  "warning": "callback absence means not proven by the conservative prefix evaluator; it does not mean the callback is null at runtime"
+}
