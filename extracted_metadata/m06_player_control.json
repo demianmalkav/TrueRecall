@@ -1,17 +1,27 @@
 {
-  "schema": "truerecall.m06.player_control.v1",
+  "schema": "truerecall.m06.player_control.v2",
   "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
   "input": {
-    "previous": "0xFFFFF6EA",
-    "current": "0xFFFFF6EC",
-    "pressed_edges": "0xFFFFF6EE",
-    "auxiliary": "0xFFFFF6F0",
-    "edge_formula": "current & (current XOR previous)",
+    "controller_1": {
+      "previous": "0xFFFFF6EA",
+      "current": "0xFFFFF6EC",
+      "pressed_edges": "0xFFFFF6EE",
+      "held_previous_and_current": "0xFFFFF6F0"
+    },
+    "controller_2": {
+      "previous": "0xFFFFF6F2",
+      "current": "0xFFFFF6F4",
+      "pressed_edges": "0xFFFFF6F6",
+      "held_previous_and_current": "0xFFFFF6F8"
+    },
+    "pressed_formula": "current & (current XOR previous)",
+    "held_formula": "current & previous",
     "dpad_mask": "0x000F",
-    "lock_current_bit": 6,
-    "fire_edge_bit": 4,
+    "B_fire_bit": 4,
     "roll_edge_bit": 5,
-    "weapon_cycle_edge_bits": [12, 14],
+    "lock_current_bit": 6,
+    "Z_weapon_cycle_bit": 12,
+    "other_weapon_cycle_bit": 14,
     "main_action_edge_mask": "0x5030"
   },
   "facing": {
@@ -23,29 +33,54 @@
   "action_word": {
     "ram": "0xFFFFFB7C",
     "low_byte": "0xFFFFFB7D",
-    "direct_values": ["0x0001", "0x0002", "0x0004", "0x0008", "0x000C", "0x0028", "0x0048"],
+    "model": "composable action-class bitfield, not enum",
     "confirmed": {
       "0x0000": "idle",
       "0x0002": "walk",
       "0x0004": "normal_weapon_fire"
     },
     "high_confidence": {
-      "0x0008": "special_action_base",
-      "0x0028": "special_action_plus_0x20_uzi_flamethrower_phase",
-      "0x0048": "special_action_plus_0x40_grenade_phase"
+      "0x0008": "special_or_deployable_base",
+      "0x000C": "automatic_weapon_sustain_or_recovery",
+      "0x0028": "uzi_flamethrower_active_phase",
+      "0x0048": "grenade_priming_held_phase"
+    },
+    "unresolved": {
+      "0x0001": "auxiliary_transition"
     }
   },
-  "overlay_flags": {
+  "overlay_word": {
     "ram": "0xFFFFFB7E",
     "low_byte": "0xFFFFFB7F",
     "confirmed": {
-      "0x0004": "roll_fire_kneeling_context"
+      "0x0004": "roll_fire_kneeling_context",
+      "0x0040": "JLLBFR_maniac_chainsaw_alternate_player_mode"
     },
     "high_confidence": {
       "0x0001": "roll_active",
       "0x0002": "post_roll_transition",
       "0x0080": "lock_fire_pose_latch"
+    },
+    "unresolved": {
+      "0x0008": "normal_control_update_context_exact_label"
     }
+  },
+  "JLLBFR_chain": {
+    "password_xor_key": "0x004C26",
+    "encrypted_password_table": "0x004C36",
+    "decoded_special_order": ["HNDFGD", "JLLBFR", "LTHLWPN", "JHPSSBY"],
+    "JLLBFR_index": 9,
+    "cheat_flag": "FBEE bit1",
+    "cheat_flag_write_rom": "0x004A5E",
+    "toggle_combo_normalized": "0x1010 = Z+B",
+    "toggle_rom": "0x008416",
+    "active_overlay": "FB7E bit6 / 0x0040",
+    "object_type_toggle": "object+0x04 bit15",
+    "alternate_animation": "0x00F2",
+    "fast_movement_parameters": ["0x0280", "0x0220"],
+    "normal_movement_parameters": ["0x0180", "0x0120"],
+    "movement_parameter_rom": "0x009864",
+    "architectural_value": "retail precedent for alternate player form layered on normal player control"
   },
   "control_landmarks": {
     "main": "0x0082DA",
@@ -66,10 +101,10 @@
   "invulnerability": {
     "timer_ram": "0xFFFFFB90",
     "blink_cadence_ram": "0xFFFFFB92",
-    "object_flag": "object+0x06 bit 0x0020",
+    "object_flag": "object+0x06 bit0x0020",
     "spawn_duration": 100,
     "nonfatal_duration": 24,
-    "nonfatal_trigger": "D7 bit 13"
+    "nonfatal_trigger": "D7 bit13"
   },
   "terminal_events": {
     "mask": "0x00000063",
@@ -79,10 +114,16 @@
     "bit0": {"target": "0x00960C", "life_decrement": true},
     "remaining_bit6_case": {"target": "default_path", "life_decrement": true}
   },
+  "object_plus_54": {
+    "classification": "spatial_collision_response_or_positional_correction",
+    "not_control_mode": true,
+    "exact_axis_or_unit": "unresolved"
+  },
   "animations": {
     "walk_table": "0x0147E4",
     "idle_table": "0x0147F0",
     "roll": "0x0142",
-    "kneeling_transition": "0x0172"
+    "kneeling_transition": "0x0172",
+    "maniac_alternate": "0x00F2"
   }
 }
