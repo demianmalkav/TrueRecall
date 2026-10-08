@@ -1,0 +1,26 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "projectile_actor_collision": "0x0027EE",
+  "projectile_damage_normal_hard": [1, 1],
+  "projectile_direct_code": "0x00E10E",
+  "projectile_type": 170,
+  "projectile_world_collision": "0x002C10",
+  "ranged_native": "0x00DB48",
+  "retail_ranged_actor_types": [
+    {"type_id":5,"placements":27,"scenes":[4,7,9,12,13,16,17]},
+    {"type_id":7,"placements":61,"scenes":[2,4,5,6,7,8,9,10,11,12,13,15]},
+    {"type_id":24,"placements":34,"scenes":[0,2,4,5,6,7,8,9,10,11,13,16]},
+    {"type_id":25,"placements":11,"scenes":[2,4,5,7,11,13,15]},
+    {"type_id":28,"placements":3,"scenes":[4,10,11]},
+    {"type_id":38,"placements":125,"scenes":[2,4,5,6,7,8,9,10,11,12,15]},
+    {"type_id":39,"placements":43,"scenes":[2,4,5,7,15]},
+    {"type_id":82,"placements":53,"scenes":[2,4,5,6,7,9,11,13,15,16,17]},
+    {"type_id":98,"placements":13,"scenes":[2,7,9,10,12,17]},
+    {"type_id":107,"placements":4,"scenes":[3,9]},
+    {"type_id":112,"placements":100,"scenes":[2,4,5,6,7,9,10,11,12,15,16,17]},
+    {"type_id":126,"placements":77,"scenes":[2,4,5,6,7,9,10,11,12,13,15,17]},
+    {"type_id":127,"placements":30,"scenes":[4,5,9,12,13,15,16,17]}
+  ],
+  "schema": "truerecall.ranged_attack.v1",
+  "total_ranged_actor_placements": 581
+}
