@@ -1,0 +1,29 @@
+name: fetch-blastem
+on:
+  push:
+    branches: [m0.6c-level-stream]
+    paths:
+      - '.github/workflows/fetch-blastem.yml'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified BlastEm release
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://github.com/ulalume/blastem/releases/download/build-6e5677969b59/blastem-linux-x86_64-1.0.0-6e5677969b59.tar.gz'
+          curl -L --fail --retry 3 "$url" -o blastem.tar.gz
+          echo 'd81020d16e8cebb8c1946c0f36a6205c1ce7c5a682a1db922d973187418431df  blastem.tar.gz' | sha256sum -c -
+          mkdir blastem
+          tar -xzf blastem.tar.gz -C blastem
+          find blastem -maxdepth 2 -type f -print
+      - name: Upload BlastEm tool artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blastem-linux-x86_64-6e5677969b59
+          path: blastem/
+          if-no-files-found: error
+          retention-days: 1
