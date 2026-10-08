@@ -1,0 +1,25 @@
+{
+  "schema": "truerecall.pickup_types.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "shared_actor_callback": "0x009DF8",
+  "types": [
+    {"type_id": 54, "label": "health_pickup", "evidence": "F9F8-linked world/avatar object +0x6C health word; script compares 0x17/0x0B and writes through computed health address"},
+    {"type_id": 61, "label": "extra_life_pickup", "evidence": "reads FB8A, caps against 9, increments and stores life counter"},
+    {"type_id": 51, "label": "flamethrower_weapon_pickup", "evidence": "FB7A plus grant-weapon native selector 10"},
+    {"type_id": 52, "label": "flamethrower_fuel_pickup", "evidence": "FB7A without grant-weapon native"},
+    {"type_id": 53, "label": "grenade_pickup", "evidence": "FB76 and FB8E bit 0x08"},
+    {"type_id": 62, "label": "mine_pickup", "evidence": "FB78 and FB8E bit 0x10"},
+    {"type_id": 68, "label": "shotgun_ammo_pickup", "evidence": "FB72 without grant-weapon native"},
+    {"type_id": 69, "label": "shotgun_weapon_pickup", "evidence": "FB72 + FB8E bit 0x02 + grant selector 2"},
+    {"type_id": 70, "label": "uzi_weapon_pickup", "evidence": "FB74 + FB8E bit 0x04 + grant selector 4"},
+    {"type_id": 71, "label": "uzi_ammo_pickup", "evidence": "FB74 without grant-weapon native"}
+  ],
+  "support": {
+    "pickup_actor_callback": "0x009DF8",
+    "grant_weapon_vm_native": "0x00AEF8",
+    "grant_weapon_engine_helper": "0x005CF4",
+    "grant_helper_behavior": "selector-indexed ownership bit is ORed into FB8E",
+    "health_field": "world/avatar object +0x6C",
+    "amount_policy": "refill quantities that require following VM branches are intentionally not frozen in this schema"
+  }
+}
