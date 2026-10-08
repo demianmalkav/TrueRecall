@@ -1,0 +1,19 @@
+{
+  "all_reencoded_bytes_match": true,
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "notes": {
+    "branch_encoding": "conditional/unconditional local branches store low 16 bits of bank-local target",
+    "call_encoding": "VM CALL stores an absolute 32-bit target",
+    "scope": "reachable instructions from retail scripted type IDs 0..138; shared VM subroutines may be visited from multiple roots",
+    "switch_encoding": "count followed by word value + bank-local low-word target pairs"
+  },
+  "opcodes_covered_by_retail": 53,
+  "schema": "truerecall.vm_roundtrip.v1",
+  "scripted_type_ids": 136,
+  "total_per_type_reachable_instruction_visits": 29745,
+  "unique_reachable_instruction_addresses": 27818,
+  "unused_opcode_offsets_in_retail": [
+    "0x0018","0x0020","0x0024","0x0030","0x0034","0x0040","0x0050","0x0054","0x0060","0x0064","0x007C","0x0088","0x008C","0x00CC","0x00D0","0x00D4","0x00DC","0x00F4","0x00FC"
+  ],
+  "vm_opcode_capacity": 72
+}
