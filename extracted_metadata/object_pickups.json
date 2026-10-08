@@ -1,0 +1,29 @@
+{
+  "schema": "truerecall.object_pickups.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "confirmed_labels": [
+    {"type_id": 51, "name": "flamethrower_weapon_pickup", "placements": 5, "effect": "grants flamethrower ownership bit 0x20 and adds 30 fuel up to 99"},
+    {"type_id": 52, "name": "flamethrower_fuel_pickup", "placements": 11, "effect": "adds 50 fuel up to 99"},
+    {"type_id": 53, "name": "grenade_pickup", "placements": 36, "effect": "adds 3 grenades up to 9 and sets ownership bit 0x08"},
+    {"type_id": 54, "name": "health_pickup", "placements": 125, "effect": "restores player object health +0x6C by 12 when below 11, otherwise sets health to max 23"},
+    {"type_id": 61, "name": "extra_life_pickup", "placements": 28, "effect": "increments lives by 1 while current lives <= 9; effective cap 10"},
+    {"type_id": 62, "name": "mine_pickup", "placements": 4, "effect": "adds 3 mines up to 9 and sets ownership bit 0x10"},
+    {"type_id": 68, "name": "shotgun_ammo_pickup", "placements": 99, "effect": "adds 25 or 30 shells depending on mode, capped at 99"},
+    {"type_id": 69, "name": "shotgun_weapon_pickup", "placements": 12, "effect": "grants shotgun ownership and adds 5 shells, capped at 99"},
+    {"type_id": 70, "name": "uzi_weapon_pickup", "placements": 14, "effect": "grants Uzi ownership and adds 15 rounds, capped at 999"},
+    {"type_id": 71, "name": "uzi_ammo_pickup", "placements": 154, "effect": "adds 50 or 70 rounds depending on mode, capped at 999"}
+  ],
+  "coverage": {"placements": 488, "total_retail_placements": 2449},
+  "native_weapon_grant": {
+    "vm_wrapper": "0x00AEF8",
+    "native_routine": "0x005CF4",
+    "ownership_ram": "FFFFFB8E",
+    "selector_bit_table": [1,2,4,8,16,32]
+  },
+  "health_evidence": {
+    "player_object_field": "+0x6C",
+    "damage_path": "0x00371A-0x00373D",
+    "maximum": 23,
+    "restore_amount": 12
+  }
+}
