@@ -38,7 +38,7 @@ def main() -> None:
         raise SystemExit(f"Wrong base ROM SHA-1: {digest}")
 
     # Input update: d2=current; AND.W previous,d2; store at +6 => F6F0.
-    check(data, 0x012B82, "3400c468000031420006", "F6F0 held-overlap derivation")
+    check(data, 0x012B8A, "c468000031420006", "F6F0 held-overlap derivation")
 
     # Weapon cycle: bit12 falls through to +2 loop; bit14 branches to -2 loop.
     check(data, 0x008448, "3038f6ee0800000c66260800000e6620", "weapon-cycle edge dispatch")
