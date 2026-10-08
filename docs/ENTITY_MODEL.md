@@ -6,6 +6,8 @@ Current field map:
 
 | Offset | Interpretation | Status |
 |---|---|---|
+| `+0x00` | active-list next pointer; free-list next pointer when unused | CONFIRMED |
+| `+0x02` | active-list previous pointer | CONFIRMED |
 | `+0x04` | flags/type word | PARTIAL |
 | `+0x06` | flags word | PARTIAL |
 | `+0x18` | X movement/displacement | CONFIRMED |
@@ -17,6 +19,42 @@ Current field map:
 | `+0x50` | facing 0..7 | CONFIRMED |
 | `+0x54` | spatial/collision-response value; exact physical semantic/unit unresolved | HIGH CONFIDENCE classification |
 | `+0x64` | animation-direction/state index used by `PlayFAnim13` | HIGH CONFIDENCE |
+
+## Generic entity pool — CONFIRMED
+
+The main gameplay entity allocator is now statically reconstructed and guarded by `tools/rom_probe/entity_pool_probe.py`.
+
+Pool geometry:
+
+- record size: `0x72` bytes = **114 bytes**
+- record count: **35**
+- total allocation: `0x0F96` bytes = `35 × 0x72`
+- pool base: `FFFFF9FE`
+- free-list head: `FFFFF9FC`
+- active object count: `FFFFF9F2`
+- active-list sentinel: `FFFFF9F4`
+
+Initialization around `0x00F6CA` self-links the `F9F4` sentinel, clears the active count, requests `0x0F96` bytes, stores the base/free-head, then constructs the free list in `0x72`-byte strides. The loop count (`0x21` with DBRA semantics) creates 35 records exactly.
+
+### List structure
+
+Unused records form a singly linked free list through `object+0x00`.
+
+Active records form a doubly linked circular list around sentinel `F9F4`:
+
+- `object+0x00` = next
+- `object+0x02` = previous
+
+`0x00FA40` inserts an active object into that list. `0x00F8F8` unlinks an object, decrements `F9F2`, and pushes the freed record back onto `F9FC`.
+
+### Allocator entries
+
+- `0x00F732`: generic allocator from the free-list head
+- `0x00F7CC`: linked/clone-style allocator that initializes geometry from another object
+- `0x00F8F8`: destroy/free
+- `0x00FA40`: active-list insertion
+
+This gives a hard upper bound of 35 records in this generic pool. Practical gameplay capacity is lower whenever persistent objects—including the player's companion/proxy—consume records.
 
 ## Player constructor evidence
 
@@ -69,18 +107,15 @@ Evidence:
 
 Conclusion: `+0x54` belongs to **spatial/collision response or positional correction**, possibly a fixed-point elevation/penetration/displacement quantity. The exact physical unit and axis remain unresolved. It must no longer be described as a control state.
 
-## Lists / allocation
+## Remaining allocator/entity questions
 
-Object traversal uses 16-bit low-RAM pointers into the Genesis `FFxxxx` RAM region. A circular/sentinel list appears rooted around `F9F4`.
+The generic allocator geometry is no longer unknown. Remaining questions are narrower:
 
-Still unresolved:
-
-- exact object record size(s)
-- allocator/free-list behavior
-- pool count / maximum simultaneous entities
-- linkage field offsets
-- lifetime/destruction flags
+- practical per-level slot budget after persistent/system entities are counted
+- allocation ordering for every object class
+- whether specialized auxiliary pools coexist alongside the 35-record generic pool
+- lifetime ordering of the `F9F8`/`FB6E` player pair
+- exact semantics of `object+0x30`
 - exact physical meaning/unit of `+0x54`
-- exact ownership/lifetime ordering of the `F9F8`/`FB6E` player pair
 
-These remain prerequisites before adding persistent new entity classes.
+These should be resolved before adding many new persistent entity classes, but they no longer block a single isolated M0.7 player-state experiment.
