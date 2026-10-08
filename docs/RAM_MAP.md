@@ -27,11 +27,22 @@ Known normalized bits:
 - `F6EE bit 12`: cycle to next owned weapon (`FB8C += 2`, wrap `0x000C→0`) — CONFIRMED
 - `F6EE bit 14`: cycle to previous owned weapon (`FB8C -= 2`, wrap below zero→`0x000C`) — CONFIRMED
 
+## Entity allocator globals
+
+| RAM | Meaning | Status |
+|---|---|---|
+| `FFFFF9F2` | active generic-entity count | CONFIRMED |
+| `FFFFF9F4` | fixed active-list sentinel | CONFIRMED |
+| `FFFFF9F8` | linked world/render avatar entity pointer | HIGH CONFIDENCE |
+| `FFFFF9FC` | free-list-head **pointer variable** | CONFIRMED |
+| `FFFFF9FE` | generic pool-base **pointer variable**; stores heap allocation result | CONFIRMED |
+
+`F9FE` is not the physical beginning of the entity pool. Pool initialization requests `0x0F96` bytes from heap allocator `0x12A2A` and stores the returned low-RAM pointer in `F9FE` and initially in `F9FC`.
+
 ## Player / inventory globals
 
 | RAM | Meaning | Status |
 |---|---|---|
-| `FFFFF9F8` | linked world/render avatar entity | HIGH CONFIDENCE |
 | `FFFFFB6E` | player control/collision proxy/companion entity | HIGH CONFIDENCE |
 | `FFFFFB70` | pistol ammo | CONFIRMED |
 | `FFFFFB72` | shotgun ammo | CONFIRMED |
@@ -48,8 +59,32 @@ Known normalized bits:
 | `FFFFFB8E` | weapon ownership bitmask | CONFIRMED |
 | `FFFFFB90` | temporary invulnerability/blink duration counter | HIGH CONFIDENCE |
 | `FFFFFB92` | invulnerability/blink cadence counter | HIGH CONFIDENCE |
-| `FFFFFC4E` | civilian-kill counter | HIGH CONFIDENCE |
-| `FFFFC69E` | player health representation | HIGH CONFIDENCE / legacy evidence; direct damage path still to map |
+| `FFFFFC4A` | difficulty: `0=Normal`, `1=Hard` | CONFIRMED |
+| `FFFFFC4E` | civilian-related counter/state; exact cause semantics still being reconstructed | HIGH CONFIDENCE relation, exact label UNRESOLVED |
+
+### Difficulty — `FC4A`
+
+Options code around `0x0053F0–0x005530` reads and toggles `FC4A` between zero and one while selecting the `Normal` / `Hard` option text.
+
+Entity stat initializer `0x001EEC` multiplies `FC4A` by four and uses it to choose between Normal and Hard HP/damage table pointers before indexing them with `object+0x2A`.
+
+Therefore `FC4A` is the gameplay difficulty selector, not a mission-state word.
+
+### Player health
+
+The architectural player-health location is the word at:
+
+```text
+*(F9F8) + 0x6C
+```
+
+This is CONFIRMED by the scripted health pickup, which resolves the avatar pointer from `F9F8`, computes `+0x6C`, reads/writes that word and uses `0x17` as the full-health threshold.
+
+The historically observed absolute address `FFC69E` is compatible with a particular retail runtime allocation, but it is not the stable architectural symbol and should not be hard-coded into new engine tooling.
+
+### `FC4E` caution
+
+Community cheat documentation associated `FC4E` with civilians killed. Static script reachability confirms that several object types manipulate the word in civilian-related logic, but reachable scripts include increments, decrements and special-case comparisons. Until those paths are fully correlated with gameplay, the project uses the deliberately broader label `civilian-related counter/state` rather than freezing a one-way kill-counter interpretation.
 
 ## Linked player-object model — M0.6B
 
@@ -105,11 +140,6 @@ Higher bits `0x0100–0x4000` occur in terminal/special sequences and remain int
 
 The constructor uses the same object flag with `FB90 = 100`, providing a longer spawn-protection interval. `0x009CA0` decrements the duration and blink cadence and eventually tears down the protection state.
 
-## Object-list infrastructure
-
-- Sentinel/root near `FFFFF9F4` — HIGH CONFIDENCE.
-- Object links use 16-bit low-RAM addresses that are sign-extended into `FFxxxx` — HIGH CONFIDENCE.
-
 ## Player object fields
 
-See `ENTITY_MODEL.md` and `PLAYER_SYSTEM.md` for per-object offsets.
+See `ENTITY_MODEL.md`, `PLAYER_SYSTEM.md` and `ARCHETYPE_SYSTEM.md` for per-object offsets.
