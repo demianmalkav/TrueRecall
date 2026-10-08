@@ -1,0 +1,23 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "coverage": {
+    "branch_variants": 14,
+    "direct_code": 2,
+    "no_initial_presentation_native": 6,
+    "unique_presentation_family": 106
+  },
+  "direct_code_type_ids": [10, 101],
+  "method": "CFG with return stack; stop each path at first canonical direct/facing/direction presentation native",
+  "presentation_natives": {
+    "0x001F9A": "direct",
+    "0x001FF6": "facing_family_set",
+    "0x00200C": "facing_family_clear",
+    "0x002022": "direction24_family",
+    "0x002448": "direction24_family_alt"
+  },
+  "resolved_fraction": 0.9910167415271539,
+  "resolved_placements": 2427,
+  "schema": "truerecall.initial_presentation_cfg.v1",
+  "total_placements": 2449,
+  "unresolved_type_ids": [4, 34, 81, 100, 133, 134]
+}
