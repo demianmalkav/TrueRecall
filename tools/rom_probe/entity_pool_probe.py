@@ -47,17 +47,17 @@ def main() -> None:
           "active-list sentinel and pool-size initialization")
     check(data, 0x00F6DA,
           "303c0f964eb900012a2a31c8f9fe31c8f9fc303c0021",
-          "pool allocation and base/free-head setup")
+          "pool allocation and pointer-variable initialization")
     check(data, 0x00F6EC,
           "303c00213248d2fc007231490000304951c8fff442680000",
           "35-record free-list construction with 0x72 stride")
 
     check(data, 0x00F734,
           "3238f9fc670000883041720021410004",
-          "allocator consumes F9FC free-list head")
+          "allocator consumes the pointer stored in F9FC")
     check(data, 0x00F7AC,
           "31e80000f9fc5278f9f261000288201f",
-          "allocator advances free head and increments active count")
+          "allocator advances free-head pointer and increments active count")
 
     check(data, 0x00F904,
           "32680002336800000000326800003368000200025378f9f23178f9fc000031c8f9fc3049023c",
@@ -67,32 +67,45 @@ def main() -> None:
           "2f0a3278f9f4b2fcf9f467464a28000b6a1c",
           "active-list insertion starts from F9F4 sentinel")
 
+    # Critical semantic check: the allocator call returns A0, which is then
+    # stored into F9FE and F9FC. Therefore those RAM locations are pointer
+    # variables; F9FE is not the physical pool address itself.
+    check(data, 0x00F6DE,
+          "4eb900012a2a31c8f9fe31c8f9fc",
+          "heap allocator result stored in pool/free-head pointer variables")
+    check(data, 0x00F726,
+          "3038f9fe4eb900012ab0",
+          "teardown reads stored pool pointer before freeing allocation")
+
     report = {
-        "schema": "truerecall.entity_pool.v1",
+        "schema": "truerecall.entity_pool.v2",
         "base_sha1": digest,
         "confirmed": {
             "record_size_bytes": RECORD_SIZE,
             "pool_count": POOL_COUNT,
             "pool_bytes": POOL_SIZE,
-            "pool_base": "0xFFFFF9FE",
-            "free_list_head": "0xFFFFF9FC",
+            "pool_base_pointer_variable": "0xFFFFF9FE",
+            "free_list_head_pointer_variable": "0xFFFFF9FC",
             "active_count": "0xFFFFF9F2",
             "active_list_sentinel": "0xFFFFF9F4",
             "active_links": {"next": "object+0x00", "previous": "object+0x02"},
+            "heap_allocator_called_from_pool_init": "0x00012A2A",
             "allocator_entry": "0x00F732",
-            "linked/clone_allocator_entry": "0x00F7CC",
-            "destructor/free_entry": "0x00F8F8",
+            "linked_clone_allocator_entry": "0x00F7CC",
+            "destructor_free_entry": "0x00F8F8",
             "active_list_insert": "0x00FA40",
         },
         "architecture": {
-            "free_list": "singly linked through object+0x00",
-            "active_list": "doubly linked circular list using +0x00/+0x02 and F9F4 sentinel",
-            "capacity_note": "The generic pool itself has 35 records; practical simultaneous gameplay capacity can be lower because player companion and other persistent entities consume records."
+            "pool_storage": "0x0F96-byte heap allocation; its returned low-RAM pointer is stored in F9FE",
+            "free_list": "F9FC stores the current free-head pointer; unused records link through object+0x00",
+            "active_list": "doubly linked circular list using +0x00/+0x02 and fixed sentinel F9F4",
+            "capacity_note": "The generic allocation contains 35 records; practical simultaneous capacity is lower when persistent entities consume slots."
         },
         "unresolved": [
-            "exact allocation policy/ordering for every object class",
-            "which persistent/system objects consume generic pool slots in each mission",
-            "whether any separate auxiliary object pools coexist for specialized subsystems"
+            "physical heap address returned for the pool in each initialization path",
+            "exact allocation ordering for every object class",
+            "persistent/system slot consumption by mission",
+            "whether specialized auxiliary object pools coexist"
         ]
     }
 
