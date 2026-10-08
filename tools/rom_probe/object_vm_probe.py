@@ -62,7 +62,8 @@ def main() -> None:
         opcode = u16(rom, off)
         displacement = signed16(u16(rom, off + 2))
         assert opcode == 0x6000  # BRA.W
-        target = off + 4 + displacement
+        # 68000 word-branch displacement is relative to the extension-word PC.
+        target = off + 2 + displacement
         assert 0 <= target < len(rom)
         targets.add(target)
         jump_entries.append({
