@@ -1,0 +1,35 @@
+{
+  "schema": "truerecall.level_objects.summary.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "totals": {
+    "placements": 2449,
+    "record_6_bytes": 1689,
+    "record_8_bytes": 760,
+    "unique_type_ids": 128,
+    "pre_marked_bit15": 10,
+    "max_retail_type_id": 138
+  },
+  "scenes": [
+    {"scene":0,"placements":168,"unique_type_ids":32,"activation_upper_bound":13,"keep_alive_upper_bound":20},
+    {"scene":1,"placements":72,"unique_type_ids":10,"activation_upper_bound":6,"keep_alive_upper_bound":9},
+    {"scene":2,"placements":116,"unique_type_ids":28,"activation_upper_bound":14,"keep_alive_upper_bound":18},
+    {"scene":3,"placements":3,"unique_type_ids":2,"activation_upper_bound":3,"keep_alive_upper_bound":3},
+    {"scene":4,"placements":182,"unique_type_ids":29,"activation_upper_bound":12,"keep_alive_upper_bound":19},
+    {"scene":5,"placements":139,"unique_type_ids":33,"activation_upper_bound":13,"keep_alive_upper_bound":18},
+    {"scene":6,"placements":206,"unique_type_ids":27,"activation_upper_bound":20,"keep_alive_upper_bound":25},
+    {"scene":7,"placements":190,"unique_type_ids":33,"activation_upper_bound":16,"keep_alive_upper_bound":22},
+    {"scene":8,"placements":30,"unique_type_ids":13,"activation_upper_bound":11,"keep_alive_upper_bound":14},
+    {"scene":9,"placements":161,"unique_type_ids":34,"activation_upper_bound":15,"keep_alive_upper_bound":20},
+    {"scene":10,"placements":157,"unique_type_ids":25,"activation_upper_bound":13,"keep_alive_upper_bound":19},
+    {"scene":11,"placements":131,"unique_type_ids":28,"activation_upper_bound":15,"keep_alive_upper_bound":19},
+    {"scene":12,"placements":212,"unique_type_ids":23,"activation_upper_bound":16,"keep_alive_upper_bound":21},
+    {"scene":13,"placements":296,"unique_type_ids":42,"activation_upper_bound":16,"keep_alive_upper_bound":22},
+    {"scene":14,"placements":44,"unique_type_ids":7,"activation_upper_bound":3,"keep_alive_upper_bound":4},
+    {"scene":15,"placements":98,"unique_type_ids":24,"activation_upper_bound":13,"keep_alive_upper_bound":22},
+    {"scene":16,"placements":139,"unique_type_ids":22,"activation_upper_bound":21,"keep_alive_upper_bound":35},
+    {"scene":17,"placements":65,"unique_type_ids":22,"activation_upper_bound":11,"keep_alive_upper_bound":14},
+    {"scene":18,"placements":40,"unique_type_ids":2,"activation_upper_bound":22,"keep_alive_upper_bound":25}
+  ],
+  "most_common_type_ids": [[71,154],[123,148],[44,137],[54,125],[38,125],[112,100],[68,99],[124,97],[29,86],[31,82],[116,81],[126,77],[7,61],[82,53],[37,49],[43,45],[39,43],[113,42],[53,36],[24,34]],
+  "warning": "activation and keep-alive values are spatial upper bounds, not measured simultaneous runtime entity occupancy"
+}
