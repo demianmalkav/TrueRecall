@@ -74,8 +74,8 @@ def main() -> None:
           "4eb900012a2a31c8f9fe31c8f9fc",
           "heap allocator result stored in pool/free-head pointer variables")
     check(data, 0x00F726,
-          "3038f9fe4eb900012ab0",
-          "teardown reads stored pool pointer before freeing allocation")
+          "3078f9fe4eb900012ab0",
+          "teardown loads stored pool pointer into A0 before freeing allocation")
 
     report = {
         "schema": "truerecall.entity_pool.v2",
@@ -93,7 +93,7 @@ def main() -> None:
             "allocator_entry": "0x00F732",
             "linked_clone_allocator_entry": "0x00F7CC",
             "destructor_free_entry": "0x00F8F8",
-            "active_list_insert": "0x00FA40",
+            "active_list_insert": "0x00FA40"
         },
         "architecture": {
             "pool_storage": "0x0F96-byte heap allocation; its returned low-RAM pointer is stored in F9FE",
