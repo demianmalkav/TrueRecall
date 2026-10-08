@@ -1,6 +1,6 @@
 # Object Archetype / Animation System
 
-True Lies separates placement `type_id` from a runtime archetype key stored in the live entity. The new allocator analysis resolves how these layers relate at object creation and how scripts may later diverge them.
+True Lies separates placement `type_id` from a runtime archetype key stored in the live entity. Allocator, VM and renderer analysis now recover the initial presentation for almost the entire retail placement population without running the emulator.
 
 ## Archetype setter — CONFIRMED
 
@@ -21,17 +21,13 @@ Therefore:
 - master archetype→descriptor table = `0x079906` — CONFIRMED
 - setter = `0x00F9D4` — CONFIRMED
 
-VM native wrapper `0x002436` passes a word argument to this setter, so scripts can change archetype declaratively during the entity lifecycle.
-
-The world/avatar player path also calls `0x00F9D4` directly with archetype ID `0x00BF` (191).
+VM native wrapper `0x002436` passes a word argument to the setter, so scripts can change archetype declaratively during an entity lifecycle. The world/avatar player path also calls `0x00F9D4` directly with archetype `0x00BF` (191).
 
 ## Initial placement archetype — CONFIRMED
 
 For normal scene placements, **initial archetype ID equals placement `type_id`.**
 
-The materializer masks the placement source word with `0x03FF` and calls generic allocator `0x00F732` with that value in `D0`. The allocator preserves `D0`, clears/initializes the object, reads an auxiliary per-type byte from `0x07A158`, and then calls `0x00F9D4` before the object VM script begins.
-
-Startup chain:
+The materializer masks the source word with `0x03FF` and calls generic allocator `0x00F732` with that value in `D0`. The allocator preserves `D0`, initializes the record and calls `0x00F9D4` before the object VM script begins.
 
 ```text
 placement status/type
@@ -46,55 +42,42 @@ object+0x2C = table_079906[type_id]
 object VM behavior begins
 ```
 
-This makes the initial presentation/stat identity directly addressable from the placement class.
-
-Reproducible probe: `tools/rom_probe/initial_visual_probe.py`.
+This is reproduced by `tools/rom_probe/initial_visual_probe.py`.
 
 ## Lifecycle archetype changes — CONFIRMED
 
-A reachable call to VM native `0x2436` is **not automatically the initial identity** of a placement. It may be a damage, destruction, transformation or other later state.
-
-This distinction resolves the earlier apparent mismatch where archetypes `166` and `176–178` were reached by hundreds of placements yet rendered as effect/destruction-like graphics.
+A reachable call to VM native `0x2436` is not automatically the placement's initial identity. It can represent damage, destruction, transformation or another later state.
 
 Use this terminology:
 
 ```text
-initial archetype  = type_id assigned by F732/F9D4 before script execution
+initial archetype   = type_id assigned by F732/F9D4 before script execution
 reachable archetype = later value assigned by VM native 0x2436
 ```
 
-The previously recovered rows for archetypes 8/166/176/177/178 are therefore **reachable lifecycle archetype families**, not default type→archetype mappings.
+This resolves the earlier apparent mismatch where archetypes `166` and `176–178` were reached from many placed classes but render as effect/destruction-like graphics.
 
 ## Difficulty-dependent stats — CONFIRMED
 
-Routine `0x001EEC` reads `object+0x2A` and indexes difficulty-dependent tables selected by `FC4A`:
-
-```text
-FC4A = 0 -> Normal
-FC4A = 1 -> Hard
-```
+Routine `0x001EEC` indexes archetype-dependent tables selected by `FC4A`:
 
 | Purpose | Normal | Hard |
 |---|---:|---:|
 | HP byte table | `0x07A066` | `0x079F74` |
 | damage byte table | `0x079E82` | `0x079D90` |
 
-The routine writes:
+It writes:
 
 ```text
 object+0x6C = HP
 object+0x6E = damage / impact value
 ```
 
-These meanings are independently confirmed by the health-pickup script and entity-hit logic around `0x00287A`.
-
-VM native `0x204E` is a wrapper around this stat initializer. Many scripts call it while the initial `type_id` archetype is still active, which means the type's own table row defines its starting HP/damage unless a prior lifecycle archetype change occurs.
-
-The player archetype `191` has HP 23 on both Normal and Hard, matching the independently recovered health cap.
+The meanings are independently confirmed by the health-pickup script and entity-hit logic. VM native `0x204E` wraps this stat initializer. Player archetype `191` has HP 23 on both difficulties, matching the recovered health cap.
 
 ## Recovered reachable lifecycle families
 
-The control-flow-aware archetype probe currently proves constant script-set transitions to:
+The control-flow-aware archetype probe proves constant script-set transitions to several shared effect/state archetypes, including:
 
 | Reachable archetype | Descriptor | Source type IDs | Placements | HP N/H | Damage N/H |
 |---:|---:|---|---:|---:|---:|
@@ -104,37 +87,58 @@ The control-flow-aware archetype probe currently proves constant script-set tran
 | 177 | `0x1008CE` | 44 | 137 | 1 / 1 | 5 / 5 |
 | 178 | `0x1008CE` | 19 | 16 | 1 / 1 | 2 / 2 |
 
-Archetypes `176`, `177` and `178` intentionally share descriptor `0x1008CE` while retaining distinct stat-table rows. Archetype is therefore broader than a pure sprite-set ID.
+Archetypes `176`, `177` and `178` intentionally share descriptor `0x1008CE` while retaining separate stat rows. Archetype is therefore broader than a pure sprite-set ID.
 
-## Initial animation selector — conservative recovered subset
+## Initial presentation API — CONFIRMED
 
-`initial_visual_probe.py` also recognizes the canonical animation native `0x1F9A` when its selector is constant in the straight-line entry prefix before the first VM control-flow split.
+The earlier straight-line probe recognized only direct animation native `0x001F9A`. CFG analysis shows that retail objects use a small family of presentation natives:
 
-Across the 128 placed retail type IDs:
+| VM native | Working role | Engine helper |
+|---:|---|---:|
+| `0x001F9A` | direct animation selector | `0x00FDDC` path |
+| `0x001FF6` | facing-aware animation family, set/activate | `0x001A52` |
+| `0x00200C` | facing-aware animation family variant | `0x001A8E` |
+| `0x002022` | direction-aware animation family | `0x001AB2` |
+| `0x002448` | direction-aware animation family variant | `0x001B1C` |
 
-- 50 have a selector proven by this conservative rule;
-- they account for 570 of 2,449 placements;
-- 71 encounter a conditional-flow opcode first;
-- the remaining cases are direct-code or other early flow forms.
+`0x001FF6`, for example, stores an animation-family/base value and combines it with facing `0..7` through the direction table around `0x013F32` before reaching the common descriptor resolver. This explains why many mobile actors had no early direct `0x1F9A` call.
 
-Absence from this subset does not mean the object lacks an initial animation; it means CFG-aware state analysis is required.
+Reproducible probes:
 
-The recovered subset independently renders coherent initial objects including keys, passcards, doors, pickups, trucks and barrels when using:
+- `tools/rom_probe/initial_visual_cfg_probe.py` — direct-animation CFG regression probe.
+- `tools/rom_probe/initial_presentation_cfg_probe.py` — full initial presentation API.
+- `extracted_metadata/initial_presentation_summary.json` — safe coverage snapshot.
+
+### Retail coverage
+
+Across all 128 placed retail `type_id` values, the full presentation CFG probe finds:
 
 ```text
-archetype = type_id
-selector = proven initial selector
+106  unique presentation families
+ 14  legitimate branch-dependent initial variants
+  6  no recovered initial presentation native
+  2  direct-code classes
 ```
 
-Generated sprite images remain local/debug artifacts and are not committed to the repository.
+This resolves **2,427 of 2,449 placements = 99.1%**.
+
+The only scripted placement classes still lacking an initial presentation native are:
+
+```text
+4, 34, 81, 100, 133, 134
+```
+
+Several of these are now strongly indicated to be mission/controller logic rather than visible actors; the distinction is documented in `OBJECT_TYPES.md`. Direct-code types remain `10` and `101`.
+
+Generated actor/contact-sheet images remain local debug artifacts and are not committed.
 
 ## Presentation chain — CONFIRMED through renderer
 
-The descriptor/mapping chain beneath `object+0x2C` is now substantially recovered:
-
 ```text
-archetype/type ID
-→ descriptor 0x079906[id]
+placement type_id
+→ initial archetype = type_id
+→ descriptor 0x079906[type_id]
+→ direct/facing/direction presentation API
 → animation selector / alias
 → mapping record
 → 4-byte pieces
@@ -143,27 +147,27 @@ archetype/type ID
 → Genesis SAT
 ```
 
-See `ANIMATION_FORMAT.md` and `SPRITE_RENDERER.md`.
+See `ANIMATION_FORMAT.md` and `SPRITE_RENDERER.md` for the mapping/chunk formats and true-color scene-CRAM export path.
 
 ## Production consequence for Total Recall
 
-A future entity schema should explicitly separate:
+A future entity schema should separate:
 
 ```text
-placement type_id             -> initial class + initial archetype
-initial animation/state       -> presentation at spawn
-behavior VM script            -> state machine / constructor logic
+placement type_id              -> initial class + archetype
+initial presentation family    -> spawn pose/directional family
+behavior VM script             -> state machine / constructor logic
 reachable lifecycle archetypes -> damage/destruction/transformation states
-HP/damage profiles            -> archetype-indexed stats
-callbacks                     -> actor/world interaction interfaces
+HP/damage profile              -> archetype-indexed stats
+callbacks                      -> actor/world interaction interfaces
 ```
 
-This is useful for Total Recall because an object can reuse behavior while changing presentation/stats through lifecycle states without requiring a new hardcoded 68000 class for every visual variant.
+This means Total Recall can potentially reuse a behavior class while changing presentation/stats or reuse presentation resources while supplying a different script, without a bespoke 68000 routine for every visual variant.
 
 ## Next objectives
 
-1. Extend initial-selector recovery through safe CFG branches.
-2. Recover initial presentation for all placed type IDs.
-3. Cross-correlate initial visuals with callback families, VM natives and scene distribution.
-4. Classify actors/props only when behavior and presentation independently agree.
-5. Decode remaining palette/priority provenance for true-color runtime-equivalent sprite export.
+1. Classify the remaining visible actor families by combining presentation, callbacks, VM natives, stats and messages.
+2. Separate visible actors/props from invisible mission controllers in a machine-readable authoring catalog.
+3. Recover projectile/fire spawning paths for mechanical hostile classification.
+4. Resolve the two direct-code scene-14 classes `10` and `101`.
+5. Add inverse encoding only after the presentation exporter and round-trip tests are stable.
