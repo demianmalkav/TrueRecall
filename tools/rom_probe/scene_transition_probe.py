@@ -33,7 +33,7 @@ def main():
 
     # Transition native: linked object pointer from current+0x32; byte +7 -> FC3E;
     # signed byte +6 selects a relative scene delta, added to FC42 -> FC3A; FC46 flags transition.
-    assert rom[0x002482:0x0024C6]==bytes.fromhex(
+    assert rom[0x002482:0x0024C4]==bytes.fromhex(
         '302d0032673c304010280007488031c0fc3e1028000648806714d078fc4231c0fc3a00780008fc464ef9000119f43038fc4231c0fc3a00780010fc464ef9000119f4'
     )
 
@@ -45,7 +45,6 @@ def main():
         assert rom[TYPE_SELECTOR_TABLE+tid]==1
         calls=native_calls(rom,tid)
         assert TRANSITION_NATIVE in calls
-        # All four install 0x28B0 into object+0x34 in their reachable prefix.
         start=u32(rom,TYPE_POINTER_TABLE+tid*4)
         insns,_labels,_states=reachable(rom,start,max_states=200000,max_stack=32)
         assert any(i['op']==0x0084 and i.get('operand')==0x000028B0 for i in insns.values())
@@ -60,8 +59,8 @@ def main():
     for tid in AUTO_DOOR_TYPES:
         calls=native_calls(rom,tid)
         assert Y_DISTANCE_NATIVE in calls
-        assert has_immediate(rom,tid,0x0032)  # 50-unit Y-distance threshold
-        assert has_immediate(rom,tid,0x001D) and has_immediate(rom,tid,0x0015) # paired SFX/event params
+        assert has_immediate(rom,tid,0x0032)
+        assert has_immediate(rom,tid,0x001D) and has_immediate(rom,tid,0x0015)
         door_rows.append({'type_id':tid,'role':'automatic_proximity_door_variant','status':'HIGH_CONFIDENCE','axis':'object+0x14','threshold':50})
 
     report={
