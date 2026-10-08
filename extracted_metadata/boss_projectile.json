@@ -1,0 +1,16 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "classification": "boss_class_ranged_actor",
+  "parent_hp_normal_hard": [100, 100],
+  "parent_placements": 1,
+  "parent_scenes": [17],
+  "parent_type": 104,
+  "projectile_actor_collision": "0x0027EE",
+  "projectile_damage_normal_hard": [1, 1],
+  "projectile_script": "0x12FF54",
+  "projectile_velocity_helper": "0x0127F0",
+  "proper_name_status": "unresolved",
+  "runtime_projectile_type": 225,
+  "schema": "truerecall.boss_projectile.v1",
+  "spawn_native": "0x00211C"
+}
