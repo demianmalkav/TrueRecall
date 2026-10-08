@@ -1,0 +1,33 @@
+{
+  "schema": "truerecall.spawn_graph.v2.summary",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "placed_type_count": 128,
+  "placed_placement_count": 2449,
+  "parent_type_count": 58,
+  "unique_edge_count": 79,
+  "placed_child_types": [54, 68],
+  "runtime_only_child_types": [30,85,146,152,153,154,155,156,157,158,159,160,161,163,165,167,168,169,170,175,176,177,178,179,180,185,186,192,193,201,214,215,216,217,218,219,221,222,223,225,227,229],
+  "wrapper_semantics": {
+    "0x00205C": "alloc_generic",
+    "0x00206E": "alloc_linked",
+    "0x002082": "alloc_linked_offset",
+    "0x002096": "spawn_generic_init",
+    "0x0020D8": "spawn_linked_init",
+    "0x00211C": "spawn_linked_offset_init"
+  },
+  "specialized_projectiles": {
+    "0x00DAA4": 175,
+    "0x00DB48": 170
+  },
+  "regression_edges": {
+    "113": [54,68],
+    "46": [227],
+    "104": [225],
+    "121": [170,186],
+    "5": [170],
+    "7": [170],
+    "20": [175],
+    "86": [175]
+  },
+  "policy": "Only constant reachable VM arguments and independently proven fixed-child projectile natives are emitted as edges. Runtime-only children are not treated as level-placement classes."
+}
