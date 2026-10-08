@@ -1,10 +1,13 @@
 # Base ROMs / copyrighted binaries
 *.bin
 *.gen
-*.md
 *.smd
 *.rom
 *.iso
+roms/
+base_rom.*
+True Lies (World).md
+True Lies (World).MD
 
 # Emulator state / traces
 *.sav
