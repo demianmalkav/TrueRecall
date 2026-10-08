@@ -9,9 +9,14 @@ Known and working RAM locations for True Lies (World).
 | `FFFFF6EA` | previous normalized controller word | CONFIRMED |
 | `FFFFF6EC` | current normalized controller word | CONFIRMED |
 | `FFFFF6EE` | newly pressed input edges | CONFIRMED |
-| `FFFFF6F0` | related current/previous input helper | UNRESOLVED |
+| `FFFFF6F0` | inputs held across consecutive samples (`current & previous`) | CONFIRMED |
 
-The input routine around `0x012B62` copies `F6EC→F6EA`, decodes the new controller state into `F6EC`, then computes `F6EE = current & (current XOR previous)`.
+The input routine around `0x012B62` copies `F6EC→F6EA`, decodes the new controller state into `F6EC`, then derives:
+
+```text
+F6EE = current & (current XOR previous)   ; newly pressed
+F6F0 = current & previous                 ; continuously held
+```
 
 Known normalized bits:
 
@@ -19,13 +24,15 @@ Known normalized bits:
 - `F6EC bit 6`: Lock held — HIGH CONFIDENCE
 - `F6EE bit 4`: Fire edge — CONFIRMED
 - `F6EE bit 5`: Roll edge — CONFIRMED
-- `F6EE bits 12/14`: weapon-cycle edges — CONFIRMED
+- `F6EE bit 12`: cycle to next owned weapon (`FB8C += 2`, wrap `0x000C→0`) — CONFIRMED
+- `F6EE bit 14`: cycle to previous owned weapon (`FB8C -= 2`, wrap below zero→`0x000C`) — CONFIRMED
 
 ## Player / inventory globals
 
 | RAM | Meaning | Status |
 |---|---|---|
-| `FFFFFB6E` | low-RAM pointer to main player object | HIGH CONFIDENCE |
+| `FFFFF9F8` | linked world/render avatar entity | HIGH CONFIDENCE |
+| `FFFFFB6E` | player control/collision proxy/companion entity | HIGH CONFIDENCE |
 | `FFFFFB70` | pistol ammo | CONFIRMED |
 | `FFFFFB72` | shotgun ammo | CONFIRMED |
 | `FFFFFB74` | Uzi ammo | CONFIRMED |
@@ -43,6 +50,22 @@ Known normalized bits:
 | `FFFFFB92` | invulnerability/blink cadence counter | HIGH CONFIDENCE |
 | `FFFFFC4E` | civilian-kill counter | HIGH CONFIDENCE |
 | `FFFFC69E` | player health representation | HIGH CONFIDENCE / legacy evidence; direct damage path still to map |
+
+## Linked player-object model — M0.6B
+
+The player uses two synchronized entities rather than one monolithic object.
+
+Evidence:
+
+- stage/world initialization stores an entity in `F9F8` at `0x0109D0`
+- the player-control constructor allocates another entity and stores it in `FB6E` at `0x008284`
+- allocator helper `0x00F8E8` promotes the newly allocated object into `A5`, after which the player callbacks/state are installed on it
+- player entity-interaction callback `0x00356C` explicitly ignores `F9F8`, suppressing collision with its own linked avatar
+- `0x009B60` loads `F9F8→A1` and `FB6E→A5`
+- `0x009BE8` copies motion fields `+0x18/+0x1A/+0x56` from `FB6E` to `F9F8`
+- `0x009C7A` copies geometry/position fields back from `F9F8` to `FB6E` when synchronization is allowed
+
+Working interpretation: `FB6E` is the control/collision proxy and `F9F8` the linked world/render avatar representation. The exact original Beam terminology is unknown, so these names remain HIGH CONFIDENCE rather than CONFIRMED source names.
 
 ## `FB7C` action word
 
@@ -67,10 +90,10 @@ Current low-bit map:
 - `0x0002`: post-roll transition — HIGH CONFIDENCE
 - `0x0004`: roll-fire/kneeling-fire context — CONFIRMED
 - `0x0008`: normal-control/update context — exact label unresolved
-- `0x0040`: hidden/special visual-control toggle — UNRESOLVED
+- `0x0040`: JLLBFR maniac/chainsaw alternate-player overlay — HIGH CONFIDENCE
 - `0x0080`: lock/fire pose latch — HIGH CONFIDENCE
 
-Higher bits are intentionally unnamed pending stronger evidence.
+Higher bits `0x0100–0x4000` occur in terminal/special sequences and remain intentionally unnamed pending stronger cause-level evidence.
 
 ## Temporary invulnerability
 
@@ -86,7 +109,6 @@ The constructor uses the same object flag with `FB90 = 100`, providing a longer 
 
 - Sentinel/root near `FFFFF9F4` — HIGH CONFIDENCE.
 - Object links use 16-bit low-RAM addresses that are sign-extended into `FFxxxx` — HIGH CONFIDENCE.
-- `FFFFF9F8` is repeatedly paired with the main player object during pose/facing synchronization; exact object role remains deliberately unnamed.
 
 ## Player object fields
 
