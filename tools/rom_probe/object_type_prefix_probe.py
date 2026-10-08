@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Symbolically evaluate straight-line object-script prefixes.
+"""Symbolically evaluate straight-line True Lies object-script prefixes.
 
-The goal is deliberately narrow: recover constant callback assignments from the
-scripted object VM without pretending to execute complex control flow.
+The evaluator is deliberately conservative. It recovers only constant callback
+assignments proven before complex script flow. Stack-relative addresses and
+other nonconstant values remain symbolic so temporary object-field writes cannot
+be misclassified as executable callback pointers.
 """
 from __future__ import annotations
 
@@ -19,7 +21,7 @@ EXPECTED_SHA1 = "d39174bed46ede85531b86df7ba49123ce2f8411"
 TYPE_SELECTOR_TABLE = 0x07A33C
 TYPE_POINTER_TABLE = 0x07953E
 
-# Bytes consumed from the script after the opcode word for fixed-width opcodes.
+# Bytes consumed after the opcode word for fixed-width VM opcodes.
 OPERAND_BYTES = {
     0x0014: 2, 0x0018: 2, 0x001C: 2, 0x0020: 4,
     0x0024: 4, 0x0028: 4, 0x002C: 2, 0x0030: 4,
@@ -40,8 +42,7 @@ OPERAND_BYTES = {
     0x0110: 0, 0x0114: 0, 0x0118: 0, 0x011C: 0,
 }
 
-# Conservative stop set. These handlers alter script control flow or use a
-# variable-sized construct; the prefix evaluator refuses to guess beyond them.
+# Branch/call/return/switch opcodes are intentionally not traversed here.
 FLOW_STOP = {0x0000, 0x0004, 0x0008, 0x000C, 0x0010, 0x00AC}
 
 
@@ -59,6 +60,11 @@ def binary(name: str, left, right):
 
 def constant_value(expr):
     return expr[1] if isinstance(expr, tuple) and expr and expr[0] == "const" else None
+
+
+def plausible_code_pointer(value: int | None, rom_size: int) -> bool:
+    """Accept only aligned pointers inside the canonical ROM code/address space."""
+    return value is not None and 0x200 <= value < rom_size and (value & 1) == 0
 
 
 def placed_type_counts(rom: bytes) -> Counter[int]:
@@ -98,6 +104,7 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
     pc = u32(rom, TYPE_POINTER_TABLE + type_id * 4)
     d1 = ("unknown", "D1")
     d2 = ("unknown", "D2")
+    stack = []
     writes = []
     stop_reason = "max_ops"
 
@@ -110,12 +117,18 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
         if opcode not in OPERAND_BYTES:
             stop_reason = f"unknown_0x{opcode:04X}"
             break
+
         size = OPERAND_BYTES[opcode]
         operand_raw = rom[pc:pc + size]
         pc += size
         operand = int.from_bytes(operand_raw, "big") if size else None
 
-        if opcode == 0x001C:
+        if opcode == 0x0014:
+            # LEA 0(A3,D1.W),A0 / MOVE.L A0,D1: runtime stack-relative address.
+            d1 = ("stack_relative_address", operand)
+        elif opcode == 0x0018:
+            d1 = ("object_link_relative_address", operand)
+        elif opcode == 0x001C:
             d2 = const(operand, 16)
         elif opcode == 0x0020:
             d2 = const(operand, 32)
@@ -123,6 +136,8 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
             d1 = const(operand, 16)
         elif opcode == 0x0084:
             d1 = const(operand, 32)
+        elif opcode in (0x0088, 0x008C):
+            d1 = ("memory_load_into_D1", opcode)
         elif opcode == 0x00A8:
             d1, d2 = d2, d1
         elif opcode == 0x0034:
@@ -133,6 +148,10 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
             d2 = ("sign_extend", field(operand, 16))
         elif opcode == 0x0040:
             d2 = field(operand, 32)
+        elif opcode in (0x0024, 0x0028, 0x002C, 0x0030):
+            d2 = ("memory_load", opcode, operand)
+        elif opcode in (0x0044, 0x0048, 0x004C, 0x0050):
+            d2 = ("memory_load_at_D1", opcode)
         elif opcode in (0x0064, 0x0068, 0x006C):
             width = {0x0064: 8, 0x0068: 16, 0x006C: 32}[opcode]
             writes.append({"offset": operand, "width": width, "expr": d2})
@@ -152,12 +171,25 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
             d2 = ("neg", d2)
         elif opcode == 0x00DC:
             d2 = ("not", d2)
+        elif opcode == 0x00E0:
+            d2 = ("bool_not", d2)
         elif opcode == 0x00E4:
             d2 = ("native_call_result", f"0x{operand:06X}")
-        elif opcode in (0x0024, 0x0028, 0x002C, 0x0030, 0x0044, 0x0048, 0x004C, 0x0050, 0x0088, 0x008C):
-            d2 = ("memory_load", f"opcode_0x{opcode:04X}")
-        # Stack, compare/result and stores not targeting object-relative fields
-        # are intentionally not modeled because they are irrelevant to this probe.
+        elif opcode in (0x0090, 0x0094, 0x0098, 0x009C, 0x00A0, 0x00A4):
+            d2 = ("compare_result", opcode, d2, d1)
+        elif opcode in (0x00BC, 0x00C0, 0x00CC, 0x00D0, 0x00D4, 0x00E8):
+            d2 = ("operation_result", opcode, d2, d1)
+        elif opcode in (0x00F0, 0x00F4):
+            stack.append(d2)
+        elif opcode in (0x00F8, 0x00FC):
+            d2 = stack.pop() if stack else ("unknown", "stack_pop_D2")
+        elif opcode in (0x0100, 0x0104):
+            stack.append(d1)
+        elif opcode in (0x0108, 0x010C):
+            d1 = stack.pop() if stack else ("unknown", "stack_pop_D1")
+        elif opcode in (0x0110, 0x0114, 0x0118):
+            d2 = ("engine_result", opcode)
+        # Stores not targeting object-relative fields do not affect this probe.
     else:
         stop_reason = "max_ops"
 
@@ -165,12 +197,19 @@ def evaluate_prefix(rom: bytes, type_id: int, max_ops: int = 100):
     for write in writes:
         latest[(write["offset"], write["width"])] = write["expr"]
 
+    raw34 = constant_value(latest.get((0x34, 32)))
+    raw38 = constant_value(latest.get((0x38, 32)))
+    cb34 = raw34 if plausible_code_pointer(raw34, len(rom)) else None
+    cb38 = raw38 if plausible_code_pointer(raw38, len(rom)) else None
+
     return {
         "representation": "scripted",
         "stop_reason": stop_reason,
         "writes": writes,
-        "callback_34": constant_value(latest.get((0x34, 32))),
-        "callback_38": constant_value(latest.get((0x38, 32))),
+        "callback_34": cb34,
+        "callback_38": cb38,
+        "final_34_expr": latest.get((0x34, 32)),
+        "final_38_expr": latest.get((0x38, 32)),
     }
 
 
@@ -219,10 +258,15 @@ def main() -> None:
     group_rows.sort(key=lambda row: (-row["placements"], row["type_ids"][0]))
 
     resolved_placements = sum(row["placements"] for row in group_rows)
+    # Regression for the bug that originally misclassified type 44 as 0x003FFF.
+    type44 = evaluate_prefix(rom, 44)
+    assert type44["callback_34"] is None
+    assert type44["final_34_expr"][0] == "stack_relative_address"
+
     report = {
-        "schema": "truerecall.object_type_prefix.v1",
+        "schema": "truerecall.object_type_prefix.v2",
         "base_sha1": digest,
-        "method": "conservative straight-line symbolic execution stops before complex script flow",
+        "method": "conservative straight-line symbolic execution; stack-relative values remain nonconstant and code pointers must be aligned/in-ROM",
         "placement_types": len(placements),
         "total_placements": sum(placements.values()),
         "callback_resolved_placements": resolved_placements,
@@ -232,6 +276,9 @@ def main() -> None:
             "type_ids": unresolved_types,
             "type_count": len(unresolved_types),
             "placements": unresolved_placements,
+        },
+        "regressions": {
+            "type_44_false_0x003FFF_removed": True,
         },
     }
 
