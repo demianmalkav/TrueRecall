@@ -1,0 +1,16 @@
+{
+  "all_rom_byte_diffs": [
+    {"new":"0xDB","offset":"0x00018F","old":"0xDA"},
+    {"new":"0x06","offset":"0x1762C1","old":"0x05"}
+  ],
+  "base_header_checksum": "0x5DDA",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "behavior_change": "shotgun weapon pickup grants 6 shells instead of 5",
+  "gameplay_byte_change": {"new":"0x06","offset":"0x1762C1","old":"0x05"},
+  "result_header_checksum": "0x5DDB",
+  "result_sha1": "ff1f6fa5fe3815c6e3bf093ffd5e5431f2251469",
+  "runtime_validation": "NOT_PERFORMED — no Genesis emulator/debugger is available in the current execution environment",
+  "schema": "truerecall.experiment.m06d_shotgun_pickup_plus6.v1",
+  "script_base": "0x1761F0",
+  "type_id": 69
+}
