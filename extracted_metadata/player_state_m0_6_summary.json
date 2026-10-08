@@ -1,0 +1,31 @@
+{
+  "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "controller_history": {
+    "range": "0xFFFFF6EA..0xFFFFF6F0",
+    "routine_region": "0x012B60..0x012BC8",
+    "F6EA": "previous controller word",
+    "F6EC": "current controller word",
+    "F6EE": "newly-activated/rising-edge word",
+    "F6F0": "bits active in consecutive samples",
+    "evidence": "previous F6EC copied to F6EA; new read stored to F6EC; (old XOR new) AND new stored to F6EE; old AND new stored to F6F0"
+  },
+  "anchors": {
+    "player_control_dispatch": "0x009780..0x0098BA",
+    "illegal_control_string": "0x009892",
+    "input_poll_pipeline": "0x012B60..0x012BC8"
+  },
+  "write_counts": {
+    "FB7C": 37,
+    "FB7E": 42
+  },
+  "write_values": {
+    "FB7C": [1, 2, 4, 8, 12, 40, 72],
+    "FB7E": [1, 2, 4, 8, 128, 256, 512, 1024, 1536, 2048, 4096, 8192, 8193, 16385]
+  },
+  "ref_counts": {
+    "F6EC": 29,
+    "F6EE": 20,
+    "FB7C": 37,
+    "FB7E": 50
+  }
+}
