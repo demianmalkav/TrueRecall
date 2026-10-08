@@ -19,6 +19,9 @@ def parse_text(text:str):
         if line.endswith(':'):
             stmts.append(('label',line[:-1].strip(),lineno));continue
         parts=line.split(None,1);mn=parts[0];arg=parts[1].strip() if len(parts)>1 else None
+        if mn=='.raw':
+            if not arg: raise ValueError(f'line {lineno}: .raw requires hex bytes')
+            raw=bytes.fromhex(arg.replace(' ',''));stmts.append(('raw',raw,lineno));continue
         stmts.append(('ins',(mn,arg),lineno))
     return stmts
 
@@ -45,11 +48,13 @@ def assemble(stmts,base):
         if kind=='label':
             if obj in labels:raise ValueError(f'line {lineno}: duplicate label {obj}')
             labels[obj]=pc
+        elif kind=='raw':pc+=len(obj)
         else:
             mn,arg=obj;pc+=ins_size(mn,arg)
     out=bytearray();pc=base
     for kind,obj,lineno in stmts:
         if kind=='label':continue
+        if kind=='raw':out+=obj;pc+=len(obj);continue
         mn,arg=obj
         if mn in ('BR_TRUE','BR_FALSE','JMP'):
             op=FLOW[mn];target=resolve(arg,labels);end=pc+4
