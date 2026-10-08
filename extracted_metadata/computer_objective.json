@@ -1,0 +1,27 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "computer": {
+    "counter_decrements": ["0x17F922", "0x17FA04", "0x17FA26"],
+    "counter_initialization": "+2 per placed computer",
+    "hp_hard": 20,
+    "hp_normal": 30,
+    "label": "destructible_computer_objective_prop",
+    "placements": 4,
+    "status": "CONFIRMED",
+    "type_id": 96
+  },
+  "controller": {
+    "label": "computer_destruction_objective_controller",
+    "message_complete_id": "0x40",
+    "message_start_id": "0x3E",
+    "placements": 1,
+    "status": "CONFIRMED",
+    "type_id": 125
+  },
+  "fc4e": {
+    "architectural_label": "mission-scoped script counter/state",
+    "status": "CONFIRMED reusable semantics"
+  },
+  "scene": 5,
+  "schema": "truerecall.computer_objective.v1"
+}
