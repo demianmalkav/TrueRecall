@@ -1,0 +1,88 @@
+{
+  "schema": "truerecall.m06.player_control.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "input": {
+    "previous": "0xFFFFF6EA",
+    "current": "0xFFFFF6EC",
+    "pressed_edges": "0xFFFFF6EE",
+    "auxiliary": "0xFFFFF6F0",
+    "edge_formula": "current & (current XOR previous)",
+    "dpad_mask": "0x000F",
+    "lock_current_bit": 6,
+    "fire_edge_bit": 4,
+    "roll_edge_bit": 5,
+    "weapon_cycle_edge_bits": [12, 14],
+    "main_action_edge_mask": "0x5030"
+  },
+  "facing": {
+    "field": "object+0x50",
+    "table_rom": "0x0147C4",
+    "update_helper_rom": "0x009B12",
+    "mask_to_facing": [0, 0, 4, 0, 6, 7, 5, 0, 2, 1, 3, 0, 0, 0, 0, 0]
+  },
+  "action_word": {
+    "ram": "0xFFFFFB7C",
+    "low_byte": "0xFFFFFB7D",
+    "direct_values": ["0x0001", "0x0002", "0x0004", "0x0008", "0x000C", "0x0028", "0x0048"],
+    "confirmed": {
+      "0x0000": "idle",
+      "0x0002": "walk",
+      "0x0004": "normal_weapon_fire"
+    },
+    "high_confidence": {
+      "0x0008": "special_action_base",
+      "0x0028": "special_action_plus_0x20_uzi_flamethrower_phase",
+      "0x0048": "special_action_plus_0x40_grenade_phase"
+    }
+  },
+  "overlay_flags": {
+    "ram": "0xFFFFFB7E",
+    "low_byte": "0xFFFFFB7F",
+    "confirmed": {
+      "0x0004": "roll_fire_kneeling_context"
+    },
+    "high_confidence": {
+      "0x0001": "roll_active",
+      "0x0002": "post_roll_transition",
+      "0x0080": "lock_fire_pose_latch"
+    }
+  },
+  "control_landmarks": {
+    "main": "0x0082DA",
+    "normalize_flags": "0x008316",
+    "idle": "0x00832A",
+    "walk": "0x0083A0",
+    "action_dispatch": "0x00842A",
+    "primary_weapon_dispatch": "0x00845E",
+    "roll_fire_dispatch": "0x0084BA",
+    "roll": "0x008600",
+    "terminal_event_dispatch": "0x009244",
+    "begin_invulnerability": "0x009714",
+    "kneeling_fire_control": "0x0098BA",
+    "lock_fire_pose_update": "0x0099D2",
+    "dpad_to_facing": "0x009B12",
+    "invulnerability_tick": "0x009CA0"
+  },
+  "invulnerability": {
+    "timer_ram": "0xFFFFFB90",
+    "blink_cadence_ram": "0xFFFFFB92",
+    "object_flag": "object+0x06 bit 0x0020",
+    "spawn_duration": 100,
+    "nonfatal_duration": 24,
+    "nonfatal_trigger": "D7 bit 13"
+  },
+  "terminal_events": {
+    "mask": "0x00000063",
+    "bits": [0, 1, 5, 6],
+    "bit1_or_external_FC47_bit5": {"target": "0x0096B6", "life_decrement": false},
+    "bit5": {"target": "0x00944E", "life_decrement": true},
+    "bit0": {"target": "0x00960C", "life_decrement": true},
+    "remaining_bit6_case": {"target": "default_path", "life_decrement": true}
+  },
+  "animations": {
+    "walk_table": "0x0147E4",
+    "idle_table": "0x0147F0",
+    "roll": "0x0142",
+    "kneeling_transition": "0x0172"
+  }
+}
