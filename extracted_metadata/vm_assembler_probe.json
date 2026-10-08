@@ -1,0 +1,25 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "original_roundtrip_types": [
+    {"base":"0x1763CA","byte_identical":true,"bytes":148,"instruction_addresses":38,"type_id":51},
+    {"base":"0x1768B6","byte_identical":true,"bytes":268,"instruction_addresses":86,"type_id":54},
+    {"base":"0x1769C2","byte_identical":true,"bytes":174,"instruction_addresses":47,"type_id":61},
+    {"base":"0x1761F0","byte_identical":true,"bytes":258,"instruction_addresses":68,"type_id":69},
+    {"base":"0x1762F2","byte_identical":true,"bytes":216,"instruction_addresses":57,"type_id":70},
+    {"base":"0x179698","byte_identical":true,"bytes":1166,"instruction_addresses":330,"type_id":5},
+    {"base":"0x17DE3C","byte_identical":true,"bytes":176,"instruction_addresses":47,"type_id":12},
+    {"base":"0x174CE4","byte_identical":true,"bytes":1282,"instruction_addresses":371,"type_id":46}
+  ],
+  "policy": "Only contiguous reachable retail scripts are accepted by the source exporter; scripts containing gaps/embedded data remain rejected until explicit directives exist.",
+  "relocation": {
+    "all_symbolic_labels_relocated_by_delta": true,
+    "bytes": 258,
+    "instruction_addresses": 68,
+    "label_count": 7,
+    "normalized_instruction_shape_matches": true,
+    "original_base": "0x1761F0",
+    "relocated_base": "0x177000",
+    "type_id": 69
+  },
+  "schema": "truerecall.vm_assembler_probe.v1"
+}
