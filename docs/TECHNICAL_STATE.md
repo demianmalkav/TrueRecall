@@ -24,6 +24,8 @@ Completed:
 
 Active:
 - M0.6 player state machine recovery
+  - **M0.6A static control architecture recovered**
+  - runtime/playtest validation and remaining special phases pending
 
 Next:
 - M0.7 first controlled engine extension
@@ -37,6 +39,74 @@ Next:
 - Generic `+0x34` invocation loop near `0x00EBC2`.
 - Generic `+0x38` invocation loop near `0x010FF2`.
 - Object traversal uses low-RAM 16-bit pointers into `FFxxxx`; a circular/sentinel list is rooted around `F9F4` — HIGH CONFIDENCE.
+
+## Player control — M0.6A
+
+The player-control system is layered, not a single enum:
+
+```text
+normalized input
++ FB7C action/state bitfield
++ FB7E overlay/context flags
++ per-frame D7 event bits
+```
+
+### Normalized input
+
+- `F6EA`: previous input word — CONFIRMED
+- `F6EC`: current input word — CONFIRMED
+- `F6EE`: pressed edges — CONFIRMED
+- `F6EE = current & (current XOR previous)` — CONFIRMED
+- D-pad mask `0x000F` — CONFIRMED
+- Fire edge bit 4 — CONFIRMED
+- Roll edge bit 5 — CONFIRMED
+- weapon cycle edge bits 12/14 — CONFIRMED
+- Lock held bit 6 in current word — HIGH CONFIDENCE
+
+### Action word
+
+`FB7C` is a 16-bit action bitfield; `FB7D` is its low byte.
+
+Confirmed structural values include:
+
+- `0x0000` idle
+- `0x0002` walking
+- `0x0004` normal weapon fire
+- `0x0008/0x000C/0x0028/0x0048` special-weapon/action combinations
+
+### Overlay flags
+
+`FB7E` is a separate 16-bit context/overlay word; `FB7F` is its low byte.
+
+- bit `0x0001`: roll active phase — HIGH CONFIDENCE
+- bit `0x0002`: post-roll transition — HIGH CONFIDENCE
+- bit `0x0004`: roll-fire/kneeling-fire context — CONFIRMED
+- bit `0x0080`: lock/fire pose latch — HIGH CONFIDENCE
+
+### Roll-fire
+
+Roll begins at `0x008600`, uses animation `0x0142`, and tests current Fire held near `0x0086B0`. If held, control enters the secondary weapon dispatcher at `0x0084BA`; supported weapons set the kneeling-fire overlay and reuse their firing handlers. Mine intentionally returns to normal control.
+
+### Lock/strafe
+
+Lock is an overlay, not a separate state. The synchronization region around `0x009BC0–0x009BE8` skips aim/display-facing resynchronization while `F6EC bit 6` is held, allowing locomotion facing to change independently.
+
+### Nonfatal hit/invulnerability
+
+`0x009714` begins temporary protection: `FB90=24`, `FB92=1`, `object+0x06 |= 0x0020`. `0x009CA0` maintains the timer/blink overlay. Normal action loops invoke this on `D7 bit 13` after terminal events are excluded.
+
+### Terminal events / deaths
+
+At least 27 active player-action sites converge on `0x009244` when `D7 & 0x63 != 0`.
+
+- D7 bit 1 / external FC47 bit 5 → non-life-loss terminal/transition path at `0x0096B6` — HIGH CONFIDENCE
+- D7 bit 5 → life-loss variant `0x00944E`
+- D7 bit 0 → life-loss variant `0x00960C`
+- remaining masked case, normally D7 bit 6 → default life-loss path
+
+Therefore the `0x63` mask is a **terminal-event mask**, not a pure death mask.
+
+Reproducible probe: `tools/rom_probe/player_state_probe.py`.
 
 ## Weapons — CONFIRMED
 
@@ -73,18 +143,18 @@ Package 02:
 
 Both reconstruct coherent gameplay maps. Auxiliary/raw resources and collision/spawn/object layers remain unresolved.
 
-## Player control — ACTIVE RESEARCH
+## M0.6 remaining work
 
-- `0x009780–0x0098BA` belongs to player control/input dispatch.
-- The retail ROM contains `Arnie says: Illegal player control mode` near `0x009892`.
-- `object+0x54` is deliberately unnamed; it receives multiple bit-pattern values and must not be called a control mode until dynamic proof exists.
+1. Runtime/playtest validation of action and overlay transitions.
+2. Resolve exact semantics for `object+0x54`.
+3. Name special weapon phases without overclaiming.
+4. Determine higher `FB7E` bits and `F6F0`.
+5. Produce regression probes for idle/walk/fire/roll/roll-fire/Lock/invulnerability/terminal routing.
 
-## Highest-value next work
+## Parallel high-value work after M0.6
 
-1. Resolve `FB7C..FB7F` input/control flags and split the player dispatcher into named states.
-2. Determine object allocator, record size, pool/list linkage and lifetime rules.
-3. Parse every gameplay resource package automatically.
-4. Identify collision, spawn, object and objective/script data for levels.
-5. Find gameplay palettes and player/enemy sprite descriptors.
-6. Implement LZBeam inverse encoding and prove a byte-stable no-op rebuild.
-7. Build regression probes before the first engine extension.
+1. Determine object allocator, record size, pool/list linkage and lifetime rules.
+2. Parse every gameplay resource package automatically.
+3. Identify collision, spawn, object and objective/script data for levels.
+4. Find gameplay palettes and player/enemy sprite descriptors.
+5. Implement LZBeam inverse encoding and prove a byte-stable no-op rebuild.
