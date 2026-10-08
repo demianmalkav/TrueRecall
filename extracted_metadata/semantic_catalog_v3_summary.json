@@ -1,0 +1,33 @@
+{
+  "authoring_kind_counts": {
+    "civilian_actor": 13,
+    "contact_hazard_or_destructible": 11,
+    "controller_or_interactable": 6,
+    "controller_or_trigger": 8,
+    "destructible_loot_prop": 1,
+    "door_or_interactable": 12,
+    "hostile_actor": 1,
+    "hostile_combat_actor": 18,
+    "objective_item": 10,
+    "pickup": 10,
+    "unresolved": 37,
+    "vehicle_prop": 1
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "confirmed_civilian_types": [11,40,49,50,84,102,105,108,109,110,119,120,128],
+  "confirmed_spread_types": [20,86],
+  "confirmed_standard_ranged_types": [5,7,24,25,28,38,39,82,98,107,112,126,127],
+  "named_identity_count": 58,
+  "placement_count": 2449,
+  "policy": "Labels/categories are emitted only from recorded evidence; unresolved values are explicit and are not inferred from graphics alone.",
+  "presentation_coverage": {
+    "branch_variants": 14,
+    "direct_code": 2,
+    "no_initial_presentation_native": 6,
+    "unique_presentation_family": 106
+  },
+  "schema": "truerecall.semantic_authoring_catalog.v3",
+  "type_count": 128,
+  "unlabeled_identity_count": 70,
+  "unresolved_type_ids": [0,6,8,14,15,19,21,26,33,37,42,43,44,47,76,83,89,90,91,92,96,99,103,106,111,114,115,116,117,118,123,124,130,135,136,137,138]
+}
