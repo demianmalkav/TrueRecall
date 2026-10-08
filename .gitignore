@@ -1,0 +1,34 @@
+# Base ROMs / copyrighted binaries
+*.bin
+*.gen
+*.md
+*.smd
+*.rom
+*.iso
+
+# Emulator state / traces
+*.sav
+*.state
+*.state*
+*.trace
+
+# Generated builds and extracted copyrighted assets
+build/
+out/
+extracted/
+work/
+*.png
+*.wav
+*.vgm
+
+# Local tools / caches
+__pycache__/
+*.pyc
+.venv/
+.env
+.DS_Store
+Thumbs.db
+
+# Allow source-controlled metadata directories
+!extracted_metadata/
+!extracted_metadata/**
