@@ -16,7 +16,7 @@ NOOP=0x002E16
 def u16(b,o): return int.from_bytes(b[o:o+2],'big')
 def u32(b,o): return int.from_bytes(b[o:o+4],'big')
 
-def player_handlers(rom,n=34):
+def player_handlers(rom,n=39):
     out=[]
     for t in range(n):
         p=PLAYER_DISPATCH+t*6
@@ -24,7 +24,7 @@ def player_handlers(rom,n=34):
         out.append(u32(rom,p+2))
     return out
 
-def projectile_handlers(rom,n=34):
+def projectile_handlers(rom,n=39):
     out=[]
     for t in range(n):
         p=PROJECTILE_DISPATCH+t*4
@@ -52,14 +52,20 @@ def main():
     for i in range(SCENE_COUNT):
         rec=u32(rom,SCENE_TABLE+i*4)
         aux=u32(rom,rec+0x0E)
-        plane_desc=u32(rom,rec+0x1A)
+        # Spatial extents follow plane E. One map entry is a 32x32 world metatile;
+        # one broadphase cell covers 2x2 metatiles = 64x64 world pixels.
+        plane_desc=u32(rom,rec+0x26)
         width_tiles=u16(rom,plane_desc+4); height_tiles=u16(rom,plane_desc+6)
-        width_px=width_tiles*8; height_px=height_tiles*8
-        cols=math.ceil(width_px/64); rows=math.ceil(height_px/64)
+        width_px=width_tiles*32; height_px=height_tiles*32
+        cols=math.ceil(width_tiles/2); rows=math.ceil(height_tiles/2)
         count=cols*rows; total_cells+=count
         grid=[u16(rom,aux+j*2) for j in range(count)]
         nonempty_cells += sum(v!=0 for v in grid)
         record_offsets=set(); list_offsets=sorted(set(grid)-{0}); scene_max_list=0
+        if list_offsets:
+            # In every retail non-empty scene the first referenced list starts
+            # exactly where the dense grid ends. This is a strong format boundary.
+            assert min(list_offsets)==count*2, (i,hex(min(list_offsets)),hex(count*2))
         for lo in list_offsets:
             assert 0 < lo < 0x8000
             vals=[]
@@ -77,7 +83,7 @@ def main():
             assert len(geom)==4
         scenes.append({
             'scene':i,'scene_record':f'0x{rec:06X}','resource_base':f'0x{aux:06X}',
-            'map_tiles':[width_tiles,height_tiles],'map_pixels':[width_px,height_px],
+            'plane_e_metatiles':[width_tiles,height_tiles],'world_extent_nominal_pixels':[width_px,height_px],
             'grid_cells_64px':[cols,rows],'grid_words':count,'nonempty_cells':sum(v!=0 for v in grid),
             'unique_cell_ref_lists':len(list_offsets),'unique_world_records':len(record_offsets),
             'max_records_per_cell_list':scene_max_list,'world_type_counts':{str(k):v for k,v in sorted(sc.items())}
@@ -97,8 +103,9 @@ def main():
       'schema':'truerecall.world_spatial_collision.v1','base_sha1':digest,
       'confirmed':{
         'scene_resource_field':'scene_record+0x0E','resource_base_ram':'FFFFF976','row_pointer_table_ram':'FFFFF974',
-        'row_stride_bytes_ram':'FFFFF986','row_count_ram':'FFFFF988','cell_size_pixels':[64,64],
-        'cell_entry_bytes':2,'cell_entry_semantics':'word offset from resource base to a high-bit-terminated list of world-record offsets',
+        'row_stride_bytes_ram':'FFFFF986','row_count_ram':'FFFFF988','world_metatile_pixels':[32,32],'cell_size_pixels':[64,64],
+        'dimension_source':'scene_record+0x26 plane-E descriptor','cell_entry_bytes':2,
+        'cell_entry_semantics':'word offset from resource base to a high-bit-terminated list of world-record offsets',
         'world_record_type_field':'record+0x00','world_record_overlap_words':['record+0x02','record+0x04','record+0x06','record+0x08'],
         'entity_world_callback':'object+0x38','player_dispatch':'0x003750','projectile_dispatch':'0x002C10'
       },
