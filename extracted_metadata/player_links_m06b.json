@@ -1,0 +1,35 @@
+{
+  "schema": "truerecall.m06.player_links.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "milestone": "M0.6B",
+  "confirmed": {
+    "held_input": {
+      "ram": "0xFFFFF6F0",
+      "formula": "current & previous",
+      "meaning": "controls continuously active across consecutive samples"
+    },
+    "weapon_cycle": {
+      "next_weapon": {"pressed_bit": 12, "selector_delta": "+2", "wrap": "0x000C -> 0x0000"},
+      "previous_weapon": {"pressed_bit": 14, "selector_delta": "-2", "wrap": "below 0 -> 0x000C"}
+    }
+  },
+  "high_confidence": {
+    "0xFFFFF9F8": "linked world/render avatar entity",
+    "0xFFFFFB6E": "player control/collision proxy/companion entity",
+    "relationship": "FB6E drives motion/control state while F9F8 is synchronized as the linked world/avatar representation; own-collision is explicitly suppressed"
+  },
+  "evidence": {
+    "F9F8_store": "0x0109D0",
+    "FB6E_store": "0x008284",
+    "allocator_promotes_new_object_to_A5": "0x00F8E8",
+    "self_collision_ignore": "0x00356C",
+    "frame_sync_load": "0x009B60",
+    "motion_proxy_to_avatar": "0x009BE8",
+    "geometry_avatar_to_proxy": "0x009C7A"
+  },
+  "unresolved": [
+    "whether Beam internally called the linked F9F8 representation a sprite/avatar/body object",
+    "exact ownership/lifetime ordering between the two linked player objects",
+    "full meaning of every synchronization exception bit in FB7C/FB7E"
+  ]
+}
