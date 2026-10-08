@@ -19,33 +19,47 @@ Current field map:
 | `+0x50` | facing 0..7 | CONFIRMED |
 | `+0x54` | spatial/collision-response value; exact physical semantic/unit unresolved | HIGH CONFIDENCE classification |
 | `+0x64` | animation-direction/state index used by `PlayFAnim13` | HIGH CONFIDENCE |
+| `+0x6C` | health word on the `F9F8` world/avatar player object | CONFIRMED for player avatar |
 
-## Generic entity pool — CONFIRMED
+## Generic entity pool — CONFIRMED, pointer semantics corrected
 
-The main gameplay entity allocator is now statically reconstructed and guarded by `tools/rom_probe/entity_pool_probe.py`.
+The main gameplay entity allocator is statically reconstructed and guarded by `tools/rom_probe/entity_pool_probe.py`.
 
 Pool geometry:
 
 - record size: `0x72` bytes = **114 bytes**
 - record count: **35**
-- total allocation: `0x0F96` bytes = `35 × 0x72`
-- pool base: `FFFFF9FE`
-- free-list head: `FFFFF9FC`
-- active object count: `FFFFF9F2`
-- active-list sentinel: `FFFFF9F4`
+- total heap allocation: `0x0F96` bytes = `35 × 0x72`
+- `FFFFF9FE`: **pool-base pointer variable** — contains the low-RAM address returned by heap allocator `0x00012A2A`
+- `FFFFF9FC`: **free-list-head pointer variable**
+- `FFFFF9F2`: active object count
+- `FFFFF9F4`: fixed active-list sentinel
 
-Initialization around `0x00F6CA` self-links the `F9F4` sentinel, clears the active count, requests `0x0F96` bytes, stores the base/free-head, then constructs the free list in `0x72`-byte strides. The loop count (`0x21` with DBRA semantics) creates 35 records exactly.
+### Important correction
+
+Earlier documentation incorrectly described `FFFFF9FE` as if the pool physically began at that RAM address. The initialization code proves otherwise:
+
+```text
+MOVE.W  #0x0F96,D0
+JSR     0x00012A2A        ; heap allocation
+MOVE.W  A0,$F9FE          ; store returned pool pointer
+MOVE.W  A0,$F9FC          ; initialize free-head pointer
+```
+
+Teardown later reads the pointer stored in `F9FE` and passes it to the heap free routine. Therefore `F9FE/F9FC` are metadata variables, not the pool storage itself.
+
+The physical pool address is a runtime heap result and must not be hard-coded into new tools or patches.
 
 ### List structure
 
-Unused records form a singly linked free list through `object+0x00`.
+Unused records form a singly linked free list through `object+0x00`; `F9FC` stores the current head pointer.
 
-Active records form a doubly linked circular list around sentinel `F9F4`:
+Active records form a doubly linked circular list around the fixed sentinel at `F9F4`:
 
 - `object+0x00` = next
 - `object+0x02` = previous
 
-`0x00FA40` inserts an active object into that list. `0x00F8F8` unlinks an object, decrements `F9F2`, and pushes the freed record back onto `F9FC`.
+`0x00FA40` inserts an active object into that list. `0x00F8F8` unlinks an object, decrements `F9F2`, and pushes the freed record back onto the free list.
 
 ### Allocator entries
 
@@ -53,8 +67,9 @@ Active records form a doubly linked circular list around sentinel `F9F4`:
 - `0x00F7CC`: linked/clone-style allocator that initializes geometry from another object
 - `0x00F8F8`: destroy/free
 - `0x00FA40`: active-list insertion
+- `0x00012A2A`: underlying heap allocator used to reserve the pool block
 
-This gives a hard upper bound of 35 records in this generic pool. Practical gameplay capacity is lower whenever persistent objects—including the player's companion/proxy—consume records.
+This gives a hard upper bound of 35 records in this generic allocation. Practical gameplay capacity is lower whenever persistent objects—including the player's companion/proxy—consume records.
 
 ## Player constructor evidence
 
@@ -88,6 +103,18 @@ Working labels:
 
 The labels describe observed responsibility, not recovered Beam source names. Exact ownership/lifetime ordering is still unresolved.
 
+### Player health field — CONFIRMED
+
+The scripted health pickup (`type_id 54`) independently resolves the low-RAM pointer stored in `F9F8`, adds object offset `0x6C`, reads that word, compares it against `0x17` and `0x0B`, and writes a replacement health value through the computed address.
+
+Therefore the architectural health location is:
+
+```text
+world/avatar player object + 0x6C
+```
+
+The historically known absolute cheat address `FFC69E` is consistent with the retail allocator's deterministic runtime layout, but it should be treated as a concrete retail-build address rather than the engine-level identity of the field.
+
 ## Generic callback loops
 
 - Around `0x00EBC2`, the engine indirect-calls `object+0x34` after overlap tests.
@@ -95,7 +122,7 @@ The labels describe observed responsibility, not recovered Beam source names. Ex
 
 ## `object+0x54` correction from M0.6
 
-Earlier notes deliberately left `+0x54` unnamed because it appeared in player-control code. Static cross-references now show that it is **not a player control-mode field**.
+Earlier notes deliberately left `+0x54` unnamed because it appeared in player-control code. Static cross-references show that it is **not a player control-mode field**.
 
 Evidence:
 
@@ -105,12 +132,13 @@ Evidence:
 4. Player synchronization helpers around `0x009C60–0x009D40` copy `+0x54` together with geometry fields such as `+0x10/+0x12/+0x14/+0x16`.
 5. Kneeling/roll-fire temporarily writes `0xFC00` to the same field and waits for generic update processing to return it to zero.
 
-Conclusion: `+0x54` belongs to **spatial/collision response or positional correction**, possibly a fixed-point elevation/penetration/displacement quantity. The exact physical unit and axis remain unresolved. It must no longer be described as a control state.
+Conclusion: `+0x54` belongs to **spatial/collision response or positional correction**, possibly a fixed-point elevation/penetration/displacement quantity. The exact physical unit and axis remain unresolved.
 
 ## Remaining allocator/entity questions
 
 The generic allocator geometry is no longer unknown. Remaining questions are narrower:
 
+- physical heap address returned for the pool in each initialization path
 - practical per-level slot budget after persistent/system entities are counted
 - allocation ordering for every object class
 - whether specialized auxiliary pools coexist alongside the 35-record generic pool
