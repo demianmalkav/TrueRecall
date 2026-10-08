@@ -1,0 +1,37 @@
+{
+  "authoring_kind_counts": {
+    "civilian_actor": 13,
+    "contact_hazard_or_destructible": 11,
+    "controller_or_interactable": 6,
+    "controller_or_trigger": 8,
+    "destructible_loot_prop": 1,
+    "door_or_interactable": 9,
+    "hostile_actor": 1,
+    "hostile_combat_actor": 18,
+    "objective_item": 10,
+    "pickup": 10,
+    "unresolved": 40,
+    "vehicle_prop": 1
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "named_identity_count": 55,
+  "notable_confirmed_roles": {
+    "civilian_type_ids": [11, 40, 49, 50, 84, 102, 105, 108, 109, 110, 119, 120, 128],
+    "contact_hazard_type_ids": [29, 31, 35, 36, 72, 73, 74, 75, 93, 94, 95],
+    "controller_or_trigger_type_ids": [4, 10, 34, 81, 100, 101, 133, 134],
+    "special_combat_type_ids": [41, 104, 121],
+    "spread_ranged_type_ids": [20, 86],
+    "standard_ranged_type_ids": [5, 7, 24, 25, 28, 38, 39, 82, 98, 107, 112, 126, 127]
+  },
+  "placement_count": 2449,
+  "policy": "Labels/categories are emitted only from recorded evidence; unresolved values are explicit and are not inferred from graphics alone.",
+  "presentation_coverage": {
+    "branch_variants": 14,
+    "direct_code": 2,
+    "no_initial_presentation_native": 6,
+    "unique_presentation_family": 106
+  },
+  "schema": "truerecall.semantic_authoring_catalog.v2",
+  "type_count": 128,
+  "unlabeled_identity_count": 73
+}
