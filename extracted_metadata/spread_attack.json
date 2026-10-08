@@ -1,0 +1,15 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "projectile_actor_collision": "0x0027EE",
+  "projectile_damage_normal_hard": [1, 1],
+  "projectile_direct_code": "0x00E3E0",
+  "projectile_type": 175,
+  "projectile_world_collision": "0x002C10",
+  "retail_spread_actor_types": [
+    {"placements":6,"scenes":[9],"type_id":20},
+    {"placements":13,"scenes":[17],"type_id":86}
+  ],
+  "schema": "truerecall.spread_attack.v1",
+  "spread_native": "0x00DAA4",
+  "total_spread_actor_placements": 19
+}
