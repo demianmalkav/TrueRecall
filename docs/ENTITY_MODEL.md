@@ -28,6 +28,28 @@ At approximately `0x0081C0`, player initialization installs:
 
 Projectile constructors write alternate functions into the same callback slots, proving that these slots belong to a generic entity interface rather than player-only code.
 
+## Linked player entities — M0.6B
+
+The playable character is implemented as two synchronized engine objects.
+
+Evidence chain:
+
+1. stage/world creation stores an object pointer in `F9F8` at `0x0109D0`
+2. the player-control constructor allocates a second object; helper `0x00F8E8` makes the newly allocated `A0` object current as `A5`
+3. that second object is stored in `FB6E` at `0x008284`
+4. player callbacks and control state are installed on the `A5` companion
+5. callback `0x00356C` explicitly returns when the other entity is `F9F8`, suppressing self-collision between the pair
+6. `0x009B60` loads `F9F8→A1` and `FB6E→A5`
+7. `0x009BE8` synchronizes motion fields from `FB6E` to `F9F8`
+8. `0x009C7A` synchronizes geometry/position fields back from `F9F8` to `FB6E` when allowed
+
+Working labels:
+
+- `F9F8`: linked **world/render avatar entity** — HIGH CONFIDENCE
+- `FB6E`: **player control/collision proxy/companion entity** — HIGH CONFIDENCE
+
+The labels describe observed responsibility, not recovered Beam source names. Exact ownership/lifetime ordering is still unresolved.
+
 ## Generic callback loops
 
 - Around `0x00EBC2`, the engine indirect-calls `object+0x34` after overlap tests.
@@ -59,5 +81,6 @@ Still unresolved:
 - linkage field offsets
 - lifetime/destruction flags
 - exact physical meaning/unit of `+0x54`
+- exact ownership/lifetime ordering of the `F9F8`/`FB6E` player pair
 
 These remain prerequisites before adding persistent new entity classes.
