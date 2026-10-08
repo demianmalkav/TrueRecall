@@ -1,30 +1,33 @@
 {
-  "schema": "truerecall.entity_pool.v1",
+  "schema": "truerecall.entity_pool.v2",
   "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
   "confirmed": {
     "record_size_bytes": 114,
     "pool_count": 35,
     "pool_bytes": 3990,
-    "pool_base": "0xFFFFF9FE",
-    "free_list_head": "0xFFFFF9FC",
+    "pool_base_pointer_variable": "0xFFFFF9FE",
+    "free_list_head_pointer_variable": "0xFFFFF9FC",
     "active_count": "0xFFFFF9F2",
     "active_list_sentinel": "0xFFFFF9F4",
     "active_links": {
       "next": "object+0x00",
       "previous": "object+0x02"
     },
+    "heap_allocator_called_from_pool_init": "0x00012A2A",
     "allocator_entry": "0x00F732",
     "linked_clone_allocator_entry": "0x00F7CC",
     "destructor_free_entry": "0x00F8F8",
     "active_list_insert": "0x00FA40"
   },
   "architecture": {
-    "free_list": "singly linked through object+0x00",
-    "active_list": "doubly linked circular list using object+0x00/object+0x02 and F9F4 sentinel",
-    "capacity_note": "Generic pool capacity is 35 records; player companion and persistent mission entities consume slots."
+    "pool_storage": "0x0F96-byte heap allocation; returned low-RAM pointer is stored in F9FE",
+    "free_list": "F9FC stores the current free-head pointer; unused records link through object+0x00",
+    "active_list": "doubly linked circular list using object+0x00/object+0x02 and fixed F9F4 sentinel",
+    "capacity_note": "Generic allocation contains 35 records; persistent gameplay entities consume slots."
   },
   "unresolved": [
-    "exact allocation policy/ordering for every object class",
+    "physical heap address returned for the pool in each initialization path",
+    "exact allocation ordering for every object class",
     "persistent/system slot consumption by mission",
     "whether specialized auxiliary object pools coexist"
   ]
