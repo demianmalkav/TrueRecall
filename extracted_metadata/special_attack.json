@@ -1,0 +1,28 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "families": [
+    {
+      "parent_type": 41,
+      "classification": "special_directional_projectile_actor",
+      "placements": 2,
+      "scenes": [17],
+      "runtime_attack_type": 192,
+      "attack_actor_collision": "0x002822",
+      "attack_world_collision": "0x002B68",
+      "attack_damage_normal_hard": [4, 6]
+    },
+    {
+      "parent_type": 121,
+      "classification": "boss_class_composite_ranged_actor",
+      "placements": 1,
+      "scenes": [4],
+      "hp_normal_hard": [50, 75],
+      "standard_projectile_type": 170,
+      "offensive_child_type": 186,
+      "offensive_child_actor_collision": "0x002822",
+      "offensive_child_damage_normal_hard": [5, 5],
+      "offensive_child_effect_type": 185
+    }
+  ],
+  "schema": "truerecall.special_attack.v1"
+}
