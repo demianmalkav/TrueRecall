@@ -84,19 +84,23 @@ class PlayerControlStaticTest(unittest.TestCase):
         )
 
     def test_terminal_event_dispatch_is_not_pure_death(self) -> None:
-        # D7 bit 1 is explicitly routed to 0x96B6, whose entry does not decrement lives.
+        # External FC47 bit 5 and D7 bit 1 route to 0x96B6.
         self.assertEqual(
-            self.data[0x925C:0x9268],
+            self.data[0x9250:0x925E],
+            bytes.fromhex("08 38 00 05 FC 47 67 06 4E F9 00 00 96 B6"),
+        )
+        self.assertEqual(
+            self.data[0x925E:0x926A],
             bytes.fromhex("08 07 00 01 67 06 4E F9 00 00 96 B6"),
         )
         # D7 bit 5 routes to the life-loss variant 0x944E.
         self.assertEqual(
-            self.data[0x9268:0x9274],
+            self.data[0x926A:0x9276],
             bytes.fromhex("08 07 00 05 67 06 4E F9 00 00 94 4E"),
         )
         # D7 bit 0 routes to another life-loss variant 0x960C.
         self.assertEqual(
-            self.data[0x9274:0x9280],
+            self.data[0x9276:0x9282],
             bytes.fromhex("08 07 00 00 67 06 4E F9 00 00 96 0C"),
         )
 
