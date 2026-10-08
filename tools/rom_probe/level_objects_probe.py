@@ -131,7 +131,7 @@ def main() -> None:
         raise SystemExit(f"wrong base ROM SHA-1: {digest}")
 
     # Consumer-backed safety signatures.
-    assert rom[0x010BB8:0x010BFE] == bytes.fromhex(
+    assert rom[0x010BB8:0x010C00] == bytes.fromhex(
         "302900006b443200c278f9c0673c2f082f09024003ff0c4000e664303f004eb90000f7326544301f4eb9000101026532225f31490032316900020010316900040014006980000000"
     )
     assert rom[0x010764:0x0107C8].startswith(bytes.fromhex("48e73e003278fa003029001031c0f9c80640011e0240ffe0"))
