@@ -1,0 +1,15 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "schema": "truerecall.controller_types.v1",
+  "types": {
+    "4": {"role": "randomized_damaging_prop_spawner", "scene": 13, "placements": 1, "spawns_type": 30},
+    "10": {"role": "scene14_camera_scroll_boundary_trigger_A", "scene": 14, "placements": 7, "x": 208},
+    "34": {"role": "scene14_scroll_state_controller", "scene": 14, "placements": 3, "state_word": "FFFFFC52"},
+    "101": {"role": "scene14_camera_scroll_boundary_trigger_B", "scene": 14, "placements": 7, "x": 208},
+    "30": {"role": "damaging_barrel_like_runtime_prop", "retail_placements": 0, "damage_normal_hard": [4, 7], "presentation_selectors": ["0x009A", "0x009C"]}
+  },
+  "notes": {
+    "type10_101": "Paired direct-code triggers alternate along the vertical scene-14 corridor; exact upper/lower naming is intentionally withheld.",
+    "type4_30": "Spawner mechanics are code-confirmed; barrel visual identity comes from reconstructed frames."
+  }
+}
