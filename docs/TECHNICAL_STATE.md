@@ -21,12 +21,15 @@ Completed:
 - M0.3 entity architecture recovered
 - M0.4 asset/cutscene pipeline recovered
 - M0.5 gameplay map format recovered
+- M0.6a controller/input pipeline recovered
 
 Active:
-- M0.6 player state machine recovery
+- M0.6b player gameplay-state bitfields and state-machine recovery
 
 Next:
 - M0.7 first controlled engine extension
+
+Active work branch: `m0.6-player-state`. `main` remains the infrastructure checkpoint until M0.6 is ready to merge.
 
 ## Core architecture — CONFIRMED / HIGH CONFIDENCE
 
@@ -37,6 +40,36 @@ Next:
 - Generic `+0x34` invocation loop near `0x00EBC2`.
 - Generic `+0x38` invocation loop near `0x010FF2`.
 - Object traversal uses low-RAM 16-bit pointers into `FFxxxx`; a circular/sentinel list is rooted around `F9F4` — HIGH CONFIDENCE.
+
+## Controller/input pipeline — CONFIRMED
+
+Controller history is maintained in `FFFFF6EA..FFFFF6F0` by the routine region `0x012B60..0x012BC8`:
+
+- `F6EA`: previous controller word — CONFIRMED.
+- `F6EC`: current controller word — CONFIRMED.
+- `F6EE`: newly activated / rising-edge bits — CONFIRMED.
+- `F6F0`: bits active across consecutive samples — HIGH CONFIDENCE.
+
+The implementation copies old `F6EC` to `F6EA`, stores the new pad word in `F6EC`, computes `(old XOR new) AND new` into `F6EE`, and computes `old AND new` into `F6F0`.
+
+Directional input is the low nibble of `F6EC`; the direction→facing table near `0x0147C4` maps bits 0/1/2/3 to Up/Down/Left/Right at HIGH CONFIDENCE. `F6EC` bit 4 is Fire, bit 6 is Lock, and `F6EE` bit 7 is Start/pause at HIGH CONFIDENCE.
+
+The weapon-cycle path around `0x008448` consumes edge bits 5/12 as next-weapon inputs and bit 14 as previous-weapon input — HIGH CONFIDENCE.
+
+## Gameplay state words — ACTIVE RESEARCH
+
+Previous documentation incorrectly grouped `FB7C..FB7F` as physical input. Static proof now shows:
+
+- `FB7C` is a gameplay action/state bitfield word.
+- `FB7D` is merely its low byte.
+- `FB7E` is a broader player/gameplay status bitfield word.
+- `FB7F` is merely its low byte.
+
+Observed direct whole-word `FB7C` values: `0,1,2,4,8,0x0C,0x28,0x48`.
+
+`FB7E` is modified with masks extending from low bits through `0x4000`, proving that it is not a simple control-mode enum. Exact bit semantics are the current M0.6b target.
+
+Reproducible probe: `tools/rom_probe/player_state_probe.py`.
 
 ## Weapons — CONFIRMED
 
@@ -75,16 +108,16 @@ Both reconstruct coherent gameplay maps. Auxiliary/raw resources and collision/s
 
 ## Player control — ACTIVE RESEARCH
 
-- `0x009780–0x0098BA` belongs to player control/input dispatch.
+- `0x009780–0x0098BA` belongs to player control dispatch.
 - The retail ROM contains `Arnie says: Illegal player control mode` near `0x009892`.
 - `object+0x54` is deliberately unnamed; it receives multiple bit-pattern values and must not be called a control mode until dynamic proof exists.
 
 ## Highest-value next work
 
-1. Resolve `FB7C..FB7F` input/control flags and split the player dispatcher into named states.
-2. Determine object allocator, record size, pool/list linkage and lifetime rules.
-3. Parse every gameplay resource package automatically.
-4. Identify collision, spawn, object and objective/script data for levels.
-5. Find gameplay palettes and player/enemy sprite descriptors.
+1. Assign exact per-bit semantics to `FB7C` and `FB7E` and split the dispatcher into named states.
+2. Trace roll, lock/strafe, fire, post-roll kneel, hit/invulnerability and death transitions.
+3. Determine object allocator, record size, pool/list linkage and lifetime rules.
+4. Parse every gameplay resource package automatically.
+5. Identify collision, spawn, object and objective/script data for levels.
 6. Implement LZBeam inverse encoding and prove a byte-stable no-op rebuild.
-7. Build regression probes before the first engine extension.
+7. Extend the regression probe set before the first engine modification.
