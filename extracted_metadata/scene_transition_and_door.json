@@ -1,0 +1,24 @@
+{
+  "automatic_door_types": [
+    {"axis":"object+0x14","role":"automatic_proximity_door_variant","status":"HIGH_CONFIDENCE","threshold":50,"type_id":14},
+    {"axis":"object+0x14","role":"automatic_proximity_door_variant","status":"HIGH_CONFIDENCE","threshold":50,"type_id":15}
+  ],
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "confirmed_globals": {
+    "current_scene_word":"FFFFFC42",
+    "entry_parameter_word":"FFFFFC3E",
+    "requested_scene_word":"FFFFFC3A",
+    "scene_table":"0x013B4A",
+    "transition_flags_word":"FFFFFC46"
+  },
+  "notes": "Transition-surface mechanics are instruction-level confirmed. Door naming combines proven proximity/animation behavior with reconstructed initial presentation, so door identity remains HIGH_CONFIDENCE.",
+  "proximity_distance_native": {"address":"0x00221A","engine_helper":"0x0018D6","semantic":"absolute difference of object/player word +0x14"},
+  "scene_transition_types": [
+    {"role":"scene_transition_surface","status":"CONFIRMED","type_id":135},
+    {"role":"scene_transition_surface","status":"CONFIRMED","type_id":136},
+    {"role":"scene_transition_surface","status":"CONFIRMED","type_id":137},
+    {"role":"scene_transition_surface","status":"CONFIRMED","type_id":138}
+  ],
+  "schema": "truerecall.scene_transition_and_door.v1",
+  "transition_native": {"address":"0x002482","entry_parameter_byte":"linked+0x07","linked_object_field":"object+0x32","relative_scene_delta_byte":"linked+0x06"}
+}
