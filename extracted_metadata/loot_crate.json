@@ -1,0 +1,14 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "classification": "destructible_loot_supply_crate",
+  "conditional_drop_labels": ["shotgun_ammo_pickup", "health_pickup"],
+  "conditional_drop_type_ids": [68, 54],
+  "damage_callback": "0x002828",
+  "damage_normal_hard": [6, 10],
+  "destruction_archetype": 176,
+  "hp_normal_hard": [1, 1],
+  "initial_selector": "0x005E",
+  "schema": "truerecall.loot_crate.v1",
+  "spawn_native": "0x0020D8",
+  "type_id": 113
+}
