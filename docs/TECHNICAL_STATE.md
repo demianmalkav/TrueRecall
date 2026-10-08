@@ -25,7 +25,8 @@ Completed:
 Active:
 - M0.6 player state machine recovery
   - **M0.6A static control architecture recovered**
-  - runtime/playtest validation and remaining special phases pending
+  - **M0.6B held-input, weapon-cycle direction and dual-player-object architecture recovered**
+  - runtime/playtest validation and remaining special/terminal phases pending
 
 Next:
 - M0.7 first controlled engine extension
@@ -40,7 +41,7 @@ Next:
 - Generic `+0x38` invocation loop near `0x010FF2`.
 - Object traversal uses low-RAM 16-bit pointers into `FFxxxx`; a circular/sentinel list is rooted around `F9F4` — HIGH CONFIDENCE.
 
-## Player control — M0.6A
+## Player control — M0.6A/B
 
 The player-control system is layered, not a single enum:
 
@@ -49,6 +50,7 @@ normalized input
 + FB7C action/state bitfield
 + FB7E overlay/context flags
 + per-frame D7 event bits
++ synchronized avatar/proxy entity pair
 ```
 
 ### Normalized input
@@ -56,12 +58,27 @@ normalized input
 - `F6EA`: previous input word — CONFIRMED
 - `F6EC`: current input word — CONFIRMED
 - `F6EE`: pressed edges — CONFIRMED
+- `F6F0`: continuously held overlap (`current & previous`) — CONFIRMED
 - `F6EE = current & (current XOR previous)` — CONFIRMED
 - D-pad mask `0x000F` — CONFIRMED
 - Fire edge bit 4 — CONFIRMED
 - Roll edge bit 5 — CONFIRMED
-- weapon cycle edge bits 12/14 — CONFIRMED
 - Lock held bit 6 in current word — HIGH CONFIDENCE
+- weapon cycle bit 12 = next owned weapon (`+2`) — CONFIRMED
+- weapon cycle bit 14 = previous owned weapon (`-2`) — CONFIRMED
+
+### Dual player entities — M0.6B
+
+The player is represented by two linked engine objects:
+
+- `F9F8`: world/render avatar entity — HIGH CONFIDENCE
+- `FB6E`: control/collision proxy/companion entity — HIGH CONFIDENCE
+
+Evidence includes separate creation paths (`0x0109D0` and `0x008284`), promotion of the newly allocated companion to `A5` in `0x00F8E8`, explicit suppression of collision with `F9F8` in callback `0x00356C`, and bidirectional synchronization around `0x009B60–0x009C98`.
+
+Motion fields `+0x18/+0x1A/+0x56` flow proxy→avatar; position/geometry fields can flow avatar→proxy. This split is likely important for safely extending movement and melee without destabilizing rendering/world interaction.
+
+Reproducible probe: `tools/rom_probe/player_links_probe.py`.
 
 ### Action word
 
@@ -81,7 +98,10 @@ Confirmed structural values include:
 - bit `0x0001`: roll active phase — HIGH CONFIDENCE
 - bit `0x0002`: post-roll transition — HIGH CONFIDENCE
 - bit `0x0004`: roll-fire/kneeling-fire context — CONFIRMED
+- bit `0x0040`: JLLBFR alternate-player/maniac overlay — HIGH CONFIDENCE
 - bit `0x0080`: lock/fire pose latch — HIGH CONFIDENCE
+
+Higher bits `0x0100–0x4000` participate in terminal/special sequences and remain intentionally unnamed at cause level.
 
 ### Roll-fire
 
@@ -106,7 +126,7 @@ At least 27 active player-action sites converge on `0x009244` when `D7 & 0x63 !=
 
 Therefore the `0x63` mask is a **terminal-event mask**, not a pure death mask.
 
-Reproducible probe: `tools/rom_probe/player_state_probe.py`.
+Reproducible control probe: `tools/rom_probe/player_state_probe.py`.
 
 ## Weapons — CONFIRMED
 
@@ -146,10 +166,11 @@ Both reconstruct coherent gameplay maps. Auxiliary/raw resources and collision/s
 ## M0.6 remaining work
 
 1. Runtime/playtest validation of action and overlay transitions.
-2. Resolve exact semantics for `object+0x54`.
+2. Refine the physical unit/axis of `object+0x54` if useful for extension work.
 3. Name special weapon phases without overclaiming.
-4. Determine higher `FB7E` bits and `F6F0`.
-5. Produce regression probes for idle/walk/fire/roll/roll-fire/Lock/invulnerability/terminal routing.
+4. Resolve cause-level semantics of higher `FB7E` terminal/special flags.
+5. Confirm lifecycle/ownership ordering of the `F9F8`/`FB6E` pair.
+6. Produce runtime regression probes for idle/walk/fire/roll/roll-fire/Lock/invulnerability/terminal routing.
 
 ## Parallel high-value work after M0.6
 
