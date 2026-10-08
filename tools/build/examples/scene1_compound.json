@@ -1,0 +1,10 @@
+{
+  "schema": "truerecall.scene_object_patch.v1",
+  "scene_index": 1,
+  "operations": [
+    {"op": "replace", "base_index": 4, "type_id": 54},
+    {"op": "remove", "base_index": 5},
+    {"op": "add", "stride": 6, "type_id": 54, "status_flags": "0x7800", "x": 256, "y": 7984},
+    {"op": "add", "stride": 8, "type_id": 123, "status_flags": "0x7800", "x": 320, "y": 8016, "param": 0}
+  ]
+}
