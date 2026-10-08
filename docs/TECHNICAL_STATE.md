@@ -39,7 +39,28 @@ Next:
 - Player initialization near `0x0081C0` installs `+0x34 = 0x00356C`, `+0x38 = 0x003750`, `+0x50 = 4`.
 - Generic `+0x34` invocation loop near `0x00EBC2`.
 - Generic `+0x38` invocation loop near `0x010FF2`.
-- Object traversal uses low-RAM 16-bit pointers into `FFxxxx`; a circular/sentinel list is rooted around `F9F4` — HIGH CONFIDENCE.
+- Active gameplay entities use a doubly linked circular list rooted at `F9F4`; free objects use a separate free list at `F9FC` — CONFIRMED.
+
+## Generic entity pool — CONFIRMED
+
+The generic gameplay pool is fully bounded by static evidence:
+
+- record size: `0x72` bytes = **114 bytes**
+- records: **35**
+- total allocation: `0x0F96` bytes (`35 × 0x72`)
+- pool base: `FFFFF9FE`
+- free-list head: `FFFFF9FC`
+- active-object count: `FFFFF9F2`
+- active-list sentinel: `FFFFF9F4`
+- active list: `object+0x00` next / `object+0x02` previous
+- allocator: `0x00F732`
+- linked/clone allocator: `0x00F7CC`
+- destroy/free: `0x00F8F8`
+- active-list insertion: `0x00FA40`
+
+Reproducible probe: `tools/rom_probe/entity_pool_probe.py`.
+
+This removes a major uncertainty for Total Recall expansion: new persistent entities have a hard 114-byte slot cost and share a 35-record generic pool, so feature design must budget slots as well as CPU/VRAM.
 
 ## Player control — M0.6A/B
 
@@ -172,9 +193,11 @@ Both reconstruct coherent gameplay maps. Auxiliary/raw resources and collision/s
 5. Confirm lifecycle/ownership ordering of the `F9F8`/`FB6E` pair.
 6. Produce runtime regression probes for idle/walk/fire/roll/roll-fire/Lock/invulnerability/terminal routing.
 
+No Genesis emulator is currently available in the analysis runtime, so dynamic closure will require either a future headless emulator integration or a deliberately instrumented ROM build for local playtest.
+
 ## Parallel high-value work after M0.6
 
-1. Determine object allocator, record size, pool/list linkage and lifetime rules.
+1. Measure per-level generic-pool occupancy to establish safe entity headroom.
 2. Parse every gameplay resource package automatically.
 3. Identify collision, spawn, object and objective/script data for levels.
 4. Find gameplay palettes and player/enemy sprite descriptors.
