@@ -5,8 +5,8 @@ The runtime tracer records writes to the visual avatar's animation-state cluster
 This analyzer separates selection from progression:
 
 - object+0x24 changing means the encoded animation entry/selection changed;
-- object+0x20 changing while +0x24 stays stable is evidence that the current
-  mapping record advanced without a fresh FDDC-style selection;
+- object+0x20 changing with no intervening +0x24 write is evidence that the
+  current mapping record advanced without a fresh FDDC-style selection;
 - object+0x22 activity around +0x20 transitions is a timer/state candidate;
 - any object+0x2C write violates the M09C descriptor-identity invariant.
 
@@ -46,11 +46,19 @@ def event_frame(event: dict[str, Any]) -> int:
     return -1 if value is None else int(value)
 
 
+def event_index(event: dict[str, Any]) -> int:
+    value = event.get("event_index")
+    return -1 if value is None else int(value)
+
+
 def analyze(trace: dict[str, Any]) -> dict[str, Any]:
     if trace.get("schema") != TRACE_SCHEMA:
         raise ValueError("unsupported M09C trace schema")
 
-    events = list(trace.get("events", []))
+    events = sorted(
+        list(trace.get("events", [])),
+        key=lambda row: (event_index(row), event_frame(row)),
+    )
     by_field: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for event in events:
         name = event.get("watch", {}).get("name", "unknown")
@@ -69,53 +77,62 @@ def analyze(trace: dict[str, Any]) -> dict[str, Any]:
             for pc, count in counts.most_common()
         ]
 
-    record_events = sorted(
-        by_field.get("mapping_record_offset", []),
-        key=lambda row: (event_frame(row), row.get("event_index", 0)),
-    )
-    encoded_events = sorted(
-        by_field.get("encoded_animation_entry", []),
-        key=lambda row: (event_frame(row), row.get("event_index", 0)),
-    )
-    state22_events = sorted(
-        by_field.get("animation_state_22", []),
-        key=lambda row: (event_frame(row), row.get("event_index", 0)),
-    )
+    record_events = by_field.get("mapping_record_offset", [])
+    encoded_events = by_field.get("encoded_animation_entry", [])
+    state22_events = by_field.get("animation_state_22", [])
 
-    # For every +0x20 write, compare the encoded selection against the most recent
-    # prior snapshot. If it did not change, the mapping-record transition happened
-    # inside the current selected animation path rather than through reselection.
     record_transitions = []
-    previous_snapshot = trace.get("pre_state")
+    previous_record_snapshot = trace.get("pre_state")
+    previous_record_event_index = -1
     for event in record_events:
         current = event["snapshot"]
-        before_record = None if previous_snapshot is None else state_word(previous_snapshot, 0x20)
-        before_encoded = None if previous_snapshot is None else state_word(previous_snapshot, 0x24)
+        current_index = event_index(event)
+        before_record = (
+            None
+            if previous_record_snapshot is None
+            else state_word(previous_record_snapshot, 0x20)
+        )
+        before_encoded = (
+            None
+            if previous_record_snapshot is None
+            else state_word(previous_record_snapshot, 0x24)
+        )
         after_record = state_word(current, 0x20)
         after_encoded = state_word(current, 0x24)
-        record_transitions.append(
-            {
-                "event_index": event.get("event_index"),
-                "frame": event_frame(event),
-                "pc": event_pc(event),
-                "record_before": before_record,
-                "record_after": after_record,
-                "encoded_before": before_encoded,
-                "encoded_after": after_encoded,
-                "encoded_stable": before_encoded == after_encoded,
-                "record_changed": before_record != after_record,
-                "record_header_words": list(current.get("mapping_record_words", [])),
-            }
+        intervening_selection_events = [
+            row
+            for row in encoded_events
+            if previous_record_event_index < event_index(row) < current_index
+        ]
+        transition = {
+            "event_index": current_index,
+            "frame": event_frame(event),
+            "pc": event_pc(event),
+            "record_before": before_record,
+            "record_after": after_record,
+            "encoded_before": before_encoded,
+            "encoded_after": after_encoded,
+            "encoded_stable": before_encoded == after_encoded,
+            "record_changed": before_record != after_record,
+            "selection_events_since_previous_record": len(intervening_selection_events),
+            "selection_event_indices_since_previous_record": [
+                event_index(row) for row in intervening_selection_events
+            ],
+            "record_header_words": list(current.get("mapping_record_words", [])),
+        }
+        transition["native_progression_candidate"] = bool(
+            transition["record_changed"]
+            and transition["encoded_stable"]
+            and transition["selection_events_since_previous_record"] == 0
         )
-        previous_snapshot = current
+        record_transitions.append(transition)
+        previous_record_snapshot = current
+        previous_record_event_index = current_index
 
-    stable_selection_record_advances = [
-        row
-        for row in record_transitions
-        if row["record_changed"] and row["encoded_stable"]
+    native_record_advances = [
+        row for row in record_transitions if row["native_progression_candidate"]
     ]
 
-    # Measure +0x22 activity around each record transition in script-frame space.
     state22_frames = [event_frame(row) for row in state22_events]
     for transition in record_transitions:
         frame = transition["frame"]
@@ -126,7 +143,7 @@ def analyze(trace: dict[str, Any]) -> dict[str, Any]:
     selection_frames = [event_frame(row) for row in encoded_events]
     record_frames = [row["frame"] for row in record_transitions]
 
-    if stable_selection_record_advances:
+    if native_record_advances:
         progression_status = "native_record_progression_observed"
     elif record_transitions:
         progression_status = "record_changes_only_with_selection_or_ambiguous"
@@ -146,8 +163,8 @@ def analyze(trace: dict[str, Any]) -> dict[str, Any]:
         },
         "writer_pcs": writer_pcs,
         "record_transitions": record_transitions,
-        "stable_selection_record_advance_count": len(stable_selection_record_advances),
-        "stable_selection_record_advances": stable_selection_record_advances,
+        "native_record_advance_count": len(native_record_advances),
+        "native_record_advances": native_record_advances,
         "encoded_selection_frames": selection_frames,
         "mapping_record_frames": record_frames,
         "state22_frames": state22_frames,
@@ -155,9 +172,9 @@ def analyze(trace: dict[str, Any]) -> dict[str, Any]:
         "progression_status": progression_status,
         "m09c_gate": {
             "descriptor_identity_preserved": descriptor_invariant_ok,
-            "native_progression_evidence": bool(stable_selection_record_advances),
+            "native_progression_evidence": bool(native_record_advances),
             "candidate_progression_writer_pcs": sorted(
-                {row["pc"] for row in stable_selection_record_advances}
+                {row["pc"] for row in native_record_advances}
             ),
             "candidate_state22_writer_pcs": sorted(
                 {event_pc(row) for row in state22_events}
