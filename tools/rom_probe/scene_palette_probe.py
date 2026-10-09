@@ -21,7 +21,7 @@ from scene_palette import (
 
 
 def canonical_bytes(source: dict) -> bytes:
-    return json.dumps(source, sort_keys=True, separators=(",", ",":)).encode("utf-8")
+    return json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
 def main() -> None:
