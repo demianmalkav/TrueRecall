@@ -25,42 +25,49 @@ Completed foundation:
 - **M0.4** asset/cutscene extraction pipeline
 - **M0.5** gameplay map format
 
-Completed reconstruction / authoring chain:
+Completed reconstruction / authoring foundation:
 
 - **M0.6A/B** player input/control architecture and dual-player-object model
 - **M0.6C** object stream / VM / archetype / animation / renderer reconstruction
-- **M0.6D** controlled in-place VM/data patch
-- **M0.6E** source-level VM relocation/edit/reassembly
+- **M0.6D/E** controlled VM editing plus source-level relocation/reassembly
 - **M0.6F** new independently addressable scripted type in an unused slot
 - **M0.6G/H** gameplay-map LZBeam relocation and one-tile authored edit
-- **M0.6I/J/K** placement replacement, insertion and mixed-stride descriptor regeneration
-- **M0.6L** declarative scene-object compiler
+- **M0.6I/J/K/L** placement replacement/insertion, mixed-stride descriptor regeneration and declarative scene-object compiler
 - **M0.6M** new scripted class placed directly into a persistent level stream
-- **M0.6O and subsequent runtime probes** proved that the recovered type/placement path can execute under BlastEm and that inserted/synthetic objects can be observed at runtime
+- later M0.6 runtime probes proved the recovered type/placement path can execute under BlastEm
 
 Runtime extension milestones:
 
-- **M0.7 — COMPLETE:** deterministic BlastEm runtime harness plus a new input-driven player sprint extension. Y activates a new code path, larger movement and a separately addressable animation row; frame-level comparison proves the extension executes and cleanly falls back when inactive.
-- **M0.8 — COMPLETE:** ROM expansion to 4 MiB plus runtime-visible authored avatar sprite bytes routed through the recovered renderer/cache/VRAM path. The authored pixels affect only the avatar during Y and return to exact gameplay equivalence when Y is released.
+- **M0.7 — COMPLETE:** deterministic BlastEm runtime harness plus held-Y sprint extension with measured movement change and clean inactive fallback.
+- **M0.8 — COMPLETE:** ROM expansion to 4 MiB plus runtime-visible authored avatar bytes routed through renderer/cache/VRAM/SAT during sprint only.
 
-Current production direction:
+Active authoring milestones:
 
-- replace diagnostic authored pixels with a proper Quaid source-asset compiler and coherent animation;
-- keep strengthening scene/entity authoring and runtime regression coverage;
-- continue unresolved semantic classification and mission/collision scripting recovery in parallel.
+- **M0.9 — ACTIVE / integration-in-progress:** multi-frame sprite compiler, global chunk deduplication, pixel-exact retail round-trip and runtime-stable four-phase authored-pixel path proven. Native `FDDC`-driven authored sequence integration remains open.
+- **M0.10 — ACTIVE:** **M0.10A COMPLETE and runtime-confirmed**. Scene-0 world spatial/collision resource can be relocated to expanded ROM with 13/13 pixel-identical gameplay screenshots. **M0.10B** is the next controlled material/type edit.
+
+The first Total Recall vertical slice has not started.
+
+## Active technical branch
+
+Primary continuation branch: `m0.6c-level-stream`.
+
+Checkpoint before documentation reconciliation: `0f6a97a2f2cf0d6525da7696f8469f84565e92d2` (`Document M10A world collision relocation proof`).
+
+The historical sprint branch `m0.7-sprint-runtime` remains a proof branch, not the active continuation point.
 
 ## Runtime harness — CONFIRMED
 
-A debug-capable BlastEm build is installed in the analysis environment and controlled through its Unix socket / deterministic frame scripts. The harness can:
+A debug-capable BlastEm build is controlled through deterministic frame scripts. The harness can:
 
-- boot the canonical or generated ROM;
-- navigate title/briefing flow at fixed frame numbers;
+- boot canonical or generated ROMs;
+- navigate title/briefing flow at fixed frames;
 - inject six-button input;
 - capture screenshots at absolute frames;
-- run at the configured 400% speed slot for fast regression;
-- compare gameplay pixels against the correct parent build.
+- compare gameplay-region pixels against the correct logical parent build;
+- run at accelerated emulator speed for regression.
 
-Representative deterministic navigation:
+Representative validated sequence:
 
 ```text
 930   Start
@@ -73,7 +80,7 @@ Representative deterministic navigation:
 2142  Y + Left up
 ```
 
-The harness distinguishes gameplay-region equivalence from small timing noise in non-gameplay/HUD rows.
+Runtime regression is now mandatory for behavior/presentation/collision authoring claims.
 
 ## Player control — CONFIRMED / HIGH CONFIDENCE
 
@@ -84,40 +91,36 @@ Normalized input globals:
 - `F6EE` newly pressed edges — CONFIRMED
 - `F6F0` held overlap — CONFIRMED
 
-The player-control system is layered rather than a single enum:
+The player-control system is layered:
 
 ```text
 normalized input
 + FB7C action/state bits
 + FB7E context/overlay bits
-+ per-frame event routing
-+ synchronized avatar/proxy entity pair
++ event routing
++ synchronized avatar/proxy pair
 ```
 
-The player is represented by two linked entities:
+Player representation:
 
 - world/render avatar via `F9F8` — HIGH CONFIDENCE
 - control/collision proxy via `FB6E` — HIGH CONFIDENCE
 
-Observed runtime addresses in the validated gameplay path included avatar `0xFFC632` and proxy `0xFFC6A4`.
-
-Roll, roll-fire, Lock overlay, weapon cycling and post-hit protection have mapped static seams. The Y sprint proof deliberately uses an unused six-button input and does not replace an existing retail action.
-
-See `docs/PLAYER_SYSTEM.md` and `docs/M07_RUNTIME_SPRINT.md`.
+M0.7 deliberately uses an unused six-button input rather than replacing a retail action.
 
 ## Generic entity architecture — CONFIRMED
 
-Shared per-object seams:
+Shared seams:
 
-- `object+0x34`: entity↔entity interaction callback — HIGH CONFIDENCE
-- `object+0x38`: entity↔world/structure collision callback — HIGH CONFIDENCE
-- `object+0x50`: 8-way facing `0..7` — CONFIRMED
-- `object+0x2A`: archetype/stat identity — CONFIRMED
-- `object+0x2C`: animation descriptor pointer — CONFIRMED
+- `object+0x34` entity↔entity interaction callback — HIGH CONFIDENCE
+- `object+0x38` entity↔world/structure collision callback — HIGH CONFIDENCE
+- `object+0x50` 8-way facing `0..7` — CONFIRMED
+- `object+0x2A` archetype/stat identity — CONFIRMED
+- `object+0x2C` animation descriptor pointer — CONFIRMED
 
 Generic pool:
 
-- record size `0x72` bytes
+- record size `0x72`
 - 35 records
 - pool base `FFFFF9FE`
 - free-list head `FFFFF9FC`
@@ -128,11 +131,11 @@ Generic pool:
 - destroy/free `0x00F8F8`
 - active-list insertion `0x00FA40`
 
-The 35-slot pool is a real Total Recall design budget; retail retention geometry can approach the full pool.
+The 35-slot pool is a real Total Recall design budget.
 
 ## Weapons — CONFIRMED
 
-`FFFFFB8C` is an even-offset selector and `FFFFFB8E` is the ownership mask.
+`FFFFFB8C` is the even-offset selector and `FFFFFB8E` the ownership mask.
 
 | FB8C | Weapon | Own bit | Ammo | Handler |
 |---:|---|---:|---|---|
@@ -143,96 +146,66 @@ The 35-slot pool is a real Total Recall design budget; retail retention geometry
 | 8 | Mine | `0x10` | `FFFFFB78` | `0x00914A` |
 | 10 | Flamethrower | `0x20` | `FFFFFB7A` | `0x008E1C` |
 
-The weapon system is table-driven and remains a major future Total Recall extension seam.
-
 ## Persistent scene-object stream — CONFIRMED / AUTHORABLE
 
 All 19 retail scenes parse structurally.
 
-- total placements: **2,449**
-- placed `type_id`s: **128**
-- 6-byte records: **1,689**
-- 8-byte records: **760**
-- stream is Y-sorted and spatially materialized
-- descriptor contains count, decoded offsets, compressed source and `(stride, quantity)` runs
+- 2,449 placements
+- 128 placed `type_id`s
+- 1,689 six-byte records
+- 760 eight-byte records
+- Y-sorted spatial materialization
+- descriptor contains count, decoded offsets, compressed source and `(stride,quantity)` runs
 
-The project can now reproducibly:
-
-- decode a scene object stream;
-- replace/remove/add placements;
-- insert both 6-byte and 8-byte records;
-- regenerate mixed-stride runs;
-- LZBeam-encode the result;
-- relocate descriptor + stream;
-- patch scene pointers;
-- repair checksum;
-- re-decode and verify the generated ROM.
-
-M0.6M additionally combines a synthetic scripted class with a newly inserted persistent placement.
+The project can reproducibly decode, replace/remove/add, regenerate mixed strides, LZBeam-encode, relocate, patch scene pointers, repair checksum and reparse generated scenes.
 
 ## Object VM — CONFIRMED / AUTHORABLE
 
-Most object behavior is data-driven through a 72-opcode VM:
+Most behavior uses a 72-opcode VM:
 
 - dispatcher `0x011934`
 - opcode table `0x011814–0x011933`
 - representation selector `0x07A33C`
 - type pointer table `0x07953E`
 
-The assembler/disassembler round-trip covers 136 scripted IDs, 27,818 reachable instruction addresses and all 53 opcodes used by retail scripts, with exact re-encoding of reachable code.
+Assembler/disassembler round-trip covers 136 scripted IDs and 27,818 reachable instruction addresses, with exact re-encoding of all retail-reached opcodes.
 
-This makes object behavior source-representable rather than opaque binary data.
+## Semantic catalog / spawn graph — PARTIAL BUT PRODUCTION-USEFUL
 
-## Semantic catalog / spawn graph — PARTIALLY RECOVERED
+Structural coverage: all 128 placed IDs / 2,449 placements.
 
-The machine-readable catalog structurally covers all 128 placed IDs / 2,449 placements.
+Persisted semantic state:
 
-Current persisted semantic coverage includes:
+- 58 explicitly named identities from mechanical/direct evidence;
+- 37 IDs intentionally unresolved at broad authoring-class level rather than guessed from graphics;
+- pickups, objective items, doors, controllers, civilians, ranged actors, spread actors, hazards/destructibles, vehicle/loot props and bosses separated mechanically.
 
-- 58 explicitly named identities from direct/mechanical evidence;
-- pickups, objective items, keys/passcards, doors, controllers, civilians, shooters, hazards/destructibles, vehicle/loot props and bosses;
-- 37 IDs intentionally unresolved at broad authoring-class level rather than guessed from graphics.
+Constant spawn graph:
 
-The constant spawn graph currently contains:
-
-- 58 parent types with proven children;
-- 79 unique parent→child edges;
-- 42 runtime-only child types.
-
-Examples:
-
-- supply crate `113` → health `54` / shotgun ammo `68`
-- standard ranged actors → projectile `170`
-- spread actors → projectile `175`
-- boss-class `104` → projectile `225`
-- truck `46` → shared destruction child/effect `227`
-
-Policy remains: appearance alone does not freeze semantic names.
+- 58 parent types with proven children
+- 79 unique parent→child edges
+- 42 runtime-only child types
 
 ## Gameplay map / LZBeam authoring — CONFIRMED
 
-Beam LZBeam decoding and deterministic encoding are both implemented.
+LZBeam decoding and deterministic encoding are implemented.
 
-Gameplay maps have proven two-layer 16-bit tilemap packages; examples include `107×45` and `50×39` maps.
-
-M0.6G/H prove the inverse path:
+M0.6G/H prove:
 
 ```text
 retail map
 → decode
-→ controlled edit/no-op
+→ controlled no-op/edit
 → encode
 → relocate
-→ patch pointer
+→ pointer patch
 → checksum
 → exact re-decode
 ```
 
-M0.6H changes exactly one decoded tile word while preserving every other map word.
-
 ## Animation / sprite renderer — CONFIRMED and runtime-authorable
 
-Animation mappings resolve into variable-size records made of fixed 4-byte pieces:
+Mapping pieces are 4 bytes:
 
 ```text
 byte x_offset
@@ -240,7 +213,7 @@ byte y_offset
 word graphics/flip id
 ```
 
-Each piece renders as one fixed **16×16** Genesis sprite chunk = 128 bytes = four 8×8 tiles.
+Each piece renders one fixed **16×16** chunk = 128 bytes = four Genesis tiles.
 
 Piece word:
 
@@ -251,36 +224,13 @@ Piece word:
 
 The renderer uses a dynamic VRAM chunk cache keyed by `piece_word & 0x3FFF`.
 
-Critical retail seam near `0x01143C`:
+### M0.8 runtime authored graphics — COMPLETE
 
-```text
-MOVEA.L 0x2C(A6),A0
-MOVE.L  0x02(A0,D1.W),D1
-```
-
-This identifies `A6` as the render entity and `A0` as the active descriptor used for graphics-source resolution.
-
-### M0.8 runtime authored graphics — CONFIRMED
-
-The runtime build expands the ROM to 4 MiB and places an authored raw chunk bank at `0x210000`.
-
-A scoped alternate cache namespace (`0x3F00 | chunk_index`) prevents old retail VRAM-cache entries from masking changed source bytes.
-
-Differential descriptor sweep identified `0x0F0000` as the avatar descriptor for the validated sprint path:
-
-- frame 2098 before Y: **0 gameplay pixels different**
-- frames 2102–2140 with Y active: **206–360 gameplay pixels different per sampled frame**, localized to an avatar-sized ~32×32 moving region
-- frame 2144 after Y release: **0 gameplay pixels different**
-
-Other tested descriptors behaved differently:
-
-- `0x0CA38C`: no gameplay difference
-- `0x0F6FD4`: changes a separate small moving object, not the avatar
+The 4 MiB runtime build proves authored avatar bytes can replace the active sprint presentation only while Y is active, with exact gameplay convergence after Y release.
 
 Audited build:
 
 ```text
-base SHA-1   d39174bed46ede85531b86df7ba49123ce2f8411
 output SHA-1 a540621010aa529fc2371f6c7f433f6fa1cafbac
 ROM size      4,194,304
 checksum      0x934F
@@ -288,17 +238,115 @@ raw bank      0x210000
 avatar desc   0x0F0000
 ```
 
-See `docs/M08_RUNTIME_AUTHORED_GRAPHICS.md`, `tools/build/m08_runtime_authored_sprint_pixels.py` and `extracted_metadata/m08_runtime_authored_sprint.json`.
+## M0.9 sprite sequence authoring — ACTIVE
+
+`tools/build/sprite_sequence_compiler.py` supports multiple source frames and emits:
+
+- one shared raw 16×16 chunk bank;
+- one mapping record per frame;
+- global cross-frame chunk deduplication;
+- cost/working-set manifest.
+
+Pixel-exact retail round-trip proof on four player frames:
+
+```text
+frames                    4
+global unique chunks      6
+chunk bytes               768
+max per-frame working set 2
+piece count per frame     2
+```
+
+### M09B2 — runtime-confirmed multi-phase authored pixels
+
+M09B2 retains retail mapping/geometry and selects among four authored banks while Y is held. Separate cache namespaces prevent stale retail/phase data from masking new bytes.
+
+Regression against M07C:
+
+- pre-Y frame 2098: 0 gameplay-region pixel difference
+- active frames 2102–2140: avatar-local non-zero authored differences
+- maximum active difference box ~30×17 px
+- post-Y frame 2144: 0 gameplay-region difference
+
+This proves time-varying authored player pixels can execute stably.
+
+### M0.9 remaining gate
+
+Do **not** replace the player control/proxy descriptor wholesale. M09A showed that full descriptor replacement can cause world/camera divergence.
+
+Next proof: **M0.9C** — integrate authored mapping/chunk sequence through native `FDDC` progression while preserving retail player descriptor/control semantics.
+
+## M0.10 world collision authoring — ACTIVE
+
+### M0.10A — runtime-confirmed relocation
+
+Scene-0 world spatial resource:
+
+```text
+scene record  0x013B9A
+field         scene+0x0E
+retail base   0x07A42E
+next base     0x07C7EB
+length        0x23BE = 9,150 bytes
+relocated to  0x230000
+```
+
+Only `scene+0x0E` is redirected; retail bytes remain untouched.
+
+Audited build:
+
+```text
+output SHA-1 38f586b8478487a1662326054764bbe6f3631ce7
+ROM size     4,194,304
+checksum     0x16C5
+```
+
+Runtime comparison at frames 2098, 2102, 2106, 2110, 2114, 2118, 2122, 2126, 2130, 2134, 2138, 2140 and 2144 is **13/13 pixel-identical**.
+
+This proves `scene+0x0E` is a safe runtime relocation seam.
+
+Base world record layout — CONFIRMED:
+
+```text
++0x00 word world_type
++0x02 word x_min
++0x04 word y_min
++0x06 word x_max
++0x08 word y_max
+```
+
+Coordinates are world pixels.
+
+### Broadphase constraint
+
+The dense 64×64 grid is not a trivial rasterization of record rectangles. Retail overlap/priority pruning is not fully recovered. Therefore full grid regeneration is **not authorized**.
+
+### M0.10B next proof
+
+Change one existing world record:
+
+```text
+world_type 9 → 10
+```
+
+while preserving geometry and current grid membership.
+
+Expected isolation:
+
+- player collision remains normal;
+- projectile collision differs/pass-through behavior changes.
+
+Runtime proof must demonstrate the semantic projectile change without player locomotion regression.
 
 ## Audio
 
-Maxmus `T Bardo 1993 V2.1a` is confirmed. The exact 68000↔Z80 command API, sequence encoding and authoring path remain unresolved.
+Maxmus `T Bardo 1993 V2.1a` is confirmed. Exact 68000↔Z80 command API, sequence encoding and production authoring path remain unresolved.
 
 ## Highest-value next work
 
-1. Replace M0.8 diagnostic pixel mutations with a proper **Quaid source-asset compiler**: image/sprite-sheet → 16×16 pieces → deduplicated chunks → group/index IDs → mapping records → animation row.
-2. Build one coherent new Quaid animation (not just a diagnostic frame mutation) and validate it under the same Y-state runtime harness.
-3. Measure VRAM-cache pressure and sprite-per-line cost for the authored animation.
-4. Extend the scene authoring schema to collision/material/objective-script layers that are still unresolved.
-5. Continue semantic classification of the remaining unresolved placement IDs using mechanical/runtime evidence.
-6. Begin the first Total Recall vertical-slice environment only after the player-art pipeline is deterministic and regression-protected.
+1. **M0.10B** controlled world material/type edit with runtime validation.
+2. **M0.9C** native authored player sequence integration through `FDDC`.
+3. Promote proof pixels into a deterministic Quaid source-art compiler and coherent original animation.
+4. Add VRAM-cache/sprite-per-line budget assertions to production art builds.
+5. Continue collision/material/objective-script recovery and unresolved semantic classification only where it advances authoring.
+6. Start the Total Recall vertical slice only after the player-art and collision seams are deterministic and regression-protected.
