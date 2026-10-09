@@ -36,3 +36,29 @@ jobs:
             tests.test_m09c_visual_roundtrip_static \
             tests.test_m09c_canonical_gate_static \
             tests.test_m09c_animation_state_trace_static
+
+  blastem-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+      - name: Download verified BlastEm
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://github.com/ulalume/blastem/releases/download/build-6e5677969b59/blastem-linux-x86_64-1.0.0-6e5677969b59.tar.gz'
+          curl -L --fail --retry 3 "$url" -o blastem.tar.gz
+          echo 'd81020d16e8cebb8c1946c0f36a6205c1ce7c5a682a1db922d973187418431df  blastem.tar.gz' | sha256sum -c -
+          mkdir blastem
+          tar -xzf blastem.tar.gz -C blastem
+          chmod +x blastem/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem
+      - name: Run debugger/control-socket integration test
+        env:
+          BLASTEM_BIN: ${{ github.workspace }}/blastem/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem
+        run: python -m unittest -v tests.test_m09c_blastem_debugger_integration
