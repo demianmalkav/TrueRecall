@@ -1,0 +1,42 @@
+{
+  "schema": "truerecall.m09b2.runtime_regression.v1",
+  "baseline": "M07C_sprint_new_anim_row",
+  "candidate": "M09B2_vblank_sequence",
+  "gameplay_height": 224,
+  "frames": [
+    {"frame": 2098, "total_different_pixels": 20, "gameplay_different_pixels": 0, "gameplay_bbox": null, "gameplay_bbox_width": 0, "gameplay_bbox_height": 0},
+    {"frame": 2102, "total_different_pixels": 215, "gameplay_different_pixels": 200, "gameplay_bbox": [125,110,155,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 16},
+    {"frame": 2104, "total_different_pixels": 203, "gameplay_different_pixels": 199, "gameplay_bbox": [119,110,149,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 16},
+    {"frame": 2106, "total_different_pixels": 216, "gameplay_different_pixels": 190, "gameplay_bbox": [113,110,142,126], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2108, "total_different_pixels": 224, "gameplay_different_pixels": 204, "gameplay_bbox": [109,109,138,124], "gameplay_bbox_width": 29, "gameplay_bbox_height": 15},
+    {"frame": 2110, "total_different_pixels": 222, "gameplay_different_pixels": 210, "gameplay_bbox": [107,109,136,124], "gameplay_bbox_width": 29, "gameplay_bbox_height": 15},
+    {"frame": 2112, "total_different_pixels": 226, "gameplay_different_pixels": 211, "gameplay_bbox": [105,109,134,124], "gameplay_bbox_width": 29, "gameplay_bbox_height": 15},
+    {"frame": 2114, "total_different_pixels": 204, "gameplay_different_pixels": 184, "gameplay_bbox": [103,109,132,123], "gameplay_bbox_width": 29, "gameplay_bbox_height": 14},
+    {"frame": 2116, "total_different_pixels": 210, "gameplay_different_pixels": 184, "gameplay_bbox": [101,109,130,123], "gameplay_bbox_width": 29, "gameplay_bbox_height": 14},
+    {"frame": 2118, "total_different_pixels": 206, "gameplay_different_pixels": 190, "gameplay_bbox": [98,109,128,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 17},
+    {"frame": 2120, "total_different_pixels": 207, "gameplay_different_pixels": 189, "gameplay_bbox": [101,109,131,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 17},
+    {"frame": 2122, "total_different_pixels": 202, "gameplay_different_pixels": 176, "gameplay_bbox": [105,109,134,126], "gameplay_bbox_width": 29, "gameplay_bbox_height": 17},
+    {"frame": 2124, "total_different_pixels": 216, "gameplay_different_pixels": 195, "gameplay_bbox": [110,109,139,125], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2126, "total_different_pixels": 231, "gameplay_different_pixels": 205, "gameplay_bbox": [111,109,140,125], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2128, "total_different_pixels": 215, "gameplay_different_pixels": 205, "gameplay_bbox": [111,109,140,125], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2130, "total_different_pixels": 227, "gameplay_different_pixels": 201, "gameplay_bbox": [112,110,141,126], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2132, "total_different_pixels": 222, "gameplay_different_pixels": 201, "gameplay_bbox": [112,110,141,126], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2134, "total_different_pixels": 224, "gameplay_different_pixels": 198, "gameplay_bbox": [113,110,143,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 16},
+    {"frame": 2136, "total_different_pixels": 224, "gameplay_different_pixels": 198, "gameplay_bbox": [113,110,143,126], "gameplay_bbox_width": 30, "gameplay_bbox_height": 16},
+    {"frame": 2138, "total_different_pixels": 203, "gameplay_different_pixels": 188, "gameplay_bbox": [113,110,142,126], "gameplay_bbox_width": 29, "gameplay_bbox_height": 16},
+    {"frame": 2140, "total_different_pixels": 225, "gameplay_different_pixels": 205, "gameplay_bbox": [111,109,140,124], "gameplay_bbox_width": 29, "gameplay_bbox_height": 15},
+    {"frame": 2144, "total_different_pixels": 2, "gameplay_different_pixels": 0, "gameplay_bbox": null, "gameplay_bbox_width": 0, "gameplay_bbox_height": 0}
+  ],
+  "assertions": {
+    "pre_trigger_gameplay_equivalent": true,
+    "active_frames_all_nonzero": true,
+    "active_bbox_max_width": 30,
+    "active_bbox_max_height": 17,
+    "post_trigger_gameplay_equivalent": true
+  },
+  "notes": [
+    "Frames 2098 and 2144 have zero gameplay-region differences versus M07C.",
+    "All sampled active frames 2102..2140 differ only inside an avatar-sized gameplay bounding box.",
+    "Bottom non-gameplay/HUD rows can show a few timing/raster pixels and are excluded from gameplay equivalence assertions."
+  ]
+}
