@@ -1,0 +1,63 @@
+{
+  "schema": "truerecall.m09c.canonical_phase_bridge.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "evidence_scope": "canonical_rom_runtime_trace",
+  "player_links": {
+    "world_render_avatar_global": "0xFFF9F8",
+    "world_render_avatar_pointer": "0xFFFFC632",
+    "control_proxy_global": "0xFFFB6E",
+    "control_proxy_pointer": "0xFFFFC7FA",
+    "global_pointer_width": 16,
+    "pointer_semantics": "signed MOVEA.W-style RAM pointer"
+  },
+  "world_render_avatar": {
+    "archetype_id": 139,
+    "descriptor": "0x0A0000",
+    "descriptor_changed_during_trace": false,
+    "pre_trace": {
+      "animation_base_1c": "0x05E6",
+      "animation_current_1e": "0x05E6",
+      "mapping_record_20": "0x0D6E",
+      "state_22": "0x0D6E",
+      "encoded_entry_24": "0x309E",
+      "facing_50": 4
+    }
+  },
+  "sprint_sequence": {
+    "selection_writer_pcs": {
+      "base_1c": "0x00FDE0",
+      "current_1e": "0x00FDE4",
+      "encoded_entry_24": "0x00FDF8",
+      "mapping_record_20": "0x00FE04"
+    },
+    "selected_base_1c": "0x08B6",
+    "native_bridge_writer_pcs": {
+      "current_1e": "0x009D72",
+      "encoded_entry_24": "0x009D7E",
+      "mapping_record_20": "0x009D88",
+      "state_22_mirror": "0x011284"
+    },
+    "phase_count": 6,
+    "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
+    "current_1e_cycle": ["0x08B6", "0x08B8", "0x08BA", "0x08BC", "0x08BE", "0x08C0"],
+    "mapping_record_cycle": ["0x2C08", "0x2C24", "0x2C44", "0x2C64", "0x2C80", "0x2CA0"],
+    "encoded_entry_cycle": ["0x02AC", "0x02AE", "0x02B0", "0x02B2", "0x02B4", "0x32B6"],
+    "observed_bridge_frames": [2107, 2112, 2117, 2123, 2128, 2133, 2139],
+    "wrap_observed": true
+  },
+  "field_event_counts": {
+    "animation_state_1c": 1,
+    "animation_state_1e": 8,
+    "mapping_record_offset": 8,
+    "animation_state_22": 8,
+    "encoded_animation_entry": 8,
+    "descriptor_pointer": 0
+  },
+  "interpretation": {
+    "phase_transfer": "0x009D5E transfers proxy phase delta into the linked F9F8 avatar and resolves +0x24/+0x20 through the avatar's own descriptor",
+    "state_22": "mirrors the resolved mapping record in the observed trace; timer semantics are not assigned",
+    "falsified_hypothesis": "JLLBFR selectors do not need to resolve through 0x0F0000 for the F9F8 world/render avatar",
+    "m08_reclassification": "0x0F0000 remains proven player-local visual evidence but is not F9F8 identity in this canonical path"
+  },
+  "runtime_validation": "canonical True Lies (World) ROM, BlastEm debugger/watchpoint trace"
+}
