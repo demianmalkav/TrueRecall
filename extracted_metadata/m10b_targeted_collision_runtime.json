@@ -1,0 +1,58 @@
+{
+  "schema": "truerecall.m10b.targeted_collision_runtime.v1",
+  "canonical_base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "runtime_baseline": {
+    "milestone": "M10A",
+    "sha1": "38f586b8478487a1662326054764bbe6f3631ce7",
+    "note": "Same 4 MiB ROM and byte-identical relocated scene-0 world resource as M10B; isolates the selected world_type word as the semantic variable."
+  },
+  "profiles": {
+    "player": {
+      "patch_sha1": "80d9f2fc07d222af5d68f078de15271d27c8d66a",
+      "checksum": "0x16C7",
+      "record_offset": "0x1C46",
+      "record_address": "0x231C46",
+      "geometry_xyxy": [736, 544, 752, 800],
+      "world_type_before": 9,
+      "world_type_after": 11,
+      "input": "hold Left from frame 2100 through 2280",
+      "binary_differences_vs_M10A": [
+        {"offset": "0x00018F", "before": 197, "after": 199, "meaning": "checksum low byte"},
+        {"offset": "0x231C47", "before": 9, "after": 11, "meaning": "world_type low byte"}
+      ],
+      "runtime_result": "Harry crosses the blocking record and reaches the west side; M10A remains blocked.",
+      "frames": [
+        {"frame": 2098, "different_pixels": 370, "diff_bbox_xyxy": [183,128,208,165]},
+        {"frame": 2120, "different_pixels": 610, "diff_bbox_xyxy": [104,124,223,235]},
+        {"frame": 2160, "different_pixels": 558, "diff_bbox_xyxy": [104,120,242,235]},
+        {"frame": 2200, "different_pixels": 923, "diff_bbox_xyxy": [173,124,245,163]},
+        {"frame": 2240, "different_pixels": 959, "diff_bbox_xyxy": [100,122,241,235]},
+        {"frame": 2280, "different_pixels": 918, "diff_bbox_xyxy": [100,114,242,235]}
+      ]
+    },
+    "projectile": {
+      "patch_sha1": "b64de77121fc80fd6e4c3389f27d26bfb0843b58",
+      "checksum": "0x16C6",
+      "record_offset": "0x1C6E",
+      "record_address": "0x231C6E",
+      "geometry_xyxy": [464, 496, 784, 544],
+      "world_type_before": 9,
+      "world_type_after": 10,
+      "input": "tap Up at frames 2100..2104 then fire B at frames 2120..2124",
+      "binary_differences_vs_M10A": [
+        {"offset": "0x00018F", "before": 197, "after": 198, "meaning": "checksum low byte"},
+        {"offset": "0x231C6F", "before": 9, "after": 10, "meaning": "world_type low byte"}
+      ],
+      "runtime_result": "The baseline impact flash is present after firing while the type-10 build removes/changes that projectile collision presentation; player collision remains on the standard type-10 player handler.",
+      "frames": [
+        {"frame": 2130, "different_pixels": 0, "diff_bbox_xyxy": null},
+        {"frame": 2134, "different_pixels": 56, "diff_bbox_xyxy": [100,78,199,235]},
+        {"frame": 2138, "different_pixels": 64, "diff_bbox_xyxy": [130,83,183,235]},
+        {"frame": 2142, "different_pixels": 26, "diff_bbox_xyxy": [104,234,197,235]},
+        {"frame": 2146, "different_pixels": 28, "diff_bbox_xyxy": [106,30,197,235]},
+        {"frame": 2150, "different_pixels": 2, "diff_bbox_xyxy": [135,14,136,16]}
+      ]
+    }
+  },
+  "policy": "Screenshots are not committed. The repository stores only non-copyrightable runtime measurements and hashes."
+}
