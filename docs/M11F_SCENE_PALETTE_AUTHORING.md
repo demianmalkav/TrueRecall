@@ -1,6 +1,6 @@
 # M0.11F — Gameplay Scene Palette Authoring
 
-Status: **IMPLEMENTED / CANONICAL EXECUTION PENDING**
+Status: **STATICALLY VALIDATED / CANONICAL EXECUTION PENDING**
 
 M11F isolates gameplay-scene palette authoring from the M11D canonical scene-source schema so M11D fingerprints remain stable while palette editing is proven independently.
 
@@ -82,6 +82,37 @@ Default allocation is `0x300000`, aligned to `0x10`.
 
 The original palette remains immutable in the retail half of the ROM.
 
+## Static validation — COMPLETE
+
+`tests/test_scene_palette_static.py` exercises the compiler without copyrighted ROM bytes.
+
+The current static suite passes **7/7** checks:
+
+- valid CRAM words accepted;
+- invalid low-bit CRAM word rejected;
+- invalid high-bit CRAM word rejected;
+- exact 64-word length enforced;
+- non-integer colors rejected;
+- expanded-ROM alignment contract verified;
+- synthetic 2 MiB ROM end-to-end test.
+
+The synthetic end-to-end case constructs a minimal scene table and retail CRAM image, temporarily binds the compiler's canonical hash gate to that synthetic fixture, and verifies:
+
+```text
+export
+→ exact no-op compile
+→ one-color edit
+→ 4 MiB expansion
+→ CRAM relocation to 0x300000
+→ both scene palette pointers patched
+→ authored color reparsed
+→ Genesis checksum repaired
+```
+
+`py_compile` also passes for the M11F compiler and static test module.
+
+This is strong evidence for compiler mechanics, but it is deliberately classified as **static/synthetic**, not canonical-ROM or runtime confirmation.
+
 ## Regression probe
 
 `tools/rom_probe/scene_palette_probe.py` defines the M11F canonical gate.
@@ -114,9 +145,9 @@ M11F therefore proves palette authoring independently first.
 
 After canonical execution, the correct integration path is a versioned scene source (`scene_source.v2` or equivalent) whose source-level palette data lowers into the already-proven M11F palette compiler. M11D/v1 remains readable and regression-testable rather than being silently redefined.
 
-## Execution status
+## Canonical execution status
 
-The implementation is source-controlled but **not yet CONFIRMED** because the current runtime cannot materialize the canonical `True Lies (World)` ROM bytes from Library. The ROM registration remains visible at exactly 2,097,152 bytes, but raw-byte access is denied in this session.
+Canonical execution remains pending because the current runtime cannot materialize the canonical `True Lies (World)` ROM bytes from Library. The ROM registration remains visible at exactly 2,097,152 bytes, but raw-byte access is denied in this session.
 
 No output SHA-1, checksum or all-scene palette fingerprints should be promoted until `scene_palette_probe.py` actually runs against SHA-1:
 
