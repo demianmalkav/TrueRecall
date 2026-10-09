@@ -1,19 +1,22 @@
 # M0.9C — Native Animation Progression Trace
 
-Status: **TRACE/ANALYSIS PIPELINE IMPLEMENTED / CANONICAL ROM EXECUTION PENDING**
+Status: **HISTORICAL / SUPERSEDED BY CANONICAL RUNTIME EVIDENCE**
 
-This sub-gate addresses the remaining M09C ambiguity after selector resolution was recovered: what actually advances the selected player's mapping record over time.
+This document preserves the provenance of the first M09C progression-tracing approach. It is **not** a current promotion gate and its former classification rules must not be used to design or validate the active M09C build.
 
-## Why this gate exists
+Current authoritative M09C model:
 
-`0x00FDDC` is a selector resolver, not by itself a multi-frame sequencer. Its confirmed core writes:
+- `docs/PROJECT_STATE.md`
+- `docs/M09C_NATIVE_SEQUENCE_SEAM.md`
+- `extracted_metadata/m09c_canonical_phase_bridge.json`
+- `tools/runtime/m09c_animation_state_trace_v2.py`
+- `tools/rom_probe/m09c_phase_bridge_analysis.py`
 
-```text
-object+0x24  encoded animation entry
-object+0x20  mapping-record offset
-```
+## What this historical gate tried to answer
 
-The archetype setter also clears a nearby animation-state cluster:
+The original question was valid: after `0x00FDDC` resolves animation state, what actually advances the player mapping record over time?
+
+The first tracer watched the player-linked state cluster around:
 
 ```text
 object+0x1C
@@ -21,183 +24,109 @@ object+0x1E
 object+0x20
 object+0x22
 object+0x24
+object+0x2C
 ```
 
-The 16-byte mapping record begins with three unresolved control words at `+0x00/+0x02/+0x04` before origin/clip/flags/piece-count data.
+It combined deterministic BlastEm absolute-frame input, PTY debugger control and write watchpoints.
 
-M09C must therefore observe the retail runtime relationship among `+0x20`, `+0x22`, `+0x24` and the mapping-record control words before assigning timer/next-frame semantics or designing an authored hook.
+That harness concept remains useful. Two interpretations inside the v1 implementation did not survive canonical runtime verification.
 
-## Restored BlastEm automation path
+## Falsified v1 assumption 1 — pointer reconstruction
 
-The pinned BlastEm build contains two facilities that can be combined deterministically:
+The v1 tracer reconstructed F9F8/FB6E as if adjacent 16-bit words were halves of 32-bit pointers.
 
-1. `BLASTEM_CTRL_SOCK` control socket;
-2. the interactive 68K debugger.
-
-The control socket accepts:
+That produced values such as:
 
 ```text
-script <absolute-path>
+0xC6320000
+0xC7FA000F
 ```
 
-and loads the existing KIT absolute-frame script format used by prior runtime milestones:
+Canonical retail code and runtime evidence show instead that the globals are loaded with `MOVEA.W` and each contains a signed 16-bit RAM pointer:
 
 ```text
-930 down 1 start
-932 up 1 start
-...
-2100 down 1 left
-2100 down 1 y
-2142 up 1 y
-2142 up 1 left
+FFFFF9F8 -> FFFFC632
+FFFFFB6E -> FFFFC7FA
 ```
 
-Crucially, the script can be queued while the debugger is paused at reset. A subsequent debugger command:
+Therefore v1 reconstructed 32-bit values are tooling artifacts and must never be cited as engine identity evidence.
+
+## Falsified v1 assumption 2 — every +0x24 write means reselection
+
+The old analyzer used a rule equivalent to:
 
 ```text
-frames N
++0x24 write = external selection/reselection
 ```
 
-resumes emulation for an exact number of video frames; during that run the queued KIT script is loaded and applies its absolute-frame actions.
+Canonical runtime evidence recovered the linked-object bridge at `0x009D5E` and disproved that rule.
 
-This allows frame-deterministic input and debugger watchpoints to coexist without wall-clock timing.
-
-## Runtime tracer
-
-`tools/runtime/m09c_animation_state_trace.py` implements that combined harness.
-
-Execution flow:
+Observed native transaction:
 
 ```text
-verify canonical ROM SHA-1
-→ launch pinned BlastEm under PTY debugger
-→ connect BLASTEM_CTRL_SOCK
-→ queue KIT navigation/sprint script
-→ frames 2099
-→ read FFFFF9F8 dynamically
-→ read FFFFFB6E dynamically
-→ snapshot visual actor state
-→ require object+0x2C == 0x0F0000
-→ arm animation-state watchpoints
-→ run through frame 2142
-→ snapshot on every watched write
-→ emit JSON evidence
+0x009D72  avatar +0x1E
+0x009D7E  avatar +0x24
+0x009D88  avatar +0x20
 ```
 
-The visual object address is never hard-coded. It is resolved from `FFFFF9F8` after gameplay is initialized.
+The `+0x24` write here is part of one native phase-advance transaction, not a separate external selector event.
 
-Default watched fields:
+The corrected analyzer therefore classifies the ordered writer cluster as one bridge operation.
+
+## Canonical result that closed the ambiguity
+
+During held-Y sprint, canonical F9F8 state is:
 
 ```text
-object+0x20  mapping record offset
-object+0x22  unresolved animation state
-object+0x24  encoded animation entry
-object+0x2C  descriptor pointer (invariant watch)
+object+0x2A = 139
+object+0x2C = 0x000A0000
+object+0x1C = 0x08B6
 ```
 
-`--wide-state` additionally watches `+0x1C/+0x1E`.
-
-At every hit the tracer records:
-
-- script frame marker;
-- watchpoint identity;
-- PC, A6, D0 and D1;
-- object state words `+0x1C/+0x1E/+0x20/+0x22/+0x24/+0x2A/+0x2C/+0x50`;
-- reconstructed long descriptor pointer;
-- current mapping-record address;
-- all eight words of the current 16-byte record header;
-- the VBlank counter at `FFFFF712`;
-- debugger backtrace;
-- raw watchpoint hit text.
-
-No retail pixel bytes are exported.
-
-## Frame evidence
-
-The generated KIT script places a `log trace_frame_N` action on every frame from 2099 through 2144. Watchpoint output therefore carries an absolute script-frame anchor without relying on host timing.
-
-The known navigation path remains:
+`+0x1E` cycles:
 
 ```text
-930   Start
-1320  A
-1500  A
-1680  A
-1860  A
-2040  A
-2100  Left + Y down
-2142  Y + Left up
+0x08B6 -> 0x08B8 -> 0x08BA -> 0x08BC -> 0x08BE -> 0x08C0 -> wrap
 ```
 
-Watchpoints are armed at frame 2099, before the first Y sprint frame.
-
-## Progression analyzer
-
-`tools/rom_probe/m09c_animation_progression_analysis.py` consumes the trace JSON and separates selection from progression.
-
-Evidence rules:
+Raw deltas are:
 
 ```text
-+0x24 write
-    = selection/reselection event
-
-+0x20 write
-+ encoded +0x24 value stable
-+ no intervening +0x24 watch event
-    = native mapping-record progression candidate
-
-+0x22 activity around +0x20 transitions
-    = timer/state candidate only; not yet named
-
-+0x2C write
-    = M09C descriptor-identity invariant violation
+0, 2, 4, 6, 8, 10
 ```
 
-The explicit intervening-selection rule prevents a false positive where `+0x24` is written and happens to return to the same numeric value before the next record transition.
+No `+0x2C` descriptor write occurred in the observed cycle.
 
-The analyzer groups candidate writer PCs by field and returns:
+Primary evidence: `extracted_metadata/m09c_canonical_phase_bridge.json`.
 
-- candidate progression writer PCs;
-- candidate `+0x22` writer PCs;
-- record-transition frames;
-- selection frames;
-- mapping-record header words at each transition;
-- descriptor invariant result;
-- whether native progression has actually been observed.
+## What remains valid from the historical work
 
-## Interpretation boundary
+The following engineering ideas remain part of the current harness design:
 
-Even if `+0x22` changes immediately before every `+0x20` transition, it remains only a timer/state candidate until the canonical trace proves a repeatable relationship.
+- deterministic absolute-frame KIT input;
+- debugger/control-socket coexistence;
+- dynamic actor-address resolution rather than hard-coding runtime RAM addresses;
+- write-watchpoint evidence;
+- frame-anchored runtime state capture;
+- refusal to assign timer/state semantics merely from adjacency.
 
-Likewise, mapping-record control words `+0/+2/+4` remain unnamed until their values correlate with runtime cadence, record transitions or writer code paths.
+The corrected v2 tracer preserves the useful harness while fixing the pointer and classification models.
 
-M09C must prefer measured state transitions over semantic guesses.
+## Historical tooling
 
-## Harness validation
+```text
+tools/runtime/m09c_animation_state_trace.py
+tools/rom_probe/m09c_animation_progression_analysis.py
+```
 
-ROM-independent tests cover:
+These files are retained for provenance and regression understanding. They are not current promotion gates.
 
-- KIT script construction and exact navigation inputs;
-- contiguous trace-frame markers;
-- debugger print parsing;
-- 32-bit pointer reconstruction from two 16-bit debugger reads;
-- 24-bit physical-address projection;
-- trace-frame extraction;
-- progression classification with and without intervening selector writes;
-- same-value reselection rejection;
-- descriptor-write invariant failure.
+## Do not reopen without new evidence
 
-A separate integration test launches the pinned BlastEm build against a synthetic Genesis ROM and exercises the real PTY debugger/control-socket path. The first CI attempt reached the integration stage but failed before emulator startup because Ubuntu lacked `libpulse.so.0`; the workflow now installs the required PulseAudio/ALSA/sample-rate runtime libraries and checks `ldd` for unresolved dependencies before retrying.
+The following are closed/falsified:
 
-## Canonical completion gate
+- F9F8/FB6E adjacent-word 32-bit pointer reconstruction;
+- canonical F9F8 descriptor `0x0F0000`;
+- unconditional `+0x24 write == reselection` classification.
 
-This sub-gate is complete only when the canonical True Lies ROM trace demonstrates all of the following:
-
-1. `FFFFF9F8` resolves to the expected visual actor during the tested gameplay window;
-2. `object+0x2C` begins at `0x0F0000` and receives no writes during the trace;
-3. actual writer PCs for `+0x20/+0x22/+0x24` are captured;
-4. at least one mapping-record transition can be classified as selection-driven or native progression-driven without ambiguity;
-5. mapping-record header values are correlated with those transitions;
-6. the analysis JSON is persisted before any authored native-sequence hook is designed.
-
-Only after that evidence should M09C choose whether the authored sequence can live entirely in descriptor-native state or requires a minimal progression indirection.
+A later test may reopen a closed conclusion only if it produces contradictory canonical evidence.
