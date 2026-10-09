@@ -34,7 +34,12 @@ def main():
         for i in range(n):
             p=16+i*4;x=rec[p]-15;y=rec[p+1]-15;w=int.from_bytes(rec[p+2:p+4],'big');idx=w&0xff;ch=chunks[idx*128:(idx+1)*128];canvas.paste(chunk_image(ch,bool(w&0x4000),bool(w&0x8000)),(x,y))
         assert canvas.tobytes()==orig.tobytes(),f'pixel mismatch selector {sel}'
-    assert meta['frame_count']==4 and meta['global_unique_chunks']==6 and meta['max_frame_working_set']==2 and meta['total_chunk_bytes']==768
+    assert meta['frame_count']==4
+    assert meta['global_unique_chunks']==6 and meta['total_chunk_bytes']==768
+    assert meta['max_frame_working_set']==2
+    assert meta['max_scanline_pieces']==1 and meta['max_scanline_pixels']==16
+    assert meta['max_transition_new_chunks']==2 and meta['loop_new_chunks']==2
+    assert [f['unique_chunks_in_frame'] for f in meta['frames']]==[2,2,2,2]
     print('PASS sequence compiler pixel-roundtrip selectors',SELECTORS)
     print(meta)
 if __name__=='__main__':main()
