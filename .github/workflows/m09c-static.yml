@@ -8,7 +8,11 @@ on:
       - 'tools/rom_probe/m09c_*'
       - 'tools/rom_probe/sprite_sequence_roundtrip_probe.py'
       - 'tools/runtime/m09c_*'
+      - 'tools/recovery_doctor.py'
       - 'tests/test_m09c_*'
+      - 'tests/test_recovery_doctor_static.py'
+      - 'docs/RECOVERY_MANIFEST.json'
+      - 'docs/PROJECT_STATE.md'
       - '.github/workflows/m09c-static.yml'
   workflow_dispatch:
 
@@ -22,7 +26,7 @@ jobs:
           python-version: '3.12'
       - name: Install probe dependency
         run: python -m pip install --disable-pip-version-check pillow
-      - name: Compile M09C probes, builder and runtime tracers
+      - name: Compile M09C probes, builder, runtime tracers and recovery doctor
         run: |
           python -m py_compile \
             tools/build/m09c_native_phase_pixel_sequence.py \
@@ -33,8 +37,9 @@ jobs:
             tools/rom_probe/m09c_phase_bridge_analysis.py \
             tools/rom_probe/sprite_sequence_roundtrip_probe.py \
             tools/runtime/m09c_animation_state_trace.py \
-            tools/runtime/m09c_animation_state_trace_v2.py
-      - name: Run M09C static tests
+            tools/runtime/m09c_animation_state_trace_v2.py \
+            tools/recovery_doctor.py
+      - name: Run M09C static and recovery tests
         run: |
           python -m unittest -v \
             tests.test_m09c_native_sequence_seam_static \
@@ -44,7 +49,10 @@ jobs:
             tests.test_m09c_animation_state_trace_v2_static \
             tests.test_m09c_animation_progression_analysis_static \
             tests.test_m09c_phase_bridge_analysis_static \
-            tests.test_m09c_native_phase_pixel_sequence_static
+            tests.test_m09c_native_phase_pixel_sequence_static \
+            tests.test_recovery_doctor_static
+      - name: Run recovery doctor without ROM
+        run: python tools/recovery_doctor.py
 
   blastem-harness:
     runs-on: ubuntu-latest
