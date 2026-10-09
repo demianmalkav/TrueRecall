@@ -6,7 +6,7 @@ on:
     paths:
       - 'tools/rom_probe/m09c_*'
       - 'tools/rom_probe/sprite_sequence_roundtrip_probe.py'
-      - 'tests/test_m09c_native_sequence_seam_static.py'
+      - 'tests/test_m09c_*'
       - '.github/workflows/m09c-static.yml'
   workflow_dispatch:
 
@@ -26,5 +26,8 @@ jobs:
             tools/rom_probe/m09c_native_sequence_seam_probe.py \
             tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py \
             tools/rom_probe/sprite_sequence_roundtrip_probe.py
-      - name: Run seam helper tests
-        run: python -m unittest -v tests.test_m09c_native_sequence_seam_static
+      - name: Run M09C static tests
+        run: |
+          python -m unittest -v \
+            tests.test_m09c_native_sequence_seam_static \
+            tests.test_m09c_visual_roundtrip_static
