@@ -17,6 +17,7 @@ from typing import Any
 
 from scene_compiler import (
     BASE_SHA1,
+    BASE_SIZE,
     CHECKSUM_OFFSET,
     DEFAULT_ALLOCATION_BASE,
     build as build_scene_patch_v1,
@@ -37,6 +38,14 @@ from scene_source_v2 import (
 )
 
 SCENE_RECORD_SIZE = 0x2E
+
+
+def _validate_base(raw: bytes) -> None:
+    if len(raw) != BASE_SIZE:
+        raise ValueError(f"expected 2 MiB canonical base, got {len(raw)} bytes")
+    digest = hashlib.sha1(raw).hexdigest()
+    if digest != BASE_SHA1:
+        raise ValueError(f"wrong base SHA-1: {digest}")
 
 
 def _scene_patch_is_noop(scene_patch: dict[str, Any]) -> bool:
@@ -67,6 +76,7 @@ def _next_allocation_address(
 
 
 def build_v2(raw: bytes, patch: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
+    _validate_base(raw)
     if patch.get("schema") != PATCH_SCHEMA_V2:
         raise ValueError("unsupported scene patch v2 schema")
 
@@ -93,9 +103,8 @@ def build_v2(raw: bytes, patch: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
             "runtime_validation": "pending",
         }
 
-    # M11B owns canonical base validation, ROM expansion and all existing scene
-    # resource allocations. Its report is then used as the allocation ledger for
-    # the palette extension.
+    # M11B owns ROM expansion and all existing scene resource allocations. Its
+    # report is then used as the allocation ledger for the palette extension.
     stage1_out, stage1_report = build_scene_patch_v1(raw, scene_patch)
     out = bytearray(stage1_out)
     scene = u32(raw, SCENE_TABLE + scene_index * 4)
@@ -205,6 +214,7 @@ def build_v2(raw: bytes, patch: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
 
 
 def compile_source_v2(raw: bytes, source: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
+    _validate_base(raw)
     base = export_scene_source_v2(raw, source["scene_index"])
     patch = source_v2_to_patch(base, source)
     if patch_v2_is_noop(patch):
