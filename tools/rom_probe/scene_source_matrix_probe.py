@@ -23,6 +23,44 @@ M11C_OBJECT_REPLACE_CHECKSUM = "0x575A"
 M11C_WORLD_REPLACE_SHA1 = "f0c146a285a7c065045179f6ea22d93d3c91ab4e"
 M11C_WORLD_REPLACE_CHECKSUM = "0xA53C"
 
+# Persisted M11D representative-source fingerprints. These make the wider M11E
+# matrix fail if export semantics drift even when the new probe and compiler are
+# changed together.
+M11D_EXPORT_ANCHORS = {
+    0: {
+        "bytes": 62331,
+        "sha256": "1c90c93e179f4c129dbc1731f952c33219eb97ca6024ad0396d9685b0aa64506",
+        "c000": 4815,
+        "e000": 4815,
+        "objects": 168,
+        "world": 375,
+    },
+    5: {
+        "bytes": 51584,
+        "sha256": "1e6cb5346e9fb0cd8dbd0f98887f4ebc2eda12c07601879a37e064f655ea38c7",
+        "c000": 4992,
+        "e000": 3840,
+        "objects": 139,
+        "world": 314,
+    },
+    6: {
+        "bytes": 72949,
+        "sha256": "d730b42284381d5a6aabf363b13311187e337260f6f7456ab4839b165db97e76",
+        "c000": 7810,
+        "e000": 5720,
+        "objects": 206,
+        "world": 375,
+    },
+    18: {
+        "bytes": 8186,
+        "sha256": "e9ad0394694941c4cc10d31250ed06cbd394da42c57567e59b244dcaf9f452eb",
+        "c000": 720,
+        "e000": 720,
+        "objects": 40,
+        "world": 0,
+    },
+}
+
 
 def canonical_bytes(source: dict[str, Any]) -> bytes:
     return json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -78,6 +116,19 @@ def assert_source_shape(source: dict[str, Any], scene_index: int) -> None:
     assert grid_h > 0
 
 
+def assert_m11d_anchor(scene_index: int, source: dict[str, Any]) -> None:
+    expected = M11D_EXPORT_ANCHORS.get(scene_index)
+    if expected is None:
+        return
+    encoded = canonical_bytes(source)
+    assert len(encoded) == expected["bytes"]
+    assert hashlib.sha256(encoded).hexdigest() == expected["sha256"]
+    assert len(source["planes"]["C000"]["tile_words"]) == expected["c000"]
+    assert len(source["planes"]["E000"]["tile_words"]) == expected["e000"]
+    assert len(source["objects"]["records"]) == expected["objects"]
+    assert len(source["world"]["records"]) == expected["world"]
+
+
 def compile_case(
     raw: bytes,
     name: str,
@@ -127,6 +178,7 @@ def main() -> None:
     for scene_index in range(SCENE_COUNT):
         source = export_scene_source(raw, scene_index)
         assert_source_shape(source, scene_index)
+        assert_m11d_anchor(scene_index, source)
 
         patch = source_to_patch(source, copy.deepcopy(source))
         assert_zero_patch(patch)
@@ -138,6 +190,7 @@ def main() -> None:
 
         exports[str(scene_index)] = {
             **summarize_source(source),
+            "m11d_anchor": scene_index in M11D_EXPORT_ANCHORS,
             "exact_rom_noop": True,
         }
         bases[scene_index] = source
@@ -263,6 +316,7 @@ def main() -> None:
         "base_sha1": BASE_SHA1,
         "scene_count": SCENE_COUNT,
         "all_scene_noop_exact": True,
+        "m11d_export_anchor_count": len(M11D_EXPORT_ANCHORS),
         "exports": exports,
         "edit_case_count": len(cases),
         "edit_cases": cases,
