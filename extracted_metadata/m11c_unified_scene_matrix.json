@@ -1,0 +1,51 @@
+{
+  "schema": "truerecall.m11c.unified_scene_matrix.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "case_count": 4,
+  "cases": {
+    "scene18_full": {
+      "scene": 18,
+      "sha1": "fac81fdc87b76a75c9b590d58707b16fcd6a5f04",
+      "checksum": "0x3E9A",
+      "maps": {"C000": {"dimensions": [18, 40], "changed_words": 1}},
+      "objects": {"base_count": 40, "new_count": 41, "stride_run_count": 3},
+      "world": {"record_count": 1, "payload_boundary_source": "next_world_base", "retail_payload_bytes": 382, "pool_start": 400, "pool_bytes": 2},
+      "allocation_count": 5,
+      "scene_record_changed_offsets": [11, 12, 13, 15, 16, 17, 27, 28, 29]
+    },
+    "scene5_dual_maps": {
+      "scene": 5,
+      "sha1": "b11173030e8a587e2e7d4633f8aba0e65d0116b9",
+      "checksum": "0x8EF4",
+      "maps": {
+        "C000": {"dimensions": [104, 48], "changed_words": 1},
+        "E000": {"dimensions": [80, 48], "changed_words": 1}
+      },
+      "objects": null,
+      "world": null,
+      "allocation_count": 4,
+      "scene_record_changed_offsets": [27, 28, 29, 39, 40, 41]
+    },
+    "scene0_mixed_objects": {
+      "scene": 0,
+      "sha1": "c57a73e8f6ea8967a3f45b9d40b200ba8f9404c9",
+      "checksum": "0x575A",
+      "maps": {},
+      "objects": {"base_count": 168, "new_count": 168, "stride_run_count": 61},
+      "world": null,
+      "allocation_count": 2,
+      "scene_record_changed_offsets": [11, 12, 13]
+    },
+    "scene6_factorized_world": {
+      "scene": 6,
+      "sha1": "f0c146a285a7c065045179f6ea22d93d3c91ab4e",
+      "checksum": "0xA53C",
+      "maps": {},
+      "objects": null,
+      "world": {"record_count": 375, "payload_boundary_source": "next_world_base", "retail_payload_bytes": 10584, "pool_start": 10592, "pool_bytes": 2746},
+      "allocation_count": 1,
+      "scene_record_changed_offsets": [15, 16, 17]
+    }
+  },
+  "runtime_validation": "pending"
+}
