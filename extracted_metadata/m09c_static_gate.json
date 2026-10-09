@@ -1,23 +1,25 @@
 {
-  "schema": "truerecall.m09c.static_gate.v2",
-  "evidence_scope": "static_ci_and_synthetic_descriptor",
+  "schema": "truerecall.m09c.static_gate.v3",
+  "evidence_scope": "static_ci_synthetic_descriptor_and_canonical_gate_orchestration",
   "canonical_rom_execution": false,
   "runtime_validation": "pending",
   "branch": "m09c-native-sequence-seam",
   "stable_parent": "be6c632335ab451392859cf099c8c4bf353a104c",
   "workflow": {
     "name": "m09c-static",
-    "run_id": 37992816170,
-    "head_sha": "cb60fdc5cf56ae9e39da5425b484a86f044a4d9d",
+    "run_id": 37993521291,
+    "head_sha": "fe5c6edc2958012ac9a46eac3626eec3bc3c601f",
     "conclusion": "success",
+    "job_id": 114033538700,
     "steps": {
-      "compile_m09c_probes": "success",
+      "compile_m09c_probes_and_gate": "success",
       "run_m09c_static_tests": "success"
     }
   },
   "compiled_probes": [
     "tools/rom_probe/m09c_native_sequence_seam_probe.py",
     "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
+    "tools/rom_probe/m09c_canonical_gate.py",
     "tools/rom_probe/sprite_sequence_roundtrip_probe.py"
   ],
   "static_tests": [
@@ -30,8 +32,14 @@
       "path": "tests/test_m09c_visual_roundtrip_static.py",
       "test_count": 3,
       "scope": "packed descriptor selector/group contract and compiler pixel round-trip"
+    },
+    {
+      "path": "tests/test_m09c_canonical_gate_static.py",
+      "test_count": 6,
+      "scope": "canonical report promotion guardrails"
     }
   ],
+  "test_total": 16,
   "verified_invariants": [
     "JSR absolute-long target decoding",
     "JSR absolute-word sign extension",
@@ -44,8 +52,29 @@
     "selector -> encoded entry -> alias -> mapping record resolves on a synthetic visual descriptor",
     "one-piece visual frame compiles and reconstructs pixel-exactly",
     "15-byte mapping-record header survives the synthetic round-trip",
-    "non-grid mapping coordinates are rejected rather than silently normalized"
+    "non-grid mapping coordinates are rejected rather than silently normalized",
+    "canonical gate rejects a report whose runtime visual descriptor is not 0x0F0000",
+    "canonical gate rejects incomplete JLLBFR resolution on the runtime visual descriptor",
+    "canonical gate rejects any non-pixel-exact canonical visual round-trip",
+    "canonical gate rejects selector/frame count disagreement",
+    "canonical gate rejects base-ROM SHA-1 disagreement",
+    "canonical gate accepts only reports matching the expected M09C schemas and descriptor identities"
   ],
+  "canonical_runner": {
+    "path": "tools/rom_probe/m09c_canonical_gate.py",
+    "required_rom_size": 2097152,
+    "required_rom_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+    "outputs": [
+      "extracted_metadata/m09c_native_sequence_seam.json",
+      "extracted_metadata/m09c_visual_avatar_roundtrip.json",
+      "extracted_metadata/m09c_canonical_gate.json"
+    ],
+    "promotion_scope": [
+      "canonical descriptor/family reconciliation",
+      "canonical pixel-exact visual-avatar round-trip"
+    ],
+    "explicitly_not_proven_by_runner": "native authored sequence runtime progression"
+  },
   "blastem_toolchain": {
     "restored": true,
     "workflow_run_id": 37989794952,
@@ -55,5 +84,11 @@
     "local_binary_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
     "binary_help_smoke_test": true
   },
-  "promotion_rule": "STATIC CONFIRMED applies only to probe syntax/imports, 68000 helper decoding, packed-descriptor mechanics and synthetic compiler round-trip. Do not mark M09C complete until descriptor/family reconciliation, canonical visual-avatar round-trip and runtime native progression execute against the canonical ROM."
+  "library_rom_locator": {
+    "path": "/Total Recall Sega/True Lies (World).md",
+    "registered_size_bytes": 2097152,
+    "raw_materialization": "blocked_by_current_project_authorization",
+    "note": "The Library entry is located and has the exact canonical size, but current-session raw-byte materialization is denied."
+  },
+  "promotion_rule": "STATIC CONFIRMED applies to probe syntax/imports, 68000 helper decoding, packed-descriptor mechanics, synthetic compiler round-trip and canonical-report promotion logic. Do not mark M09C canonical-complete until m09c_canonical_gate.py executes against SHA-1 d39174bed46ede85531b86df7ba49123ce2f8411. Do not mark M09C runtime-complete until the authored native sequence is deterministically validated in BlastEm."
 }
