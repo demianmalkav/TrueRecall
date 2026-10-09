@@ -1,0 +1,17 @@
+{
+  "schema": "truerecall.m11d.scene_source.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "representative_exports": {
+    "0": {"canonical_json_bytes": 62331, "canonical_json_sha256": "1c90c93e179f4c129dbc1731f952c33219eb97ca6024ad0396d9685b0aa64506", "c000_words": 4815, "e000_words": 4815, "objects": 168, "world_records": 375, "exact_rom_noop": true},
+    "5": {"canonical_json_bytes": 51584, "canonical_json_sha256": "1e6cb5346e9fb0cd8dbd0f98887f4ebc2eda12c07601879a37e064f655ea38c7", "c000_words": 4992, "e000_words": 3840, "objects": 139, "world_records": 314, "exact_rom_noop": true},
+    "6": {"canonical_json_bytes": 72949, "canonical_json_sha256": "d730b42284381d5a6aabf363b13311187e337260f6f7456ab4839b165db97e76", "c000_words": 7810, "e000_words": 5720, "objects": 206, "world_records": 375, "exact_rom_noop": true},
+    "18": {"canonical_json_bytes": 8186, "canonical_json_sha256": "e9ad0394694941c4cc10d31250ed06cbd394da42c57567e59b244dcaf9f452eb", "c000_words": 720, "e000_words": 720, "objects": 40, "world_records": 0, "exact_rom_noop": true}
+  },
+  "edited_scene18": {
+    "output_sha1": "fac81fdc87b76a75c9b590d58707b16fcd6a5f04",
+    "checksum": "0x3E9A",
+    "matches_m11b": true
+  },
+  "policy": "Exported retail-derived scene source files remain local and are not committed.",
+  "runtime_validation": "pending"
+}
