@@ -1,7 +1,7 @@
 name: fetch-blastem
 on:
   push:
-    branches: [m0.6c-level-stream]
+    branches: [m0.6c-level-stream, m11e-scene-source-matrix]
     paths:
       - '.github/workflows/fetch-blastem.yml'
   workflow_dispatch:
