@@ -65,7 +65,9 @@ class M09CVisualRoundtripStaticTest(unittest.TestCase):
         self.assertEqual(info["alias_offset"], 0)
         self.assertEqual(info["record_offset"], 0x0100)
         self.assertEqual(info["piece_count"], 1)
-        self.assertEqual(info["piece_words"], ["0x0000"] if "piece_words" in info else info.get("piece_words"))
+        self.assertEqual(info["pieces"][0]["piece_word"], 0x0000)
+        self.assertEqual(info["pieces"][0]["raw_x"], 15)
+        self.assertEqual(info["pieces"][0]["raw_y"], 15)
 
     def test_visual_frame_compiler_roundtrip(self) -> None:
         rom = synthetic_visual_descriptor_rom()
@@ -87,9 +89,10 @@ class M09CVisualRoundtripStaticTest(unittest.TestCase):
 
         rebuilt = reconstruct_compiled(records[0], chunks, frame["image"].size)
         self.assertEqual(rebuilt.tobytes(), frame["image"].tobytes())
-        self.assertEqual(records[0][:0x0F], bytes.fromhex(
-            "000100020003006400c80010001040"
-        ))
+        self.assertEqual(
+            records[0][:0x0F],
+            bytes.fromhex("000100020003006400c80010001040"),
+        )
 
     def test_non_grid_mapping_coordinate_is_rejected(self) -> None:
         rom = bytearray(synthetic_visual_descriptor_rom())
