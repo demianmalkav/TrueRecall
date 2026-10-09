@@ -2,8 +2,9 @@
 from pathlib import Path
 import hashlib,sys
 from PIL import Image
-sys.path.insert(0,str(Path(__file__).parents[1]/'build'))
-sys.path.insert(0,str(Path(__file__).parent))
+TOOLS=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(TOOLS/'build'))
+sys.path.insert(0,str(TOOLS))
 from sprite_sequence_compiler import compile_sequence
 from sprite_frame_export import u16,resolve_chunk,chunk_image
 EXPECTED='d39174bed46ede85531b86df7ba49123ce2f8411'; DESC=0x0E51FE; SELECTORS=[2,258,260,262]
