@@ -1,60 +1,94 @@
-# Recovery Procedure
+# TrueRecall — Recovery Procedure
 
-Use this after context loss, model change or a long interruption.
+Use this after context loss, model change, long interruption or a handoff to another agent.
 
-## Read order
+The objective is not to reconstruct project state from chat memory. The repository must be sufficient to identify the active branch, technical checkpoint, open gate and exact `NEXT`.
 
-1. Drive: `START_HERE — True Recall`.
-2. Drive: `PROJECT_STATE_MASTER — True Recall`.
-3. Drive: `RECOVERY_HANDOFF — True Recall`.
-4. Drive: `NEXT_ACTIONS — True Recall`.
-5. Repository: `AGENTS.md`.
-6. Repository: `docs/TECHNICAL_STATE.md`.
-7. Current subsystem docs: `docs/M09_SPRITE_SEQUENCE_AUTHORING.md` and/or `docs/M10_WORLD_COLLISION_AUTHORING.md`.
-8. Refresh `m0.6c-level-stream` HEAD before changing code.
+## Authority
 
-## Before changing anything
+- Human continuation state: `docs/PROJECT_STATE.md`.
+- Machine continuation state: `docs/RECOVERY_MANIFEST.json`.
+- Cumulative technical background: `docs/TECHNICAL_STATE.md`.
+- Operating rules: `AGENTS.md`.
 
-- Verify local ROM SHA-1 = `d39174bed46ede85531b86df7ba49123ce2f8411`.
-- Confirm the active branch rather than assuming `main` is current.
-- Confirm the evidence scope of the subsystem: static-only, runtime-confirmed, or still hypothesis/high-confidence.
-- Re-run the relevant build/probe/regression before extending it.
-- Compare runtime changes against the correct logical parent build.
+If another document conflicts with `PROJECT_STATE.md` about current branch/milestone/`NEXT`, that other document is stale or historical.
 
-## Current recovery anchor
+## Fresh-context read order
 
-Project state:
+1. Obtain repository access.
+2. Read `docs/RECOVERY_MANIFEST.json` to identify the active branch and checkpoint basis.
+3. Refresh the live active branch HEAD; do not assume `main` is current.
+4. Read `docs/PROJECT_STATE.md` from that branch.
+5. Read `AGENTS.md`.
+6. Read `docs/TECHNICAL_STATE.md` for cumulative engine knowledge.
+7. Read only the current subsystem documents referenced by `PROJECT_STATE.md`.
+8. Consult Drive `START_HERE`, `PROJECT_STATE_MASTER`, `RECOVERY_HANDOFF` and design bibles for project/design continuity; their dynamic technical state must defer to GitHub `PROJECT_STATE.md`.
 
-- M0.1–M0.8 complete.
-- M0.9 active/integration-in-progress.
-- M0.10 active; M0.10A runtime-confirmed.
-- Vertical slice not started.
+## Canonical ROM gate
 
-Primary branch: `m0.6c-level-stream`.
+Before any ROM-dependent work, locate/provide the base ROM and verify:
 
-The checkpoint before the documentation-sync commits was:
+```text
+title: True Lies (World)
+size:  2,097,152 bytes
+SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
+```
 
-`0f6a97a2f2cf0d6525da7696f8469f84565e92d2`
+Never infer ROM availability from an earlier session. The original ROM is not repository state and is never committed.
 
-Refresh HEAD because documentation synchronization itself advances the branch.
+## Recovery validation checklist
 
-Current next proofs:
+A fresh context is recovered only when it can answer all of the following from repository/Drive artifacts without old chat history:
 
-- M0.10B: controlled `world_type 9 → 10` edit with grid membership/geometry preserved, followed by projectile-behavior runtime validation.
-- M0.9C: native authored animation-sequence integration through `FDDC` while preserving player avatar/proxy control-descriptor semantics.
+- What is the active branch?
+- What technical checkpoint underlies the current state?
+- What milestone is active?
+- Which claims are confirmed vs historical/falsified?
+- Which exact evidence files support the current gate?
+- Which tools are authoritative now?
+- Which tools are historical only?
+- What is the logical parent build for the next runtime comparison?
+- What remains OPEN?
+- What exact sequence is `NEXT`?
 
-Do not regenerate the world broadphase grid from rectangle overlap alone; the retail priority/pruning policy is not fully recovered.
+If any answer requires guessing, recovery is incomplete; repair documentation before extending code.
+
+## Current checkpoint pointer
+
+Do not duplicate current technical details here. Resolve them from:
+
+```text
+docs/RECOVERY_MANIFEST.json
+docs/PROJECT_STATE.md
+```
+
+At the documentation reconciliation that introduced this procedure, the active continuation is M0.9C on `m09c-native-sequence-seam`, based on technical checkpoint `e77565bd0a56bc807806f9a91d2e87af70ed89e6`. This sentence is only a recovery pointer; `PROJECT_STATE.md` remains authoritative if the project has advanced.
+
+## Historical-state handling
+
+Old probes/docs are not deleted merely because their interpretation was superseded. They preserve provenance and may explain why a design changed.
+
+However:
+
+- files marked `HISTORICAL` are not promotion gates;
+- claims marked `FALSIFIED` cannot be revived without new contradictory evidence;
+- old chat instructions never outrank persisted runtime evidence;
+- v1 tooling output known to contain a reconstruction error is evidence of the tooling failure, not evidence of engine behavior.
 
 ## Handoff update rule
 
-At the end of substantial work, synchronize:
+After a material advance that changes continuation state:
 
-- Drive project state
-- Drive next actions
-- Drive recovery handoff
-- GitHub technical state
-- subsystem documentation
-- active branch SHA
-- exact evidence scope and audited output ROM hash when applicable
+1. commit evidence/tooling;
+2. update `docs/PROJECT_STATE.md`;
+3. update `docs/RECOVERY_MANIFEST.json`;
+4. update the affected subsystem document or mark the superseded one historical;
+5. update `docs/TECHNICAL_STATE.md` when cumulative engine knowledge changed;
+6. synchronize Drive recovery pointers;
+7. record the technical checkpoint commit, evidence scope, logical parent and audited output hash where applicable.
 
-A new chat should be able to recover the project without the old transcript.
+Do not embed a supposedly permanent live HEAD in multiple documents. Documentation commits themselves advance HEAD; fresh recovery must resolve the live branch while using the recorded technical checkpoint as the proof anchor.
+
+## Recovery success criterion
+
+A new chat should be able to receive repository + Drive access + the verified canonical ROM and continue the exact current `NEXT` without reading the lost transcript.
