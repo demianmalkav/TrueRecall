@@ -1,6 +1,6 @@
 # M0.9C — Native Player Sequence Integration Seam
 
-Status: **INVESTIGATION GATE IMPLEMENTED / CANONICAL EXECUTION PENDING**
+Status: **INVESTIGATION GATE IMPLEMENTED / STATIC HELPER TESTS DEFINED / CANONICAL EXECUTION PENDING**
 
 M09C replaces the diagnostic four-phase M09B2 presentation with authored player animation that advances through the retail animation-selection machinery rather than through a global VBlank phase counter.
 
@@ -135,6 +135,26 @@ The probe:
 9. resolves the same selectors against `0x0E51FE` for comparison only.
 
 A failure of the current 16×16 grid-position contract is a real compiler limitation and stops M09C; it must not be hidden with coordinate guessing.
+
+## Reproducibility repair
+
+The historical `sprite_sequence_roundtrip_probe.py` imported `sprite_frame_export.py` through an implicit environment/PYTHONPATH assumption even though that module lives in `tools/`, not `tools/rom_probe/`.
+
+On the M09C branch both the historical round-trip probe and the new visual-avatar probe add `tools/` explicitly to `sys.path`. This makes the probes runnable from a clean shell without relying on caller-specific environment state.
+
+## Static helper validation
+
+`tests/test_m09c_native_sequence_seam_static.py` covers the ROM-independent mechanics used by Gate 1:
+
+- JSR absolute-long target decoding;
+- JSR absolute-word sign extension;
+- BSR short target decoding;
+- BSR word target decoding using the Motorola-defined `PC = opcode_address + 2` displacement base;
+- negative BSR word displacement;
+- `0xFF` candidate-run inventory;
+- rejection of runs shorter than the minimum candidate size.
+
+`.github/workflows/m09c-static.yml` compiles all three M09/M09C probes and runs these seven tests on the M09C branch. This workflow is a source/syntax gate only and does not substitute for canonical-ROM execution.
 
 ## Candidate integration architecture
 
