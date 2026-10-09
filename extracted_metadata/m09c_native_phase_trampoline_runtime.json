@@ -1,0 +1,54 @@
+{
+  "schema": "truerecall.m09c.native_phase_trampoline_runtime.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "candidate_output_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+  "candidate_checksum": "0x843C",
+  "candidate_rom_size": 4194304,
+  "descriptor_scope": "0x0A0000",
+  "phase_source": "(object+0x1E)-(object+0x1C)",
+  "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
+  "blastem_execution": {
+    "method": "reset-vector trampoline entry with debugger-injected actor state",
+    "cpu": "68000 emulated by project-pinned BlastEm",
+    "y_byte_active": true,
+    "render_restore_pc": "0x20807A",
+    "key_restore_pc": "0x20818A",
+    "phase_runs": 12
+  },
+  "render_results": [
+    {"phase": 0, "delta": 0, "source_bank_d1": "0x210000"},
+    {"phase": 1, "delta": 2, "source_bank_d1": "0x218000"},
+    {"phase": 2, "delta": 4, "source_bank_d1": "0x220000"},
+    {"phase": 3, "delta": 6, "source_bank_d1": "0x228000"},
+    {"phase": 4, "delta": 8, "source_bank_d1": "0x230000"},
+    {"phase": 5, "delta": 10, "source_bank_d1": "0x238000"}
+  ],
+  "cache_key_results": [
+    {"phase": 0, "delta": 0, "retail_index": "0x17", "cache_key_d0": "0x3A17"},
+    {"phase": 1, "delta": 2, "retail_index": "0x17", "cache_key_d0": "0x3B17"},
+    {"phase": 2, "delta": 4, "retail_index": "0x17", "cache_key_d0": "0x3C17"},
+    {"phase": 3, "delta": 6, "retail_index": "0x17", "cache_key_d0": "0x3D17"},
+    {"phase": 4, "delta": 8, "retail_index": "0x17", "cache_key_d0": "0x3E17"},
+    {"phase": 5, "delta": 10, "retail_index": "0x17", "cache_key_d0": "0x3F17"}
+  ],
+  "register_integrity": {
+    "d2_contains_expected_raw_delta_before_restore_on_all_runs": true,
+    "d2_saved_and_restore_instruction_reached_on_all_runs": true,
+    "a6_test_object_stable_on_all_runs": true
+  },
+  "assembler_correction": {
+    "issue": "initial prototype encoded BRA.S with zero displacement after phase 5; 68000 interprets opcode 0x6000 as BRA.W with an extension word",
+    "fix": "phase 5 falls through directly to restore; assembler now rejects zero short-branch displacement",
+    "blastem_disassembly_verified": true
+  },
+  "phase_chunk_sha1": [
+    "b78b0fd7ef3703a0b6664da1f5ec596e4a997524",
+    "08e2e254eca5444370adf8db1ec35a511deded02",
+    "16d1f42989ffa8844371370cde3ad91da27c899c",
+    "6a57fa5e5a9ff80acc74c9fd79315d87752f3373",
+    "5ffb61f501a5a45dccb1f364e895828d4eee4ab6",
+    "3759cae128756fa866b69343b2436322b6806904"
+  ],
+  "pass": true,
+  "remaining_gate": "full gameplay visual regression and player-local containment"
+}
