@@ -33,8 +33,23 @@ def compile_sequence(frames, *, group:int=0):
         rec += bytes([flags,len(pieces)])
         for x,y,w in pieces: rec += bytes([x,y])+w.to_bytes(2,'big')
         records.append(bytes(rec))
-        manifests.append({'frame':fi,'piece_count':len(pieces),'chunk_indices':used,'unique_chunks_in_frame':len(set(used)),'record_bytes':len(rec)})
-    return records,b''.join(chunks),{'frame_count':len(frames),'group':group,'global_unique_chunks':len(chunks),'chunk_bytes':128,'total_chunk_bytes':len(chunks)*128,'frames':manifests,'max_frame_working_set':max(x['unique_chunks_in_frame'] for x in manifests)}
+        # Every piece is a fixed 16px-tall sprite. Count only this actor's own
+        # scanline overlap; scene-wide sprite pressure is a separate runtime budget.
+        local_ys=[y-15 for _,y,_ in pieces]
+        min_scan=min(local_ys); max_scan=max(y+15 for y in local_ys)
+        max_scanline_pieces=max(sum(1 for py in local_ys if py <= sy < py+16) for sy in range(min_scan,max_scan+1))
+        manifests.append({'frame':fi,'piece_count':len(pieces),'chunk_indices':used,'unique_chunks_in_frame':len(set(used)),'record_bytes':len(rec),'max_scanline_pieces':max_scanline_pieces,'max_scanline_pixels':max_scanline_pieces*16})
+    # Cache churn if frames play in the given order. Also report loop closure because
+    # most movement animations cycle back to frame 0.
+    sets=[set(x['chunk_indices']) for x in manifests]
+    for i,m in enumerate(manifests):
+        prev=sets[i-1] if i else set()
+        m['new_chunks_from_previous']=len(sets[i]-prev)
+        m['reused_chunks_from_previous']=len(sets[i]&prev)
+    transitions=[]
+    for i in range(len(sets)-1):transitions.append(len(sets[i+1]-sets[i]))
+    loop_new=len(sets[0]-sets[-1]) if len(sets)>1 else 0
+    return records,b''.join(chunks),{'frame_count':len(frames),'group':group,'global_unique_chunks':len(chunks),'chunk_bytes':128,'total_chunk_bytes':len(chunks)*128,'frames':manifests,'max_frame_working_set':max(x['unique_chunks_in_frame'] for x in manifests),'max_scanline_pieces':max(x['max_scanline_pieces'] for x in manifests),'max_scanline_pixels':max(x['max_scanline_pixels'] for x in manifests),'max_transition_new_chunks':max(transitions or [0]),'loop_new_chunks':loop_new}
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('manifest',type=Path);ap.add_argument('out_prefix',type=Path);a=ap.parse_args()
