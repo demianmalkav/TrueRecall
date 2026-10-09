@@ -30,6 +30,8 @@ Two authoring tracks are active:
 
 Active technical branch: `m0.6c-level-stream`.
 
-Current checkpoint: `0f6a97a2f2cf0d6525da7696f8469f84565e92d2`.
+Latest code-bearing checkpoint before the documentation reconciliation: `0f6a97a2f2cf0d6525da7696f8469f84565e92d2`.
+
+Do not assume that SHA is the live HEAD; refresh the branch before changing code.
 
 Before changing anything, read `AGENTS.md`, `docs/TECHNICAL_STATE.md`, `docs/M09_SPRITE_SEQUENCE_AUTHORING.md` and `docs/M10_WORLD_COLLISION_AUTHORING.md`.
