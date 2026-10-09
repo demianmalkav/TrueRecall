@@ -27,6 +27,7 @@ jobs:
             tools/rom_probe/m09c_native_sequence_seam_probe.py \
             tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py \
             tools/rom_probe/m09c_canonical_gate.py \
+            tools/rom_probe/m09c_animation_progression_analysis.py \
             tools/rom_probe/sprite_sequence_roundtrip_probe.py \
             tools/runtime/m09c_animation_state_trace.py
       - name: Run M09C static tests
@@ -35,7 +36,8 @@ jobs:
             tests.test_m09c_native_sequence_seam_static \
             tests.test_m09c_visual_roundtrip_static \
             tests.test_m09c_canonical_gate_static \
-            tests.test_m09c_animation_state_trace_static
+            tests.test_m09c_animation_state_trace_static \
+            tests.test_m09c_animation_progression_analysis_static
 
   blastem-harness:
     runs-on: ubuntu-latest
