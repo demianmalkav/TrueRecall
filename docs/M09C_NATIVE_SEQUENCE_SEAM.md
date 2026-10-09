@@ -1,224 +1,277 @@
 # M0.9C — Native Player Sequence Integration Seam
 
-Status: **INVESTIGATION GATE IMPLEMENTED / STATIC HELPER TESTS DEFINED / CANONICAL EXECUTION PENDING**
+Status: **CANONICAL NATIVE PHASE RECOVERED / SIX-BANK BUILD IMPLEMENTED / FULL-GAME VISUAL GATE OPEN**
 
-M09C replaces the diagnostic four-phase M09B2 presentation with authored player animation that advances through the retail animation-selection machinery rather than through a global VBlank phase counter.
+This document describes the current M09C subsystem model. Earlier JLLBFR@`0x0F0000` gate assumptions have been superseded by canonical runtime evidence.
 
-The milestone is deliberately constrained by the failure mode observed in the earlier native-sequence experiment: replacing the controlled player's animation descriptor wholesale caused the controlled avatar to become tiny or visually absent while input still worked. M09C therefore treats player descriptor identity and linked-avatar/proxy semantics as invariants, not as disposable implementation details.
+For continuation priority and exact `NEXT`, always defer to `docs/PROJECT_STATE.md`.
 
-## Proven foundations
+## Goal
 
-The player is represented by a synchronized pair:
+Replace the diagnostic M09B2 VBlank-driven authored-pixel phase with authored player presentation driven by the retail-linked F9F8 animation phase while preserving:
 
-```text
-FFFFF9F8  world/render avatar     HIGH CONFIDENCE
-FFFFFB6E  control/collision proxy HIGH CONFIDENCE
-```
+- M07 held-Y sprint behavior;
+- F9F8/FB6E linked-object semantics;
+- canonical F9F8 descriptor identity;
+- retail inactive fallback;
+- renderer/cache isolation.
 
-M08 runtime descriptor sweeping established that renderer/cache substitution scoped to:
+## Canonical linked-player identity — CONFIRMED
 
-```text
-object+0x2C == 0x0F0000
-```
+Retail code loads the player globals with `MOVEA.W`; each global is a signed 16-bit RAM pointer.
 
-produces only an avatar-sized visual difference while Y is held and converges exactly after Y release.
-
-That makes `0x0F0000` the **runtime-proven visual-avatar descriptor identity** for the M08/M09B2 path.
-
-Separately, the archetype table entry for archetype `191 / 0xBF` is structurally confirmed as:
+Observed runtime values:
 
 ```text
-0x0E51FE
+FFFFF9F8 -> FFFFC632  world/render avatar
+FFFFFB6E -> FFFFC7FA  control/collision proxy
 ```
 
-and M09A's historical four-frame retail compiler round-trip used that descriptor.
-
-These two addresses must not be conflated. Until canonical M09C probes reconcile their ownership within the linked player pair, the project treats them as two distinct proven facts:
+During held-Y sprint:
 
 ```text
-0x0E51FE  archetype-191 descriptor from static archetype table
-0x0F0000  visual-avatar descriptor isolated by runtime renderer sweep
+F9F8 object+0x2A = 139
+F9F8 object+0x2C = 0x000A0000
 ```
 
-## Native resolver — CONFIRMED
+The descriptor remains stable through the observed animation cycle.
 
-The resolver around `0x00FDDC` uses the current object's `+0x2C` descriptor and an animation selector in `D0`.
+### Superseded identity model
 
-The confirmed core at `0x00FDEC` performs the equivalent of:
+M0.8 proved that scoping renderer/cache substitution to `0x0F0000` produces a compact player-local visual difference with clean fallback. That remains valid presentation-path evidence.
+
+Canonical M09C runtime disproves the stronger claim that `0x0F0000` is the F9F8 world/render-avatar descriptor. The tested F9F8 descriptor is `0x000A0000`.
+
+## Native phase bridge — CONFIRMED
+
+The key routine is the linked-object bridge at `0x009D5E`.
+
+Equivalent behavior:
 
 ```text
-descriptor = object+0x2C
-encoded    = word(descriptor + selector)
-object+0x24 = encoded
-alias       = encoded & 0x0FFE
-object+0x20 = word(descriptor + alias)
+phase_delta = proxy(+0x1E) - proxy(+0x1C)
+current     = avatar(+0x1C) + phase_delta
+avatar(+0x1E) = current
+avatar(+0x24) = encoded_entry(avatar_descriptor, current)
+avatar(+0x20) = mapping_record(avatar_descriptor, current)
 ```
 
-Therefore `object+0x24` retains the encoded animation entry and `object+0x20` becomes the current mapping-record offset consumed by the renderer.
-
-M09C must preserve this state flow wherever possible.
-
-## Presentation-family layer
-
-The object VM already exposes multiple presentation natives:
+Observed writer transaction:
 
 ```text
-0x001F9A  direct
-0x001FF6  facing_family_set
-0x00200C  facing_family_clear
-0x002022  direction24_family
-0x002448  direction24_family_alt
+0x009D72  F9F8 +0x1E
+0x009D7E  F9F8 +0x24
+0x009D88  F9F8 +0x20
+0x011284  F9F8 +0x22 mirror in the observed path
 ```
 
-The facing-family natives use the direction table at `0x013F32` and were sufficient to classify initial presentation for 2,427 of 2,449 retail placements.
+Therefore the proxy transfers **phase**, not JLLBFR selector identity, to F9F8.
 
-For the player, established family bases include:
+The old analytical rule that every `+0x24` write indicates a new external selection is false for this bridge. The ordered `0x009D72 -> 0x009D7E -> 0x009D88` writes are one phase-advance transaction.
+
+Evidence: `extracted_metadata/m09c_canonical_phase_bridge.json`.
+
+## Native six-position sprint sequence — CONFIRMED
+
+After the sprint family is active:
 
 ```text
-walk:   0x0002 0x0012 0x0022 0x0032 0x0042
-idle:   0x0052 0x0062 0x0072 0x0082 0x0092
-JLLBFR: 0x00F2
-roll:   0x0142
-kneel:  0x0172
-loss:   0x0262
+F9F8 +0x1C base = 0x08B6
 ```
 
-M07C already proved that the retail player control path can select a new direction-table row (`0x1FF0`) while Y is held and then resume the standard caller path. The proof row copied JLLBFR data byte-identically.
-
-## Why M09B2 is not M09C
-
-M09B2 proves authored pixels and stable cache isolation, but its frame progression is external to the actor animation state:
+`+0x1E` cycles:
 
 ```text
-phase = (FFFFF712 >> 2) & 3
+0x08B6
+0x08B8
+0x08BA
+0x08BC
+0x08BE
+0x08C0
+-> 0x08B6
 ```
 
-The VBlank counter selects one of four raw banks and four cache namespaces.
-
-This proves renderer/cache/VRAM/SAT authorability but does not prove authored frames advancing through the actor's native animation state.
-
-M09C must remove that dependency for the authored sequence path.
-
-## Gate 1 — descriptor/family reconciliation
-
-`tools/rom_probe/m09c_native_sequence_seam_probe.py` performs the first canonical gate.
-
-It:
-
-1. verifies the known FDDC resolver signature;
-2. verifies archetype 191 resolves to `0x0E51FE`;
-3. expands every established player family base through all eight facing entries in the direction table;
-4. resolves those selectors independently against `0x0F0000` and `0x0E51FE`;
-5. records valid mapping records, header control words, piece counts and record sizes;
-6. finds static callers of FDDC, including the presentation-helper region;
-7. inventories `0xFF` runs in the `0x0F0000..0x0FFFFF` relative-record window;
-8. records absolute long references to `0x0F0000`.
-
-`0xFF` runs are **candidates only**. No gap becomes authoring space merely because it contains filler bytes. Selector-table overlap, group-table overlap, record reachability and reference containment must be checked before allocation.
-
-## Gate 2 — visual-avatar compiler round-trip
-
-`tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py` repeats the M09A compiler proof against the runtime-proven visual descriptor rather than archetype 191.
-
-The initial target family is JLLBFR base `0x00F2`, because M07/M08/M09B2 already use it as the safe alternate player-presentation seam.
-
-The probe:
-
-1. expands the eight facing selectors from `0x013F32 + 0x00F2`;
-2. removes duplicate selectors while preserving order;
-3. resolves every resulting frame through descriptor `0x0F0000`;
-4. reconstructs each retail frame without writing pixel assets to disk;
-5. recompiles the sequence with `sprite_sequence_compiler.py`;
-6. reconstructs compiled output;
-7. requires pixel-exact equality and exact preservation of the 15-byte mapping-record header;
-8. emits only structural metrics and hashes;
-9. resolves the same selectors against `0x0E51FE` for comparison only.
-
-A failure of the current 16×16 grid-position contract is a real compiler limitation and stops M09C; it must not be hidden with coordinate guessing.
-
-## Reproducibility repair
-
-The historical `sprite_sequence_roundtrip_probe.py` imported `sprite_frame_export.py` through an implicit environment/PYTHONPATH assumption even though that module lives in `tools/`, not `tools/rom_probe/`.
-
-On the M09C branch both the historical round-trip probe and the new visual-avatar probe add `tools/` explicitly to `sys.path`. This makes the probes runnable from a clean shell without relying on caller-specific environment state.
-
-## Static helper validation
-
-`tests/test_m09c_native_sequence_seam_static.py` covers the ROM-independent mechanics used by Gate 1:
-
-- JSR absolute-long target decoding;
-- JSR absolute-word sign extension;
-- BSR short target decoding;
-- BSR word target decoding using the Motorola-defined `PC = opcode_address + 2` displacement base;
-- negative BSR word displacement;
-- `0xFF` candidate-run inventory;
-- rejection of runs shorter than the minimum candidate size.
-
-`.github/workflows/m09c-static.yml` compiles all three M09/M09C probes and runs these seven tests on the M09C branch. This workflow is a source/syntax gate only and does not substitute for canonical-ROM execution.
-
-## Candidate integration architecture
-
-The preferred M09C architecture is:
+Raw phase deltas:
 
 ```text
-player control / Y sprint state
-        ↓
-retail direction-family selection
-        ↓
-reserved authored selector path
-        ↓
-FDDC-compatible resolution
-        ↓
-object+0x24 encoded entry
-object+0x20 mapping-record offset
-        ↓
-retail renderer
-        ↓
-authored chunk source / isolated cache namespace
+0, 2, 4, 6, 8, 10
 ```
 
-The central invariant is:
+Mapping records:
 
 ```text
-object+0x2C remains the runtime visual-avatar descriptor identity
+0x2C08 0x2C24 0x2C44 0x2C64 0x2C80 0x2CA0
 ```
 
-M09C should extend selector/record resolution, not swap the object's descriptor pointer.
+Encoded entries:
 
-A direct FDDC hook is acceptable only if it reproduces the retail `+0x24/+0x20` state semantics for the authored selector and falls through byte-identically for all retail selectors. A cleaner descriptor-native unused selector/record path is preferable if the canonical probe proves safe storage exists.
+```text
+0x02AC 0x02AE 0x02B0 0x02B2 0x02B4 0x32B6
+```
 
-## Storage constraint
+No `+0x2C` descriptor write occurred during the observed cycle.
 
-FDDC stores a 16-bit mapping-record offset, and the renderer later resolves the current record relative to the object's descriptor. Therefore a truly descriptor-native authored mapping record must be addressable within the descriptor's relative offset model.
+## Authoritative tooling
 
-M09C must not allocate a record in arbitrary expanded ROM and assume the existing renderer can reach it.
+```text
+tools/runtime/m09c_animation_state_trace_v2.py
+tools/rom_probe/m09c_phase_bridge_analysis.py
+tools/build/m09c_native_phase_pixel_sequence.py
+```
 
-If no safe native record slot exists inside the visual descriptor's reachable window, the milestone must explicitly introduce the smallest possible resolver/renderer indirection while preserving descriptor identity and retail fallback.
+The v2 tracer corrects the pointer model by sign-extending the 16-bit F9F8/FB6E globals and expects canonical F9F8 descriptor `0x0A0000`.
 
-## Runtime gate
+The phase analyzer recognizes the native writer cluster as a single transaction rather than misclassifying the `+0x24` write.
 
-The eventual M09C runtime build must be compared against the correct logical parent, not blindly against retail.
+## Historical tooling — NOT PROMOTION GATES
 
-Required behavior:
+```text
+tools/runtime/m09c_animation_state_trace.py
+tools/rom_probe/m09c_canonical_gate.py
+tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py
+tools/rom_probe/m09c_animation_progression_analysis.py
+```
 
-- Y clear before activation: pixel-identical to the chosen sprint parent path;
-- Y held: differences remain avatar-local;
-- authored frame changes follow actor/native animation state, not `F712` phase bits;
-- Y release: exact convergence to the parent build;
-- movement/control behavior remains the already-proven M07 sprint behavior;
-- linked F9F8/FB6E synchronization remains unchanged;
-- no descriptor substitution of the controlled player pair;
-- cache/VRAM/SAT budgets remain within established assertions.
+These remain useful provenance for how the ambiguity was resolved. Do not force them to satisfy the old hypothesis.
+
+## Six-bank native-phase build — IMPLEMENTED
+
+`tools/build/m09c_native_phase_pixel_sequence.py` retains the proven M07 sprint seam and M09B2 renderer/cache override concept while replacing the phase source.
+
+Old diagnostic source:
+
+```text
+(F712 >> 2) & 3
+```
+
+Current native source:
+
+```text
+raw_delta = (object+0x1E) - (object+0x1C)
+```
+
+Accepted canonical deltas:
+
+```text
+0, 2, 4, 6, 8, 10
+```
+
+Scope invariant:
+
+```text
+object+0x2C == 0x000A0000
+```
+
+Resource map:
+
+```text
+phase 0 -> bank 0x210000 / cache 0x3A00
+phase 1 -> bank 0x218000 / cache 0x3B00
+phase 2 -> bank 0x220000 / cache 0x3C00
+phase 3 -> bank 0x228000 / cache 0x3D00
+phase 4 -> bank 0x230000 / cache 0x3E00
+phase 5 -> bank 0x238000 / cache 0x3F00
+```
+
+Audited proof build:
+
+```text
+size:     4,194,304 bytes
+SHA-1:    3256f9dcbc6376624716e3508f41c0439e17cef6
+checksum: 0x843C
+key trampoline: 146 bytes
+render trampoline: 140 bytes
+```
+
+## Trampoline runtime proof — CONFIRMED
+
+The exact candidate 68000 trampolines were executed under the project-pinned BlastEm core using reset-vector entry plus debugger-injected actor state.
+
+Twelve executions passed:
+
+```text
+6 render-source dispatches
+6 cache-key dispatches
+```
+
+Render source results:
+
+```text
+0  -> 0x210000
+2  -> 0x218000
+4  -> 0x220000
+6  -> 0x228000
+8  -> 0x230000
+10 -> 0x238000
+```
+
+Cache-key results with retail chunk `0x17`:
+
+```text
+0  -> 0x3A17
+2  -> 0x3B17
+4  -> 0x3C17
+6  -> 0x3D17
+8  -> 0x3E17
+10 -> 0x3F17
+```
+
+Evidence: `extracted_metadata/m09c_native_phase_trampoline_runtime.json`.
+
+## VERIFY correction: zero-displacement BRA
+
+The first prototype accidentally emitted a short `BRA` whose displacement was zero. On 68000, opcode `0x6000` denotes a word-extension branch rather than a valid zero-distance short branch. BlastEm exposed the wrong target.
+
+Correction:
+
+- phase 5 falls directly into restore;
+- assembler rejects zero-displacement short branches;
+- CI protects the regression.
+
+This is a closed correction unless new evidence contradicts it.
+
+## CI
+
+Latest technical checkpoint before documentation cleanup:
+
+```text
+workflow: m09c-static
+run:      37997040444
+head:     373b3d33636c12f6c30c206165ad171168694e6c
+result:   success
+unittest: 42 / 42 pass
+BlastEm debugger/control integration: pass
+```
+
+Coverage includes historical guardrails, corrected word-pointer semantics, phase-bridge classification, six-phase builder contract, zero-BRA rejection and emulator debugger/control integration.
+
+## Remaining runtime gate
+
+M09C is not complete until the six-phase build passes a full gameplay containment/fallback comparison against the correct M07 sprint parent.
+
+Required:
+
+1. pre-Y gameplay convergence is exact;
+2. held-Y visual differences remain player-local;
+3. six authored states correlate one-to-one with F9F8 deltas `0,2,4,6,8,10`;
+4. no unrelated actor is contaminated by cache namespaces;
+5. post-Y convergence is exact;
+6. M07 movement/control behavior remains intact;
+7. F9F8/FB6E link semantics remain intact;
+8. F9F8 descriptor remains `0x000A0000`.
+
+Operational note: BlastEm `shot` hangs when used with `-g` software rendering in the current environment. Use the normal renderer or external X capture; the screenshot hang is not evidence of a ROM failure.
 
 ## Completion criteria
 
-M09C is complete only when:
+M09C completes only when:
 
-1. descriptor/family reconciliation is canonical-proven;
-2. `0x0F0000` visual-avatar frames round-trip through the sequence compiler;
-3. an authored selector/record path is proven non-overlapping and deterministic;
-4. FDDC/native animation state drives authored record selection;
-5. `object+0x2C` identity is preserved;
-6. renderer/cache authored chunks remain isolated to the visual avatar;
-7. deterministic BlastEm regression proves clean inactive fallback and native active progression;
-8. evidence and output fingerprints are persisted before any vertical-slice art depends on the path.
+- canonical word-pointer model is preserved;
+- canonical F9F8 descriptor identity is preserved;
+- authored resources are selected from native F9F8 phase, not `F712`;
+- six-phase dispatch is runtime-correct;
+- active visual effects remain player-local;
+- inactive fallback is exact;
+- evidence and audited fingerprints are persisted.
+
+Only after that should diagnostic chunks be replaced with production Quaid source frames.
