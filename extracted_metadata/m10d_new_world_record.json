@@ -1,0 +1,21 @@
+{
+  "schema": "truerecall.m10d.new_world_record.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene": 0,
+  "relocated_resource": "0x230000",
+  "new_record_offset": "0x2400",
+  "new_record_address": "0x232400",
+  "new_record": {
+    "world_type": 9,
+    "geometry": [800, 544, 816, 800]
+  },
+  "remote_pool_offset": "0x2500",
+  "remote_pool_bytes": 1712,
+  "remote_pool_end": "0x2BB0",
+  "changed_cells": [444, 498, 552, 606, 660],
+  "changed_cell_xy": [[12,8],[12,9],[12,10],[12,11],[12,12]],
+  "retail_payload_after_grid_unchanged": true,
+  "checksum": "0x3D11",
+  "output_sha1": "d7b6c4c75ee7d07898b15efdb623b164ea8e6cfc",
+  "runtime_validation": "pending"
+}
