@@ -1,43 +1,54 @@
-# M0.6O — Runtime-validated synthetic scripted type
+# M0.6O — Runtime execution of repurposed type 1
 
-M0.6O is the first TrueRecall build where a newly created scripted object class is not only structurally valid but is observed affecting the running retail engine.
+M0.6O is the first deterministic runtime proof that a TrueRecall-relocated VM program can affect the running retail engine. A later debugger finding requires a narrower interpretation than the original document claimed.
 
-It builds on M0.6F/M0.6M:
+## Correction discovered after M0.6O
 
-- repurpose unused retail `type_id 1` as a scripted VM class;
-- clone the safe presentation/stat profile of retail shotgun pickup `type 69`;
-- relocate a new VM source block to `0x1FB000`;
-- edit the shotgun amount from retail `+5` shells to `+6`;
-- place the new class directly into scene 0 at `(2680,556)`.
+The original M0.6O interpretation assumed `type_id 1` was unused because it has zero persistent retail placements.
+
+Later GDB tracing disproved that assumption: during the first mission the retail engine reaches `Type_Init` with `D0 & 0x03FF == 1` even without an added type-1 placement. Type 1 is therefore **runtime-reachable retail behavior**.
+
+Consequently, M0.6O does **not** prove that the added scene placement caused type 1 to materialize, and it does not prove creation of a new namespace class.
+
+What it *does* prove is still useful: changing type 1 from its retail direct-code representation to our relocated VM program changes live runtime behavior exactly as encoded by that VM program.
+
+## Laboratory build
+
+The build:
+
+- changes retail type 1 from direct-code to VM-scripted representation;
+- points it to a relocated script at `0x1FB000`;
+- clones the presentation/stat profile of shotgun pickup type 69;
+- changes shotgun award from retail `+5` shells to `+6`;
+- additionally places type 1 in scene 0 at `(2680,556)`.
+
+Because type 1 is now known to be spawned dynamically by retail logic, the added placement cannot be isolated as the causal source of the observed HUD change.
 
 Build tool: `tools/build/m06o_runtime_visible_type1.py`.
 
-## Static build identity
-
-Canonical input:
+Canonical input SHA-1:
 
 ```text
-True Lies (World)
-SHA-1 d39174bed46ede85531b86df7ba49123ce2f8411
+d39174bed46ede85531b86df7ba49123ce2f8411
 ```
 
-M0.6O output:
+M0.6O output SHA-1:
 
 ```text
-SHA-1 58fd98253343a4ec86bd0ff67afb698b545b4510
+58fd98253343a4ec86bd0ff67afb698b545b4510
 ```
 
-The generated ROM is not committed.
+## Deterministic runtime harness — CONFIRMED
 
-## Deterministic runtime sequence
-
-Runtime validation used the ulalume BlastEm fork build:
+Runtime validation used:
 
 ```text
 blastem 1.0.0-6e5677969b59
 ```
 
-The fork's frame-script facility was loaded through the control socket. The relevant input sequence is:
+with BlastEm's frame-script facility through the control socket.
+
+Deterministic sequence:
 
 ```text
 frame 930  pad 1 START down
@@ -47,48 +58,44 @@ frame 1322 pad 1 A up
 frame 1400 screenshot
 ```
 
-Observed state:
+Observed sequencing:
 
-- frame 930 selects the default `New Game` menu item;
-- by frame 1270 the first mission briefing is fully written;
-- the A press at frame 1320 enters gameplay;
-- frame 1400 is inside scene 0 with the player/HUD active.
+- frame 930 selects default `New Game`;
+- by frame 1270 the first briefing is complete;
+- frame 1320 A enters gameplay;
+- frame 1400 is inside scene 0 with HUD active.
 
-The same input frames were executed against the canonical retail ROM and M0.6O.
+This sequence is a valid reusable runtime regression primitive for later builds.
 
-## Runtime result — CONFIRMED
+## Runtime result — CONFIRMED, causal scope corrected
 
 At frame 1400:
 
 ### Retail ROM
 
-- shotgun weapon slot is empty;
-- no shotgun-ammo count is displayed in that slot.
+- shotgun slot empty;
+- no shotgun ammo count.
 
 ### M0.6O
 
-- shotgun weapon icon is present;
-- ammo count reads **`06`**.
+- shotgun icon present;
+- ammo count `06`.
 
-This is exactly the semantic change encoded by synthetic `type_id 1`.
+That matches the semantics of the relocated type-1 VM program.
 
-The result proves the complete runtime chain:
+The safe conclusion is:
 
 ```text
-new type-table entry
-→ new relocated VM program
-→ new persistent scene placement
-→ spatial materialization
-→ VM execution
-→ weapon ownership/ammo mutation
-→ live HUD update
+retail runtime invokes type 1
+→ patched type-table representation resolves to relocated VM program
+→ VM executes
+→ shotgun ownership/ammo changes
+→ live HUD reflects 06 shells
 ```
 
-No retail placed class was replaced to obtain this result.
+The stronger chain previously claimed — specifically `new persistent placement → materialization` — is **not established by M0.6O** and is withdrawn.
 
-## Diagnostic screenshot fingerprints
-
-These hashes are environment/frame-specific regression aids, not universal emulator-independent truths.
+## Diagnostic fingerprints
 
 At frame 1400 with BlastEm `1.0.0-6e5677969b59`:
 
@@ -97,28 +104,26 @@ retail full PNG SHA-1: 002c7126165165cde9f2eff8c8b6dd656e223ed6
 M0.6O full PNG SHA-1: 30a787020137a14d6bc6e72e6373d18b53a43049
 ```
 
-HUD diagnostic crop `(x=90..204, y=203..234)`, decoded RGB bytes:
+HUD crop `(90,203)-(205,235)`, decoded RGB bytes:
 
 ```text
-retail crop SHA-1: d2679780a448d6bbff6d278161c44e16c51e576c
-M0.6O crop SHA-1: a1dc52dd90c4503280db6ab8aaf9caf8175155af
+retail: d2679780a448d6bbff6d278161c44e16c51e576c
+M0.6O:  a1dc52dd90c4503280db6ab8aaf9caf8175155af
 ```
 
-Copyrighted runtime screenshots remain local and are not committed.
+Copyrighted screenshots remain local and are not committed.
 
-## Milestone interpretation
+## Engineering consequence
 
-M0.6O removes the largest uncertainty behind M0.6F–M: the authoring/reinsertion pipeline is not merely statically self-consistent; the retail engine accepts and executes a newly addressable scripted class placed by TrueRecall tooling.
+The correction strengthens the project's methodology:
 
-This is a **runtime-validated engine extension**.
+- zero scene placements does not imply an unused type ID;
+- namespace availability must include runtime spawn analysis;
+- a placement test must use an ID proven absent from retail runtime behavior, or extend the namespace beyond retail tables;
+- causality should be demonstrated with a distinct runtime marker/breakpoint or behavior not reachable through pre-existing retail spawns.
 
-However, the project's stricter M0.7 design gate remains intentionally separate: M0.7 should demonstrate a genuinely new player mechanic/state+animation or another comparably novel gameplay behavior, not only a cloned retail behavior with a changed constant.
+The extended-namespace line M0.6P/Q/R exists specifically to solve this stronger problem.
 
-## Next step
+## M0.7 status
 
-Use the now-proven runtime harness to validate:
-
-1. M0.6H one-tile gameplay-map edit;
-2. placement add/remove/replace builds;
-3. a deliberately novel object behavior assembled from VM primitives;
-4. then the first new player-state/mechanic prototype for formal M0.7.
+M0.6O remains a useful runtime proof of VM relocation/representation replacement, but it is not sufficient for M0.7. Formal M0.7 still requires a genuinely new player state/mechanic+animation or an equivalently novel and causally isolated gameplay extension.
