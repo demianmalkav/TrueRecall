@@ -1,62 +1,34 @@
 # M0.10 — World Collision Authoring
 
-M0.10 turns the recovered world spatial/collision resource into a writable level layer. It follows the same progression already proven for visual tilemaps and persistent placements: first prove safe relocation with no semantic change, then introduce controlled edits.
+M0.10 turns the recovered world spatial/collision resource into a writable level layer. It follows the same progression already proven for maps and persistent placements: relocation, material/type edits, broadphase reconstruction, geometry edits, then new authored records.
 
 ## M10A — byte-identical resource relocation — RUNTIME CONFIRMED
 
-Scene 0 stores its world spatial resource pointer at:
+Scene 0 stores its world spatial resource pointer at `scene+0x0E`.
 
 ```text
-scene record  = 0x013B9A
-field         = scene+0x0E
-retail base   = 0x07A42E
+scene record  0x013B9A
+retail base   0x07A42E
+next base     0x07C7EC
+length        0x23BE = 9,150 bytes
+relocated to  0x230000
 ```
 
-For the relocation proof, TrueRecall copies the complete retail byte interval from the scene-0 resource base up to the next world-resource base:
-
-```text
-0x07A42E .. 0x07C7EB
-length = 0x23BE = 9,150 bytes
-```
-
-The copied bytes are placed in expanded-ROM space at:
-
-```text
-0x230000
-```
-
-Only `scene+0x0E` is redirected. The original resource remains untouched.
-
-Build tool:
-
-`tools/build/m10a_world_collision_relocation.py`
+Build tool: `tools/build/m10a_world_collision_relocation.py`.
 
 Audited build:
 
 ```text
-base SHA-1   d39174bed46ede85531b86df7ba49123ce2f8411
 output SHA-1 38f586b8478487a1662326054764bbe6f3631ce7
-ROM size     4,194,304 bytes
+ROM size     4,194,304
 checksum     0x16C5
 ```
 
-### Static validation
+A deterministic BlastEm run compared retail and M10A at the same scene-0 path. Thirteen screenshots at frames `2098..2144` were pixel-identical. This proves `scene+0x0E` is a safe runtime relocation seam.
 
-The build asserts canonical input ROM identity, expected scene/resource boundaries, pristine expanded-ROM target space, byte-identical relocation, pointer redirection and a regenerated Genesis checksum.
+## World record layout — CONFIRMED
 
-### Runtime validation
-
-A deterministic BlastEm run compares retail and M10A at the same scene-0 gameplay path. Thirteen screenshots at frames `2098..2144` are pixel-identical (`0` different pixels at every sampled frame).
-
-Persisted result:
-
-`extracted_metadata/m10a_world_collision_runtime.json`
-
-This proves that `scene+0x0E` is a safe relocation seam for the world spatial resource and that expanded-ROM addressing works for this layer at runtime.
-
-## Axis normalization — CONFIRMED
-
-The ten-byte world-record base structure is editor-facing:
+Each base record is ten bytes:
 
 ```text
 +0x00 word world_type
@@ -66,128 +38,160 @@ The ten-byte world-record base structure is editor-facing:
 +0x08 word y_max
 ```
 
-The values are world-pixel coordinates and align with the plane-E nominal world extents.
-
-## Important index-authoring constraint
-
-The dense 64×64 broadphase grid is **not** simply a mechanical rasterization of each record bounding box. Most retail record memberships form rectangular cell regions, but overlap/priority cases are deliberately pruned. Retail uses at most one record reference per cell even though the engine supports multi-entry lists.
-
-Therefore TrueRecall must not regenerate the complete retail grid from rectangle overlap alone until that priority/partition policy is recovered or replaced by a runtime-validated authoring policy.
-
-This remains a failure-containment rule: record geometry and type editing are authorable, but full grid/list regeneration is not yet authorized.
+Coordinates are world pixels and are interpreted as half-open rectangles for broadphase membership.
 
 ## M10B — targeted material/type edits — RUNTIME CONFIRMED
 
-M10B isolates the behavioral meaning of the world-type dispatch without changing geometry or grid membership. Both builds use the exact M10A 4 MiB relocation and alter one existing scene-0 world record.
+M10B changes one existing world record while preserving its geometry and broadphase membership.
 
-Build tool:
+Build tool: `tools/build/m10b_targeted_collision.py`.
 
-`tools/build/m10b_targeted_collision.py`
-
-Persisted runtime measurements:
-
-`extracted_metadata/m10b_targeted_collision_runtime.json`
-
-### M10B-P — player pass-through record
-
-Exact record:
+### M10B-P — player pass-through
 
 ```text
-resource-relative offset  0x1C46
-expanded-ROM address      0x231C46
-geometry                  (736,544) .. (752,800)
-world type                9 -> 11
+record offset 0x1C46
+geometry      (736,544) .. (752,800)
+type          9 -> 11
+build SHA-1   80d9f2fc07d222af5d68f078de15271d27c8d66a
 ```
 
-Dispatch semantics are independently known:
+Holding Left in the deterministic scene-0 path leaves Harry blocked in M10A and lets him cross in M10B-P.
+
+### M10B-R — projectile pass-through
 
 ```text
-type 9  player -> 0x002E18 standard collision
- type11 player -> 0x002E16 RTS / no response
+record offset 0x1C6E
+geometry      (464,496) .. (784,544)
+type          9 -> 10
+build SHA-1   b64de77121fc80fd6e4c3389f27d26bfb0843b58
 ```
 
-Audited build:
+The projectile path diverges only after firing/impact while player collision remains standard.
+
+M10B proves local material behavior is independently authorable per world record.
+
+## M10C — broadphase/list serializer — STATIC CONFIRMED / RUNTIME PENDING
+
+The earlier hypothesis that scene 0 used a hidden overlap-priority policy was incorrect. The complete index format is now recovered exactly.
+
+### Resource prefix
 
 ```text
-output SHA-1 80d9f2fc07d222af5d68f078de15271d27c8d66a
-checksum     0x16C7
+0x0000..0x09B3  54×23 grid of 16-bit list pointers
+0x09B4..0x1059  deduplicated list pool
+0x105A          0xFFFF sentinel
+0x105C..0x1F01  375 ten-byte world records
 ```
 
-Compared byte-for-byte against M10A, the entire 4 MiB ROM differs at only two byte positions:
+The grid contains 1242 cells. Each cell represents a 64×64-pixel world region. This matches the 107×45 scene-0 world-metatile extent grouped as 2×2 metatiles:
 
 ```text
-0x00018F  checksum low byte
-0x231C47  world_type low byte: 0x09 -> 0x0B
+ceil(107/2) × ceil(45/2) = 54 × 23
 ```
 
-Runtime test: hold Left from frame 2100 through 2280. M10A keeps Harry blocked by the record; the M10B-P build allows him to cross and finish on the west side. A single `type 9 -> 11` edit therefore disables player collision for that existing geometry at runtime.
+### List encoding
 
-### M10B-R — projectile pass-through record
+Every non-zero grid entry points to the first word of a cell list.
 
-Exact record:
+- bit15 on the first reference marks a list start;
+- low 15 bits are a resource-relative world-record offset;
+- continuation references have bit15 clear;
+- the next bit15-marked word begins the next unique list;
+- cells may share list pointers.
+
+Retail scene 0 contains:
 
 ```text
-resource-relative offset  0x1C6E
-expanded-ROM address      0x231C6E
-geometry                  (464,496) .. (784,544)
-world type                9 -> 10
+985 non-empty cells
+373 unique non-zero list pointers
+373 bit15 list starts
+851 list words
+list length 1..8 records
+1702 list-pool bytes
 ```
 
-Dispatch semantics:
+All 851 references resolve to the 375 records.
+
+### Exact membership rule
+
+For all 1242 cells, the retail membership list is exactly the set of records satisfying:
 
 ```text
-type 9  player     -> standard collision
- type9  projectile -> standard collision
- type10 player     -> standard collision
- type10 projectile -> 0x002E16 RTS / no response
+record.x_min < cell.x_max
+record.x_max > cell.x_min
+record.y_min < cell.y_max
+record.y_max > cell.y_min
 ```
 
-Audited build:
+Lists are ordered by record offset descending. Unique membership tuples are emitted on first encounter while scanning cells row-major; repeated tuples reuse the first list pointer.
+
+`tools/build/world_collision_codec.py` reproduces both the retail grid and the complete 1702-byte list pool byte-for-byte.
+
+### M10C geometry edit proof
+
+Target:
 
 ```text
-output SHA-1 b64de77121fc80fd6e4c3389f27d26bfb0843b58
-checksum     0x16C6
+record offset   0x1C46
+world_type      9
+before          (736,544) .. (752,800)
+after           (800,544) .. (816,800)
 ```
 
-Again, compared against M10A, only two bytes differ:
+The wall is moved exactly 64 pixels east. Five old cells lose the record and five new cells gain it, for ten changed membership tuples total:
 
 ```text
-0x00018F  checksum low byte
-0x231C6F  world_type low byte: 0x09 -> 0x0A
+(11,8)  <-> (12,8)
+(11,9)  <-> (12,9)
+(11,10) <-> (12,10)
+(11,11) <-> (12,11)
+(11,12) <-> (12,12)
 ```
 
-Runtime test: briefly face north, then fire B. At frame 2130 baseline and patch are pixel-identical; from frame 2134 onward the impact/projectile presentation diverges exactly where expected, with the retail impact flash absent/changed in the type-10 build. The player dispatch remains the standard collision path for type 10.
+The regenerated pool is 1698 bytes, fitting inside the existing fixed pool region while preserving the record table at `0x105C`.
 
-### What M10B proves
-
-M10B establishes a production-grade authoring seam:
+Audited static build:
 
 ```text
-existing world geometry
-+ unchanged broadphase membership
-+ authored world_type
-= independently selectable player/projectile collision behavior
+output SHA-1 5bf78090cbc54acbed1bc70211666f5f1d1645bf
+ROM size     4,194,304
+checksum     0xDAE9
+resource     0x230000
 ```
 
-This is stronger than the old global walk/shoot-through-walls cheats: the behavior can be assigned to one specific world rectangle without disabling collision globally.
+Tool/evidence:
+
+```text
+tools/build/world_collision_codec.py
+tools/build/m10c_broadphase_geometry.py
+extracted_metadata/m10c_broadphase_geometry.json
+docs/M10C_BROADPHASE_SERIALIZER.md
+```
+
+The build reparses the authored record table and regenerates the index again to prove self-consistency.
+
+Runtime validation is still required before M10C is marked complete because the current execution container no longer has the debug BlastEm binary used by M0.7–M0.10B.
 
 ## Current M0.10 boundary
 
-Confirmed authorable now:
+Confirmed and runtime-authorized:
 
-- relocate an existing world resource;
-- edit a record's behavior type;
-- preserve its geometry and current broadphase membership;
-- produce player-blocking/projectile-pass-through material behavior;
-- produce player-pass-through behavior for a selected record;
-- validate the semantic result at runtime.
+- relocate a world resource;
+- edit an existing record's `world_type`;
+- select local player/projectile collision behavior.
 
-Still unresolved before arbitrary collision-shape authoring:
+Statically authorable with an exact recovered serializer:
 
-1. recover or replace the retail broadphase priority/partition policy;
-2. prove geometry edits that cross cell boundaries;
-3. generate cell reference lists and dense-grid entries safely;
-4. classify special world types that carry semantics beyond simple block/no-op dispatch;
-5. integrate world-material records into the declarative scene compiler.
+- regenerate scene-0 64×64 broadphase cell membership;
+- move existing rectangle geometry across broadphase cells;
+- deduplicate and encode multi-record cell lists.
 
-The next high-value M0.10 step is therefore **grid/list regeneration**, not further single-record type mutation.
+Remaining gates:
+
+1. runtime-validate the M10C cross-cell geometry edit;
+2. generalize layout discovery/serialization to all 19 scenes;
+3. add new world records rather than only moving existing ones;
+4. integrate typed world rectangles into the declarative scene compiler;
+5. classify special world types only where they advance Total Recall mechanics.
+
+The next immediate M0.10 step is the runtime validation of the `0x1C46` east-shift build. Once that passes, arbitrary existing-record geometry becomes production-authorized.
