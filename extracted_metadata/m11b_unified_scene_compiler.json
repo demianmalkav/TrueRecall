@@ -1,0 +1,15 @@
+{
+  "schema": "truerecall.m11b.unified_scene_compiler.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "output_sha1": "fac81fdc87b76a75c9b590d58707b16fcd6a5f04",
+  "checksum": "0x3E9A",
+  "scene_index": 18,
+  "map_changed_words": 1,
+  "object_count": [40, 41],
+  "object_stride_runs": [[8, 2], [6, 1], [8, 38]],
+  "world_new_record_offset": "0x0180",
+  "world_pool_start": "0x0190",
+  "allocation_count": 5,
+  "scene_record_changed_offsets": [11, 12, 13, 15, 16, 17, 27, 28, 29],
+  "runtime_validation": "pending"
+}
