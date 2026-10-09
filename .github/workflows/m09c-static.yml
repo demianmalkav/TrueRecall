@@ -44,10 +44,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install Xvfb
+      - name: Install BlastEm runtime dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb
+          sudo apt-get install -y xvfb libpulse0 libsamplerate0 libasound2t64
       - name: Download verified BlastEm
         shell: bash
         run: |
@@ -58,6 +58,8 @@ jobs:
           mkdir blastem
           tar -xzf blastem.tar.gz -C blastem
           chmod +x blastem/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem
+          ldd blastem/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem | tee blastem-ldd.txt
+          ! grep -q 'not found' blastem-ldd.txt
       - name: Run debugger/control-socket integration test
         env:
           BLASTEM_BIN: ${{ github.workspace }}/blastem/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem
