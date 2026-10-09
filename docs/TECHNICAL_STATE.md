@@ -34,17 +34,17 @@ Completed reconstruction / authoring foundation:
 - **M0.6G/H** gameplay-map LZBeam relocation and one-tile authored edit
 - **M0.6I/J/K/L** placement replacement/insertion, mixed-stride descriptor regeneration and declarative scene-object compiler
 - **M0.6M** new scripted class placed directly into a persistent level stream
-- later M0.6 runtime probes proved the recovered type/placement path can execute under BlastEm
+- later M0.6 runtime probes proved the recovered type/placement path executes under BlastEm
 
 Runtime extension milestones:
 
 - **M0.7 — COMPLETE:** deterministic BlastEm runtime harness plus held-Y sprint extension with measured movement change and clean inactive fallback.
-- **M0.8 — COMPLETE:** ROM expansion to 4 MiB plus runtime-visible authored avatar bytes routed through renderer/cache/VRAM/SAT during sprint only.
+- **M0.8 — COMPLETE:** 4 MiB ROM expansion plus runtime-visible authored avatar bytes routed through renderer/cache/VRAM/SAT during sprint only.
 
 Active authoring milestones:
 
 - **M0.9 — ACTIVE / integration-in-progress:** multi-frame sprite compiler, global chunk deduplication, pixel-exact retail round-trip and runtime-stable four-phase authored-pixel path proven. Native `FDDC`-driven authored sequence integration remains open.
-- **M0.10 — ACTIVE:** M0.10A/B are runtime-confirmed. **M0.10C broadphase serialization is now statically recovered exactly and a cross-cell geometry build is reproducible; runtime validation of that geometry build remains pending.**
+- **M0.10 — ACTIVE:** M10A/B are runtime-confirmed. M10C/D/F establish exact broadphase reconstruction, geometry/new-record authoring and a declarative world manifest. Runtime validation remains pending for the genuinely new/moved M10C/D/F geometry builds in the current container.
 
 The first Total Recall vertical slice has not started.
 
@@ -52,13 +52,13 @@ The first Total Recall vertical slice has not started.
 
 Primary continuation branch: `m0.6c-level-stream`.
 
-The latest structural collision proof is M0.10C. Read branch head before new writes; do not rely on older checkpoint SHAs embedded in past handoffs.
+Current continuation point is **M10F declarative world-collision authoring**. Always read branch head before writing; do not rely on old checkpoint SHAs embedded in earlier handoffs.
 
 The historical sprint branch `m0.7-sprint-runtime` remains a proof branch, not the active continuation point.
 
 ## Runtime harness — CONFIRMED
 
-A debug-capable BlastEm build is controlled through deterministic frame scripts. The harness can boot canonical/generated ROMs, navigate title/briefing flow at fixed frames, inject six-button input, capture screenshots at absolute frames and compare logical parent/child builds.
+A debug-capable BlastEm build has been controlled through deterministic frame scripts. The harness can boot canonical/generated ROMs, navigate title/briefing flow at fixed frames, inject six-button input, capture screenshots at absolute frames and compare logical parent/child builds.
 
 Representative boot path:
 
@@ -73,7 +73,7 @@ Representative boot path:
 
 Runtime regression is mandatory for behavior/presentation/collision authoring claims.
 
-Current environment note: this container no longer has the debug BlastEm binary used for M0.7–M0.10B and has no direct DNS egress. M0.10C therefore remains static-only until the runtime harness is restored; this is an environment limitation, not an engine ambiguity.
+Current environment note: this container no longer has the debug BlastEm binary used for M0.7–M10B and has no direct DNS egress. M10C/D/F therefore remain static-only until the runner is restored. This is an environment limitation, not an engine ambiguity.
 
 ## Player control — CONFIRMED / HIGH CONFIDENCE
 
@@ -227,23 +227,7 @@ M0.9C remains: integrate an authored mapping/chunk sequence through native `FDDC
 
 ## M0.10 world collision authoring — ACTIVE
 
-### M0.10A — runtime-confirmed relocation
-
-Scene-0 world resource:
-
-```text
-scene record  0x013B9A
-retail base   0x07A42E
-next base     0x07C7EC
-length        0x23BE = 9,150 bytes
-relocated to  0x230000
-```
-
-A deterministic 13-frame gameplay comparison is pixel-identical.
-
-### M0.10B — runtime-confirmed local collision behavior
-
-World record base layout:
+World records are ten-byte typed half-open rectangles:
 
 ```text
 +0x00 world_type
@@ -253,52 +237,54 @@ World record base layout:
 +0x08 y_max
 ```
 
-A single `type 9 -> 11` edit at record `0x1C46` disables player collision for that rectangle; a `type 9 -> 10` edit at `0x1C6E` preserves player collision while allowing projectiles through.
+### M10A — runtime-confirmed relocation
 
-### M0.10C — exact broadphase serializer — STATIC CONFIRMED / RUNTIME PENDING
+Scene-0 world resource was relocated byte-identically to expanded ROM at `0x230000`; a deterministic 13-frame gameplay comparison remained pixel-identical.
 
-Scene-0 broadphase prefix is fully recovered:
+### M10B — runtime-confirmed material behavior
 
-```text
-0x0000..0x09B3  54×23 grid (1242 words)
-0x09B4..0x1059  deduplicated cell-list pool (1702 bytes retail)
-0x105A          0xFFFF sentinel
-0x105C..0x1F01  375 ten-byte world records
-```
+- `type 9 -> 11` on a target record allows player pass-through.
+- `type 9 -> 10` preserves player blocking while allowing projectiles through.
 
-Each grid cell is 64×64 pixels. Non-zero grid words point to a list whose first reference has bit15 set; continuation refs have bit15 clear. Retail contains 373 unique lists of 1..8 records.
+This proves local material behavior is authorable independently from geometry.
 
-For **all 1242 cells**, membership is exactly half-open rectangle intersection:
+### M10C — exact broadphase serializer — STATIC CONFIRMED
 
-```text
-rx0 < cell_x1 && rx1 > cell_x0 && ry0 < cell_y1 && ry1 > cell_y0
-```
+Each scene uses a dense grid of 64×64-pixel cells whose words point to a deduplicated variable-length list pool. Record membership is half-open rectangle intersection; references are ordered by record offset descending; duplicate membership tuples share a pointer.
 
-References are sorted by record offset descending. Unique membership tuples are emitted on first row-major encounter and deduplicated by pointer reuse.
+Scene 0's retail grid/list pool is reproduced byte-for-byte. The M10C proof moves an existing wall 64 pixels east and regenerates exactly the affected memberships.
 
-`tools/build/world_collision_codec.py` reproduces the retail grid and full list pool byte-for-byte.
+### M10D — new world record — STATIC CONFIRMED
 
-M10C proof build moves record `0x1C46` 64 pixels east:
+A completely new type-9 rectangle is allocated outside the retail world-record table and indexed through a separately placed list pool, while preserving the retail payload after the dense grid byte-for-byte.
 
-```text
-before (736,544) .. (752,800)
-after  (800,544) .. (816,800)
-changed semantic cell memberships: 10
-list pool: 1702 -> 1698 bytes
-output SHA-1 5bf78090cbc54acbed1bc70211666f5f1d1645bf
-checksum 0xDAE9
-```
+This removes the structural dependency on reusing an existing retail collision record.
 
-Tool/evidence:
+### M10E — all-scene broadphase reconstruction — CONFIRMED
 
-```text
-tools/build/world_collision_codec.py
-tools/build/m10c_broadphase_geometry.py
-extracted_metadata/m10c_broadphase_geometry.json
-docs/M10C_BROADPHASE_SERIALIZER.md
-```
+`tools/rom_probe/world_collision_all_scenes_probe.py` proves exact grid + list-pool + membership reconstruction for **all 19 retail scenes**.
 
-Runtime validation is the only remaining M10C gate.
+- 18 scenes derive grid dimensions from gameplay-map dimensions.
+- scene 6 is recovered as `26×55` by record-extent factorization.
+- scene 18 is a valid `9×20` empty world layer with zero records and zero pool bytes.
+
+Metadata: `extracted_metadata/world_collision_all_scenes.json`.
+
+### M10F — declarative world manifest — STATIC CONFIRMED
+
+`tools/build/world_collision_manifest.py` exposes collision/material geometry as authoring records with stable IDs, type and rectangle coordinates. It supports semantic `add`, `remove` and `replace` operations.
+
+`tools/rom_probe/world_collision_manifest_probe.py` proves:
+
+- export→compile no-op exactness for **19/19 scenes**;
+- new-record creation in empty scene 18 without reusing retail geometry;
+- authored wall `type 9`, offset `0x0200`, rectangle `(64,64)..(80,256)`;
+- exactly three affected cells `(1,1)`, `(1,2)`, `(1,3)`;
+- one deduplicated two-byte membership list shared by those cells.
+
+Metadata: `extracted_metadata/m10f_world_manifest.json`.
+
+M10D/F new geometry remains runtime-unvalidated in the current container, but its serializer foundation is backed by M10A/B runtime seams plus exact 19-scene retail reconstruction.
 
 ## Audio
 
@@ -306,10 +292,10 @@ Maxmus `T Bardo 1993 V2.1a` is confirmed. Exact 68000↔Z80 command API, sequenc
 
 ## Highest-value next work
 
-1. Restore the deterministic BlastEm runner and runtime-validate M0.10C.
-2. Generalize broadphase serializer discovery/compilation across all 19 scenes.
-3. Add/serialize entirely new world records and integrate them into the declarative scene compiler.
-4. Complete M0.9C native `FDDC` sequence integration.
-5. Promote proof pixels into a deterministic Quaid source-art compiler and coherent original animation.
-6. Add VRAM-cache/sprite-per-line budget assertions to production art builds.
-7. Start the Total Recall vertical slice once player-art sequencing and arbitrary collision geometry are deterministic and regression-protected.
+1. Build a **unified declarative scene source** combining gameplay maps, persistent placements and world-collision manifests.
+2. Make that scene source compile all three resource families, relocate them safely and patch one scene record transactionally.
+3. Add static no-op round trips for the unified compiler across representative scenes, including mixed-stride placements and an empty collision layer.
+4. Restore the deterministic BlastEm runner when environment access permits and runtime-validate M10C/D/F plus the unified scene build.
+5. Complete M0.9C native `FDDC` sequence integration.
+6. Promote proof pixels into deterministic Quaid source art and coherent original animation with VRAM/sprite budget assertions.
+7. Start the Total Recall vertical slice once unified scene authoring and native player-art sequencing are deterministic and regression-protected.
