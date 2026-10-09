@@ -1,0 +1,43 @@
+{
+  "schema": "truerecall.m11f.scene_palette_static.v1",
+  "evidence_scope": "static_synthetic",
+  "canonical_rom_execution": false,
+  "runtime_validation": "pending",
+  "branch": "m11f-palette-authoring",
+  "base_checkpoint": "be6c632335ab451392859cf099c8c4bf353a104c",
+  "compiler": "tools/build/scene_palette.py",
+  "canonical_probe": "tools/rom_probe/scene_palette_probe.py",
+  "static_test": "tests/test_scene_palette_static.py",
+  "py_compile": true,
+  "unittest": {
+    "tests_run": 7,
+    "failures": 0,
+    "errors": 0,
+    "result": "OK"
+  },
+  "synthetic_fixture": {
+    "rom_size": 2097152,
+    "scene_record": "0x001000",
+    "retail_palette": "0x002000",
+    "palette_words": 64,
+    "authored_color_index": 5,
+    "authored_color": "0x0222",
+    "expanded_rom_size": 4194304,
+    "authored_palette": "0x300000"
+  },
+  "verified_invariants": [
+    "valid 0x0EEE-masked Genesis CRAM words accepted",
+    "invalid low-bit CRAM word rejected",
+    "invalid high-bit CRAM word rejected",
+    "palette length fixed at 64 words",
+    "non-integer color rejected",
+    "0x10 expanded-ROM alignment contract",
+    "unchanged synthetic source compiles byte-identically",
+    "edited synthetic source expands to 4 MiB",
+    "edited palette relocates to 0x300000",
+    "both scene palette pointers target authored CRAM",
+    "authored CRAM word reparses exactly",
+    "Genesis checksum is repaired"
+  ],
+  "promotion_rule": "Do not mark M11F CONFIRMED until tools/rom_probe/scene_palette_probe.py executes against the canonical True Lies (World) SHA-1 d39174bed46ede85531b86df7ba49123ce2f8411."
+}
