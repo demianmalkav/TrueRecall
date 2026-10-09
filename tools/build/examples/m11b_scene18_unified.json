@@ -1,0 +1,32 @@
+{
+  "schema": "truerecall.scene_patch.v1",
+  "scene_index": 18,
+  "allocation_base": "0x300000",
+  "map_operations": [
+    {
+      "op": "set_tile",
+      "plane": "C000",
+      "x": 0,
+      "y": 0,
+      "value": "0x0001"
+    }
+  ],
+  "object_operations": [
+    {
+      "op": "add",
+      "type_id": 54,
+      "x": 128,
+      "y": 120,
+      "stride": 6,
+      "status_flags": "0x7800"
+    }
+  ],
+  "world_operations": [
+    {
+      "op": "add",
+      "id": "authored_wall_0",
+      "type": 9,
+      "rect": [64, 64, 80, 256]
+    }
+  ]
+}
