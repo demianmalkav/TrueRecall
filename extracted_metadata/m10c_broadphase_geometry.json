@@ -1,0 +1,23 @@
+{
+  "schema": "truerecall.m10c.broadphase_geometry.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene": 0,
+  "grid": {
+    "width": 54,
+    "height": 23,
+    "cell_px": 64,
+    "bytes": 2484
+  },
+  "retail_exact_regeneration": true,
+  "retail_list_pool_bytes": 1702,
+  "authored_list_pool_bytes": 1698,
+  "record_offset": "0x1C46",
+  "geometry_before": [736, 544, 752, 800],
+  "geometry_after": [800, 544, 816, 800],
+  "semantic_changed_cells": [443, 444, 497, 498, 551, 552, 605, 606, 659, 660],
+  "semantic_changed_cell_xy": [[11,8],[12,8],[11,9],[12,9],[11,10],[12,10],[11,11],[12,11],[11,12],[12,12]],
+  "relocated_resource": "0x230000",
+  "checksum": "0xDAE9",
+  "output_sha1": "5bf78090cbc54acbed1bc70211666f5f1d1645bf",
+  "runtime_validation": "pending"
+}
