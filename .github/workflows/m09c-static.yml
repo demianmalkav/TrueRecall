@@ -30,6 +30,7 @@ jobs:
             tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py \
             tools/rom_probe/m09c_canonical_gate.py \
             tools/rom_probe/m09c_animation_progression_analysis.py \
+            tools/rom_probe/m09c_phase_bridge_analysis.py \
             tools/rom_probe/sprite_sequence_roundtrip_probe.py \
             tools/runtime/m09c_animation_state_trace.py \
             tools/runtime/m09c_animation_state_trace_v2.py
@@ -42,6 +43,7 @@ jobs:
             tests.test_m09c_animation_state_trace_static \
             tests.test_m09c_animation_state_trace_v2_static \
             tests.test_m09c_animation_progression_analysis_static \
+            tests.test_m09c_phase_bridge_analysis_static \
             tests.test_m09c_native_phase_pixel_sequence_static
 
   blastem-harness:
