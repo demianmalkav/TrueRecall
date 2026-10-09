@@ -20,8 +20,9 @@ from typing import Any
 
 from PIL import Image
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "build"))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+TOOLS = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(TOOLS / "build"))
+sys.path.insert(0, str(TOOLS))
 from sprite_sequence_compiler import compile_sequence
 from sprite_frame_export import chunk_image, resolve_chunk, u16
 
@@ -203,11 +204,13 @@ def main() -> None:
         rebuilt_pixels = rebuilt.tobytes()
         if rebuilt_pixels != source_pixels:
             raise AssertionError(f"pixel mismatch selector 0x{selector:04X}")
-        if record[:0x0F] != bytes(
-            b"".join(int(source_frame[key]).to_bytes(2, "big") for key in (
+        expected_header = b"".join(
+            int(source_frame[key]).to_bytes(2, "big")
+            for key in (
                 "control0", "control1", "control2", "origin_x", "origin_y", "clip_width", "clip_height"
-            )) + bytes([source_frame["record_flags"]])
-        ):
+            )
+        ) + bytes([source_frame["record_flags"]])
+        if record[:0x0F] != expected_header:
             raise AssertionError(f"record header mismatch selector 0x{selector:04X}")
         compiled_hashes.append(
             {
