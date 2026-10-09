@@ -1,0 +1,36 @@
+{
+  "schema": "truerecall.m09c.static_gate.v1",
+  "evidence_scope": "static_ci",
+  "canonical_rom_execution": false,
+  "runtime_validation": "pending",
+  "branch": "m09c-native-sequence-seam",
+  "stable_parent": "be6c632335ab451392859cf099c8c4bf353a104c",
+  "workflow": {
+    "name": "m09c-static",
+    "run_id": 37992535933,
+    "head_sha": "6d6928491840d4125a82fb89edf1874fcc1b31c8",
+    "conclusion": "success",
+    "job_id": 114030136219,
+    "steps": {
+      "compile_m09c_probes": "success",
+      "run_seam_helper_tests": "success"
+    }
+  },
+  "compiled_probes": [
+    "tools/rom_probe/m09c_native_sequence_seam_probe.py",
+    "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
+    "tools/rom_probe/sprite_sequence_roundtrip_probe.py"
+  ],
+  "static_test": "tests/test_m09c_native_sequence_seam_static.py",
+  "static_test_count": 7,
+  "verified_helper_invariants": [
+    "JSR absolute-long target decoding",
+    "JSR absolute-word sign extension",
+    "BSR short displacement uses opcode PC + 2",
+    "BSR word displacement uses opcode PC + 2",
+    "negative BSR word displacement",
+    "0xFF candidate-run inventory",
+    "short filler runs rejected below threshold"
+  ],
+  "promotion_rule": "This evidence confirms probe syntax/imports and ROM-independent helper mechanics only. Do not mark M09C complete until descriptor/family reconciliation, visual-avatar round-trip and runtime native progression execute against the canonical ROM."
+}
