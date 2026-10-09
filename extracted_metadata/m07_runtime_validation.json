@@ -1,0 +1,100 @@
+{
+  "schema": "truerecall.m07.runtime_sprint_validation.v1",
+  "base_rom_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "m07c_output_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+  "emulator": "BlastEm fork build blastem-linux-x86_64-1.0.0-6e5677969b59",
+  "emulator_binary_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+  "test_input": "deterministic frame-script; hold LEFT+Y starting frame 2100",
+  "active_path_equivalence_m07a_vs_m07c": [
+    {"frame": 2080, "changed_pixels": 0, "bbox": null},
+    {"frame": 2120, "changed_pixels": 0, "bbox": null},
+    {"frame": 2140, "changed_pixels": 0, "bbox": null},
+    {"frame": 2160, "changed_pixels": 0, "bbox": null},
+    {"frame": 2200, "changed_pixels": 0, "bbox": null}
+  ],
+  "animation_table_relocation_noop_vs_base": [
+    {"frame": 2080, "changed_pixels": 0, "bbox": null},
+    {"frame": 2120, "changed_pixels": 0, "bbox": null},
+    {"frame": 2140, "changed_pixels": 0, "bbox": null},
+    {"frame": 2160, "changed_pixels": 0, "bbox": null},
+    {"frame": 2200, "changed_pixels": 0, "bbox": null}
+  ],
+  "fallback_no_y_full_frame": [
+    {"frame": 2080, "changed_pixels": 0, "bbox": null},
+    {"frame": 2120, "changed_pixels": 12, "bbox": [106, 234, 179, 235]},
+    {"frame": 2140, "changed_pixels": 15, "bbox": [110, 234, 199, 235]},
+    {"frame": 2160, "changed_pixels": 5, "bbox": [176, 234, 193, 235]},
+    {"frame": 2200, "changed_pixels": 0, "bbox": null}
+  ],
+  "fallback_no_y_gameplay_rows_0_233": [
+    {"frame": 2080, "changed_pixels": 0, "bbox": null},
+    {"frame": 2120, "changed_pixels": 0, "bbox": null},
+    {"frame": 2140, "changed_pixels": 0, "bbox": null},
+    {"frame": 2160, "changed_pixels": 0, "bbox": null},
+    {"frame": 2200, "changed_pixels": 0, "bbox": null}
+  ],
+  "camera_shift_dense": {
+    "base": [
+      {"frame": 2098, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2102, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2104, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2106, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2108, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2110, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2112, "background_shift_px": 3, "alignment_mean_abs_error": 0.0},
+      {"frame": 2114, "background_shift_px": 6, "alignment_mean_abs_error": 0.0},
+      {"frame": 2116, "background_shift_px": 9, "alignment_mean_abs_error": 0.0},
+      {"frame": 2118, "background_shift_px": 12, "alignment_mean_abs_error": 0.0},
+      {"frame": 2120, "background_shift_px": 15, "alignment_mean_abs_error": 0.0},
+      {"frame": 2122, "background_shift_px": 18, "alignment_mean_abs_error": 0.0},
+      {"frame": 2124, "background_shift_px": 21, "alignment_mean_abs_error": 0.0},
+      {"frame": 2126, "background_shift_px": 24, "alignment_mean_abs_error": 0.0},
+      {"frame": 2128, "background_shift_px": 27, "alignment_mean_abs_error": 0.0},
+      {"frame": 2130, "background_shift_px": 30, "alignment_mean_abs_error": 0.0},
+      {"frame": 2132, "background_shift_px": 33, "alignment_mean_abs_error": 0.0},
+      {"frame": 2134, "background_shift_px": 36, "alignment_mean_abs_error": 0.0},
+      {"frame": 2136, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2138, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2140, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2144, "background_shift_px": 37, "alignment_mean_abs_error": 0.0}
+    ],
+    "sprint": [
+      {"frame": 2098, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2102, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2104, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2106, "background_shift_px": 0, "alignment_mean_abs_error": 0.0},
+      {"frame": 2108, "background_shift_px": 4, "alignment_mean_abs_error": 0.0},
+      {"frame": 2110, "background_shift_px": 8, "alignment_mean_abs_error": 0.0},
+      {"frame": 2112, "background_shift_px": 12, "alignment_mean_abs_error": 0.0},
+      {"frame": 2114, "background_shift_px": 16, "alignment_mean_abs_error": 0.0},
+      {"frame": 2116, "background_shift_px": 20, "alignment_mean_abs_error": 0.0},
+      {"frame": 2118, "background_shift_px": 24, "alignment_mean_abs_error": 0.0},
+      {"frame": 2120, "background_shift_px": 28, "alignment_mean_abs_error": 0.0},
+      {"frame": 2122, "background_shift_px": 32, "alignment_mean_abs_error": 0.0},
+      {"frame": 2124, "background_shift_px": 36, "alignment_mean_abs_error": 0.0},
+      {"frame": 2126, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2128, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2130, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2132, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2134, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2136, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2138, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2140, "background_shift_px": 37, "alignment_mean_abs_error": 0.0},
+      {"frame": 2144, "background_shift_px": 37, "alignment_mean_abs_error": 0.0}
+    ],
+    "observations": {
+      "frame_2118": {"base": 12, "sprint": 24},
+      "frame_2124": {"base": 21, "sprint": 36},
+      "plateau_37px": {"base_frame": 2136, "sprint_frame": 2126}
+    }
+  },
+  "conclusions": [
+    "Sprint active path changes runtime movement under Y+direction.",
+    "Static background camera translation is larger/earlier under sprint; at frame 2118 it is 24 px vs 12 px.",
+    "Observed 37 px camera plateau is reached 10 frames earlier under sprint.",
+    "M07C active output is pixel-identical to M07A diagnostic active output at all sparse comparison frames.",
+    "Animation table relocation no-op is pixel-identical to base at all sparse comparison frames.",
+    "Without Y, gameplay rows 0..233 are pixel-identical to base at all sparse comparison frames; residual differences are confined to capture row 234.",
+    "M07C uses an independent sprint selector/row but the proof row clones retail presentation bytes; original new art/frames are not yet proven."
+  ]
+}
