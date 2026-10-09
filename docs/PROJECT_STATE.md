@@ -8,11 +8,11 @@ This file is the single authoritative continuation state for the reverse-enginee
 m09c-native-sequence-seam
 ```
 
-Authoritative checkpoint at creation:
+Authoritative checkpoint:
 
 ```text
-0a164e55ecdb168fced6041afceac2527dc7a68d
-Promote M09C static gate after CI roundtrip
+d5ecf079b3d773cb7852f5b8fce71b93b047ea6b
+Promote M09C static gate to v3
 ```
 
 Stable parent for the current player-presentation track:
@@ -40,14 +40,18 @@ Goal: replace the M09B2 VBlank-driven diagnostic frame phase with authored playe
   - runtime-proven visual-avatar descriptor from M08/M09B2 renderer sweep: `0x0F0000`.
 - `tools/rom_probe/m09c_native_sequence_seam_probe.py` is implemented.
 - `tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py` is implemented.
+- `tools/rom_probe/m09c_canonical_gate.py` is implemented as the one-shot canonical gate runner.
 - Historical `sprite_sequence_roundtrip_probe.py` has a shell-clean import path on the M09C branch.
 - Static CI workflow `.github/workflows/m09c-static.yml` is operational.
-- GitHub Actions run `37992816170` completed successfully on commit `cb60fdc5cf56ae9e39da5425b484a86f044a4d9d`.
-- CI compiled all three M09/M09C probes and executed **10/10** static/synthetic tests successfully.
+- GitHub Actions run `37993521291` completed successfully on commit `fe5c6edc2958012ac9a46eac3626eec3bc3c601f`.
+- CI compiled all four M09/M09C probes/gates and executed **16/16** static/synthetic tests successfully.
 - Synthetic descriptor coverage proves the packed descriptor model where `descriptor+0x02` participates simultaneously in selector decoding and the group-0 graphics source pointer.
 - Synthetic visual-frame round-trip proves `descriptor -> record -> pixels -> sequence compiler -> record/pixels` is lossless under the current compiler grid contract.
-- BlastEm toolchain has been restored from GitHub Actions artifact `11643919770`; the artifact is recorded in `extracted_metadata/m09c_static_gate.json`.
-- `extracted_metadata/m09c_static_gate.json` schema v2 is the static evidence record.
+- Canonical promotion guardrails reject wrong descriptor identity, incomplete JLLBFR resolution, non-pixel-exact output, selector/frame count disagreement and base-ROM SHA mismatch.
+- BlastEm toolchain has been restored from GitHub Actions artifact `11643919770`.
+- `extracted_metadata/m09c_static_gate.json` schema v3 is the current static evidence record.
+- The Library entry `/Total Recall Sega/True Lies (World).md` has been located and reports the exact canonical size `2,097,152` bytes.
+- Raw materialization of that Library entry remains denied by the current Project authorization path.
 
 ## EVIDENCE
 
@@ -55,18 +59,33 @@ Primary static evidence:
 
 ```text
 extracted_metadata/m09c_static_gate.json
-schema: truerecall.m09c.static_gate.v2
+schema: truerecall.m09c.static_gate.v3
 ```
 
-CI:
+Latest CI:
 
 ```text
 workflow: m09c-static
-run:      37992816170
+run:      37993521291
+job:      114033538700
 result:   success
 python:   3.12
-probes:   py_compile PASS
-unittest: 10 tests, 0 failures, 0 errors
+compile:  PASS
+unittest: 16 tests, 0 failures, 0 errors
+```
+
+Canonical gate runner:
+
+```text
+tools/rom_probe/m09c_canonical_gate.py
+```
+
+It verifies the ROM identity, runs Gate 1 and Gate 2 in order, validates both report schemas/identities/invariants and emits:
+
+```text
+extracted_metadata/m09c_native_sequence_seam.json
+extracted_metadata/m09c_visual_avatar_roundtrip.json
+extracted_metadata/m09c_canonical_gate.json
 ```
 
 BlastEm restoration:
@@ -85,33 +104,34 @@ size:  2,097,152 bytes
 SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 ```
 
+Library locator:
+
+```text
+/Total Recall Sega/True Lies (World).md
+registered size: 2,097,152 bytes
+raw materialization: blocked by current Project authorization
+```
+
 ## OPEN
 
-### O1 — canonical descriptor/family reconciliation
+### O1 — one-shot canonical M09C gate
 
 Pending execution of:
 
 ```text
-tools/rom_probe/m09c_native_sequence_seam_probe.py
+python tools/rom_probe/m09c_canonical_gate.py <canonical_rom>
 ```
 
-This must establish, from the canonical ROM, which player-facing selector families resolve validly against `0x0F0000` versus `0x0E51FE`, locate actual FDDC callers, enumerate reachable mapping records and identify storage candidates without assuming that `0xFF` filler is safe.
+The runner serializes:
 
-### O2 — canonical visual-avatar compiler round-trip
+1. descriptor/family reconciliation through `m09c_native_sequence_seam_probe.py`;
+2. canonical visual-avatar compiler round-trip through `m09c_visual_avatar_roundtrip_probe.py`;
+3. report-level promotion checks;
+4. emission of a single canonical PASS checkpoint only if every required invariant holds.
 
-Pending execution of:
+### O2 — authored native selector/record path
 
-```text
-tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py
-```
-
-Target: the JLLBFR family selected from direction-table base `0x00F2`, resolved through descriptor `0x0F0000`.
-
-Required outcome: pixel-exact reconstruction plus exact mapping-record header preservation for every unique selector in that facing family.
-
-### O3 — authored native selector/record path
-
-Do not implement until O1 and O2 are green.
+Do not implement until O1 is green.
 
 Preferred architecture:
 
@@ -133,9 +153,9 @@ Do not replace object+0x2C for the controlled visual avatar.
 
 If no safe mapping-record slot exists inside the descriptor-relative 16-bit record window, introduce the smallest possible resolver/renderer indirection rather than descriptor substitution.
 
-### O4 — deterministic runtime regression
+### O3 — deterministic runtime regression
 
-After O3 builds successfully:
+After O2 builds successfully:
 
 - compare against the correct sprint parent, not blindly against retail;
 - before activation: exact visual convergence to parent;
@@ -148,9 +168,17 @@ After O3 builds successfully:
 
 ## BLOCKER
 
-The only material blocker for O1/O2 is raw access to the canonical `True Lies (World)` ROM bytes. The ROM has existed in Library in prior sessions, but the current conversation surface does not expose a raw 2 MiB ROM file. BlastEm is no longer a blocker.
+The only material blocker for O1 is raw access to the canonical `True Lies (World)` ROM bytes.
 
-Do not reopen static helper work, descriptor synthetic tests, CI setup or BlastEm acquisition unless new evidence shows a regression.
+The Library entry has been positively located and has the exact canonical size, but `files.materialize` currently returns:
+
+```text
+This Project file does not have an authorized raw-byte materialization path.
+```
+
+The generated `true_lies_re_v0.3.zip` is blocked by the same authorization rule. BlastEm is no longer a blocker.
+
+Do not reopen static helper work, descriptor synthetic tests, CI setup, canonical-gate orchestration or BlastEm acquisition unless new evidence shows a regression.
 
 ## PARALLEL SCENE-AUTHORING TRACK
 
@@ -162,14 +190,13 @@ Do not jump back to M11 merely because M09C is waiting on ROM bytes; doing so cr
 
 ## NEXT
 
-1. Acquire raw access to the exact canonical 2 MiB ROM (`SHA-1 d39174...`).
-2. Run `m09c_native_sequence_seam_probe.py`; persist its JSON under `extracted_metadata/`.
-3. Run `m09c_visual_avatar_roundtrip_probe.py`; persist its JSON under `extracted_metadata/`.
-4. If either fails, fix only the evidenced failure and rerun that gate. Do not broaden the investigation.
-5. If both pass, select the safest authored selector/record integration seam while preserving `object+0x2C == 0x0F0000` for the visual avatar.
-6. Implement one minimal native-sequence proof build.
-7. Run deterministic BlastEm regression.
-8. Persist output fingerprints/evidence and update this file.
+1. Obtain an authorized raw-byte copy of the exact canonical 2 MiB ROM (`SHA-1 d39174...`) in the current conversation/container.
+2. Execute exactly one command path: `m09c_canonical_gate.py`.
+3. If the gate fails, fix only the evidenced failing invariant and rerun the one-shot gate. Do not broaden the investigation.
+4. If the gate passes, inspect its canonical native report and select the safest non-overlapping authored selector/record seam while preserving `object+0x2C == 0x0F0000`.
+5. Implement one minimal native-sequence proof build.
+6. Run deterministic BlastEm regression.
+7. Persist output fingerprints/evidence and update this file.
 
 ## RETRY / ANTI-LOOP RULES
 
@@ -183,8 +210,8 @@ Do not jump back to M11 merely because M09C is waiting on ROM bytes; doing so cr
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C static/synthetic gate confirmed; 10/10 CI; BlastEm restored.
-EVIDENCE extracted_metadata/m09c_static_gate.json + Actions run 37992816170.
-OPEN     canonical descriptor reconciliation + canonical 0x0F0000 round-trip.
-NEXT     obtain raw canonical ROM bytes, run the two M09C canonical probes, then implement exactly one native selector/record proof.
+DONE     M09C static/synthetic/orchestration gate confirmed; 16/16 CI; BlastEm restored.
+EVIDENCE extracted_metadata/m09c_static_gate.json v3 + Actions run 37993521291.
+OPEN     one-shot canonical M09C gate, then native authored selector/record proof.
+NEXT     materialize canonical ROM bytes and run m09c_canonical_gate.py exactly once.
 ```
