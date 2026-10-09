@@ -1,0 +1,30 @@
+{
+  "schema": "truerecall.world_collision_all_scenes.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_count": 19,
+  "all_exact_grid_pool_roundtrip": true,
+  "cell_size_px": 64,
+  "coordinate_encoding": "signed 16-bit",
+  "raster_policy": "row/column raster over linear cell array; preserve duplicate refs; discard only linear indices outside grid",
+  "scenes": [
+    {"scene":0,"grid":[54,23],"grid_bytes":2484,"pool_bytes":1702,"lists":373,"nonempty":985,"record_start":"0x105C","records":375,"max_list":8,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":1,"grid":[10,127],"grid_bytes":2540,"pool_bytes":1940,"lists":509,"nonempty":964,"record_start":"0x1182","records":621,"max_list":4,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":2,"grid":[25,20],"grid_bytes":1000,"pool_bytes":1034,"lists":234,"nonempty":442,"record_start":"0x07F4","records":211,"max_list":5,"oob_records":1,"dimension_source":"scene_map_dimensions"},
+    {"scene":3,"grid":[5,7],"grid_bytes":70,"pool_bytes":110,"lists":19,"nonempty":32,"record_start":"0x00B6","records":24,"max_list":7,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":4,"grid":[25,39],"grid_bytes":1950,"pool_bytes":3522,"lists":616,"nonempty":840,"record_start":"0x1562","records":697,"max_list":7,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":5,"grid":[40,24],"grid_bytes":1920,"pool_bytes":1708,"lists":352,"nonempty":857,"record_start":"0x0E2E","records":314,"max_list":9,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":6,"grid":[26,55],"grid_bytes":2860,"pool_bytes":2746,"lists":516,"nonempty":1365,"record_start":"0x15E8","records":375,"max_list":6,"oob_records":2,"dimension_source":"record_extent_factorization"},
+    {"scene":7,"grid":[37,30],"grid_bytes":2220,"pool_bytes":1658,"lists":415,"nonempty":947,"record_start":"0x0F28","records":404,"max_list":7,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":8,"grid":[23,8],"grid_bytes":368,"pool_bytes":418,"lists":71,"nonempty":175,"record_start":"0x0314","records":78,"max_list":6,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":9,"grid":[35,35],"grid_bytes":2450,"pool_bytes":1482,"lists":336,"nonempty":713,"record_start":"0x0F5E","records":337,"max_list":8,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":10,"grid":[48,27],"grid_bytes":2592,"pool_bytes":1694,"lists":366,"nonempty":610,"record_start":"0x10C0","records":403,"max_list":5,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":11,"grid":[30,29],"grid_bytes":1740,"pool_bytes":1668,"lists":398,"nonempty":764,"record_start":"0x0D52","records":359,"max_list":5,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":12,"grid":[23,40],"grid_bytes":1840,"pool_bytes":1734,"lists":317,"nonempty":628,"record_start":"0x0DF8","records":398,"max_list":8,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":13,"grid":[39,33],"grid_bytes":2574,"pool_bytes":1868,"lists":479,"nonempty":1174,"record_start":"0x115C","records":311,"max_list":5,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":14,"grid":[7,200],"grid_bytes":2800,"pool_bytes":86,"lists":27,"nonempty":1215,"record_start":"0x0B48","records":17,"max_list":3,"oob_records":2,"dimension_source":"scene_map_dimensions"},
+    {"scene":15,"grid":[16,22],"grid_bytes":704,"pool_bytes":1266,"lists":223,"nonempty":277,"record_start":"0x07B4","records":279,"max_list":7,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":16,"grid":[18,22],"grid_bytes":792,"pool_bytes":1268,"lists":238,"nonempty":337,"record_start":"0x080E","records":254,"max_list":8,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":17,"grid":[23,16],"grid_bytes":736,"pool_bytes":1066,"lists":197,"nonempty":307,"record_start":"0x070C","records":256,"max_list":8,"oob_records":0,"dimension_source":"scene_map_dimensions"},
+    {"scene":18,"grid":[9,20],"grid_bytes":360,"pool_bytes":0,"lists":0,"nonempty":0,"record_start":"0x016A","records":0,"max_list":0,"oob_records":0,"dimension_source":"scene_map_dimensions"}
+  ]
+}
