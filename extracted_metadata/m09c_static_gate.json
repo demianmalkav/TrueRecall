@@ -1,19 +1,18 @@
 {
-  "schema": "truerecall.m09c.static_gate.v1",
-  "evidence_scope": "static_ci",
+  "schema": "truerecall.m09c.static_gate.v2",
+  "evidence_scope": "static_ci_and_synthetic_descriptor",
   "canonical_rom_execution": false,
   "runtime_validation": "pending",
   "branch": "m09c-native-sequence-seam",
   "stable_parent": "be6c632335ab451392859cf099c8c4bf353a104c",
   "workflow": {
     "name": "m09c-static",
-    "run_id": 37992535933,
-    "head_sha": "6d6928491840d4125a82fb89edf1874fcc1b31c8",
+    "run_id": 37992816170,
+    "head_sha": "cb60fdc5cf56ae9e39da5425b484a86f044a4d9d",
     "conclusion": "success",
-    "job_id": 114030136219,
     "steps": {
       "compile_m09c_probes": "success",
-      "run_seam_helper_tests": "success"
+      "run_m09c_static_tests": "success"
     }
   },
   "compiled_probes": [
@@ -21,16 +20,40 @@
     "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
     "tools/rom_probe/sprite_sequence_roundtrip_probe.py"
   ],
-  "static_test": "tests/test_m09c_native_sequence_seam_static.py",
-  "static_test_count": 7,
-  "verified_helper_invariants": [
+  "static_tests": [
+    {
+      "path": "tests/test_m09c_native_sequence_seam_static.py",
+      "test_count": 7,
+      "scope": "68000 call decoding and filler-run inventory"
+    },
+    {
+      "path": "tests/test_m09c_visual_roundtrip_static.py",
+      "test_count": 3,
+      "scope": "packed descriptor selector/group contract and compiler pixel round-trip"
+    }
+  ],
+  "verified_invariants": [
     "JSR absolute-long target decoding",
     "JSR absolute-word sign extension",
     "BSR short displacement uses opcode PC + 2",
     "BSR word displacement uses opcode PC + 2",
     "negative BSR word displacement",
     "0xFF candidate-run inventory",
-    "short filler runs rejected below threshold"
+    "short filler runs rejected below threshold",
+    "descriptor+0x02 can simultaneously serve selector word and group-0 source pointer under the recovered packed format",
+    "selector -> encoded entry -> alias -> mapping record resolves on a synthetic visual descriptor",
+    "one-piece visual frame compiles and reconstructs pixel-exactly",
+    "15-byte mapping-record header survives the synthetic round-trip",
+    "non-grid mapping coordinates are rejected rather than silently normalized"
   ],
-  "promotion_rule": "This evidence confirms probe syntax/imports and ROM-independent helper mechanics only. Do not mark M09C complete until descriptor/family reconciliation, visual-avatar round-trip and runtime native progression execute against the canonical ROM."
+  "blastem_toolchain": {
+    "restored": true,
+    "workflow_run_id": 37989794952,
+    "artifact_id": 11643919770,
+    "artifact_name": "blastem-linux-x86_64-6e5677969b59",
+    "artifact_digest": "sha256:cfb240d0fef27b05865f21bb53b25125f29d081c8e2336d496b96f4c8586fe5f",
+    "local_binary_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+    "binary_help_smoke_test": true
+  },
+  "promotion_rule": "STATIC CONFIRMED applies only to probe syntax/imports, 68000 helper decoding, packed-descriptor mechanics and synthetic compiler round-trip. Do not mark M09C complete until descriptor/family reconciliation, canonical visual-avatar round-trip and runtime native progression execute against the canonical ROM."
 }
