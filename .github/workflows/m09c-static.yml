@@ -49,7 +49,12 @@ jobs:
       - name: Install BlastEm runtime dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libpulse0 libsamplerate0 libasound2t64
+          sudo apt-get install -y \
+            xvfb \
+            libpulse0 \
+            libsamplerate0 \
+            libasound2t64 \
+            libdecor-0-0
       - name: Download verified BlastEm
         shell: bash
         run: |
