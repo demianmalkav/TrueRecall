@@ -1,0 +1,143 @@
+{
+  "schema": "truerecall.recovery_manifest.v1",
+  "project": "TrueRecall",
+  "generated_from_technical_checkpoint": "e77565bd0a56bc807806f9a91d2e87af70ed89e6",
+  "authority": {
+    "active_branch": "m09c-native-sequence-seam",
+    "human_state": "docs/PROJECT_STATE.md",
+    "machine_state": "docs/RECOVERY_MANIFEST.json",
+    "technical_compendium": "docs/TECHNICAL_STATE.md",
+    "operating_contract": "AGENTS.md",
+    "recovery_procedure": "docs/RECOVERY.md",
+    "rule": "PROJECT_STATE.md decides NEXT; historical milestone documents never override it"
+  },
+  "canonical_rom": {
+    "title": "True Lies (World)",
+    "size_bytes": 2097152,
+    "crc32": "18C09468",
+    "md5": "2fee5ef253faebaff73c017a7bda1cff",
+    "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+    "reset_entry": "0x00000200",
+    "availability_is_session_local": true,
+    "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
+  },
+  "active": {
+    "milestone": "M0.9C",
+    "name": "native player sequence integration seam",
+    "status": "ONE_MATERIAL_RUNTIME_GATE_OPEN",
+    "objective": "prove full-game visual containment and fallback for the six-phase native F9F8 authored-pixel build"
+  },
+  "canonical_player_runtime": {
+    "global_pointer_encoding": "signed_16_bit_RAM_pointer_loaded_via_MOVEA.W",
+    "F9F8_world_render_avatar": "FFFFC632",
+    "FB6E_control_collision_proxy": "FFFFC7FA",
+    "F9F8_archetype": 139,
+    "F9F8_descriptor": "0x000A0000",
+    "descriptor_stable_during_observed_sprint_cycle": true,
+    "native_phase_bridge": "0x009D5E",
+    "writer_cluster": ["0x009D72", "0x009D7E", "0x009D88"],
+    "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
+    "base_phase": "0x08B6",
+    "mapping_record_cycle": ["0x2C08", "0x2C24", "0x2C44", "0x2C64", "0x2C80", "0x2CA0"],
+    "encoded_entry_cycle": ["0x02AC", "0x02AE", "0x02B0", "0x02B2", "0x02B4", "0x32B6"]
+  },
+  "falsified_models": [
+    {
+      "claim": "F9F8 world/render avatar descriptor is 0x0F0000",
+      "status": "FALSIFIED_BY_CANONICAL_RUNTIME",
+      "replacement": "F9F8 descriptor is 0x000A0000 in the tested sprint path; 0x0F0000 remains player-local visual-component evidence from M0.8"
+    },
+    {
+      "claim": "F9F8/FB6E globals are 32-bit pointers reconstructed from adjacent words",
+      "status": "FALSIFIED_BY_RETAIL_CODE_AND_RUNTIME",
+      "replacement": "each global is a signed 16-bit RAM pointer"
+    },
+    {
+      "claim": "every +0x24 write is an external animation reselection",
+      "status": "FALSIFIED_BY_NATIVE_PHASE_BRIDGE",
+      "replacement": "the 0x009D72 -> 0x009D7E -> 0x009D88 cluster is one native phase-advance transaction"
+    }
+  ],
+  "authoritative_tools": [
+    "tools/runtime/m09c_animation_state_trace_v2.py",
+    "tools/rom_probe/m09c_phase_bridge_analysis.py",
+    "tools/build/m09c_native_phase_pixel_sequence.py"
+  ],
+  "historical_not_promotion_gates": [
+    "tools/runtime/m09c_animation_state_trace.py",
+    "tools/rom_probe/m09c_canonical_gate.py",
+    "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
+    "tools/rom_probe/m09c_animation_progression_analysis.py"
+  ],
+  "proof_build": {
+    "size_bytes": 4194304,
+    "sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+    "genesis_checksum": "0x843C",
+    "render_source_banks": ["0x210000", "0x218000", "0x220000", "0x228000", "0x230000", "0x238000"],
+    "cache_namespaces": ["0x3A00", "0x3B00", "0x3C00", "0x3D00", "0x3E00", "0x3F00"]
+  },
+  "evidence": {
+    "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
+    "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
+    "static_gate_history": "extracted_metadata/m09c_static_gate.json",
+    "ci_workflow": "m09c-static",
+    "ci_run": 37997040444,
+    "ci_result": "success",
+    "tests": 42,
+    "failures": 0,
+    "errors": 0,
+    "trampoline_executions": 12,
+    "trampoline_passes": 12
+  },
+  "open": [
+    {
+      "id": "O1",
+      "blocking": true,
+      "name": "full-game visual containment/fallback regression",
+      "completion": [
+        "pre-Y exact convergence to correct M07 sprint parent",
+        "held-Y differences remain player-local",
+        "six authored states correlate one-to-one with F9F8 deltas 0,2,4,6,8,10",
+        "no unrelated cache contamination",
+        "post-Y exact convergence",
+        "M07 movement/control remains intact",
+        "F9F8/FB6E semantics and descriptor 0x000A0000 remain intact"
+      ]
+    },
+    {
+      "id": "O2",
+      "blocking": false,
+      "blocked_by": "O1",
+      "name": "production Quaid source frames"
+    }
+  ],
+  "next": [
+    "verify canonical ROM is locally available and matches size/SHA-1",
+    "build tools/build/m09c_native_phase_pixel_sequence.py and verify proof-build fingerprint",
+    "run deterministic M07-parent vs M09C-six-phase gameplay regression without BlastEm shot + -g",
+    "prove pre/post convergence and player-local active differences",
+    "correlate six visual states with F9F8 raw deltas 0,2,4,6,8,10",
+    "if green, mark M09C COMPLETE and begin production Quaid-frame authoring"
+  ],
+  "parallel_preserved_branches": [
+    "m11e-scene-source-matrix",
+    "m11f-palette-authoring",
+    "m11g-scene-source-v2",
+    "m11h-scene-transaction-v2"
+  ],
+  "anti_loop": {
+    "same_hypothesis_retry_limit": 2,
+    "closed_gate_reopen_requires_new_evidence": true,
+    "runtime_identity_evidence_outranks_static_naming": true,
+    "do_not_reopen_JLLBFR_at_0x0F0000_as_F9F8_identity": true
+  },
+  "fresh_context_recovery_order": [
+    "refresh active branch HEAD",
+    "read docs/RECOVERY_MANIFEST.json",
+    "read docs/PROJECT_STATE.md",
+    "read AGENTS.md",
+    "read docs/TECHNICAL_STATE.md only for cumulative background",
+    "verify canonical ROM before ROM-dependent work",
+    "execute NEXT from docs/PROJECT_STATE.md"
+  ]
+}
