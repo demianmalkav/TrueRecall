@@ -118,11 +118,11 @@ def raster_memberships(records, grid_w: int, grid_h: int):
     return [tuple(sorted(refs, reverse=True)) for refs in cells]
 
 
-def serialize_memberships(memberships, grid_bytes: int):
+def serialize_memberships(memberships, grid_bytes: int, pool_start: int | None = None):
     pointers = []
     pool = bytearray()
     seen = {}
-    cursor = grid_bytes
+    cursor = grid_bytes if pool_start is None else pool_start
     for refs in memberships:
         if not refs:
             pointers.append(0)
@@ -137,9 +137,10 @@ def serialize_memberships(memberships, grid_bytes: int):
     return grid, bytes(pool)
 
 
-def serialize_index(records, grid_w: int, grid_h: int):
+def serialize_index(records, grid_w: int, grid_h: int, pool_start: int | None = None):
     memberships = raster_memberships(records, grid_w, grid_h)
-    grid, pool = serialize_memberships(memberships, 2 * grid_w * grid_h)
+    grid_bytes = 2 * grid_w * grid_h
+    grid, pool = serialize_memberships(memberships, grid_bytes, pool_start)
     return grid, pool, memberships
 
 
