@@ -1,0 +1,17 @@
+{
+  "schema": "truerecall.m10a.world_collision_runtime.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "candidate_sha1": "38f586b8478487a1662326054764bbe6f3631ce7",
+  "scene": 0,
+  "retail_resource": "0x07A42E",
+  "relocated_resource": "0x230000",
+  "copied_bytes": 9150,
+  "comparison": {
+    "baseline": "canonical retail ROM",
+    "candidate": "M10A_world_collision_relocation",
+    "frames": [2098,2102,2106,2110,2114,2118,2122,2126,2130,2134,2138,2140,2144],
+    "different_pixels_each_frame": [0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "all_frames_pixel_identical": true
+  },
+  "result": "runtime-equivalent byte-identical scene-0 world resource relocation"
+}
