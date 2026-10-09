@@ -1,27 +1,22 @@
 {
-  "schema": "truerecall.m09c.static_gate.v3",
-  "evidence_scope": "static_ci_synthetic_descriptor_and_canonical_gate_orchestration",
+  "schema": "truerecall.m09c.static_gate.v4",
+  "evidence_scope": "static_ci_synthetic_descriptor_canonical_gate_orchestration_and_local_blastem_harness",
   "canonical_rom_execution": false,
-  "runtime_validation": "pending",
+  "runtime_validation": "pending_canonical_rom",
   "branch": "m09c-native-sequence-seam",
   "stable_parent": "be6c632335ab451392859cf099c8c4bf353a104c",
-  "workflow": {
-    "name": "m09c-static",
-    "run_id": 37993521291,
-    "head_sha": "fe5c6edc2958012ac9a46eac3626eec3bc3c601f",
-    "conclusion": "success",
-    "job_id": 114033538700,
-    "steps": {
-      "compile_m09c_probes_and_gate": "success",
-      "run_m09c_static_tests": "success"
-    }
+  "static_ci": {
+    "workflow": "m09c-static",
+    "run_id": 37994100291,
+    "head_sha": "1b4cca3ec23f5cc9c172c3aae1242a8d87829476",
+    "workflow_conclusion": "failure_only_because_blastem_harness_dependency_job_failed",
+    "static_job_id": 114035556509,
+    "static_job_conclusion": "success",
+    "tests_run": 29,
+    "failures": 0,
+    "errors": 0,
+    "py_compile": "success"
   },
-  "compiled_probes": [
-    "tools/rom_probe/m09c_native_sequence_seam_probe.py",
-    "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
-    "tools/rom_probe/m09c_canonical_gate.py",
-    "tools/rom_probe/sprite_sequence_roundtrip_probe.py"
-  ],
   "static_tests": [
     {
       "path": "tests/test_m09c_native_sequence_seam_static.py",
@@ -37,9 +32,18 @@
       "path": "tests/test_m09c_canonical_gate_static.py",
       "test_count": 6,
       "scope": "canonical report promotion guardrails"
+    },
+    {
+      "path": "tests/test_m09c_animation_state_trace_static.py",
+      "test_count": 6,
+      "scope": "frame-script construction, debugger parsing and pointer reconstruction"
+    },
+    {
+      "path": "tests/test_m09c_animation_progression_analysis_static.py",
+      "test_count": 7,
+      "scope": "selection-vs-progression classification and descriptor invariant"
     }
   ],
-  "test_total": 16,
   "verified_invariants": [
     "JSR absolute-long target decoding",
     "JSR absolute-word sign extension",
@@ -53,13 +57,42 @@
     "one-piece visual frame compiles and reconstructs pixel-exactly",
     "15-byte mapping-record header survives the synthetic round-trip",
     "non-grid mapping coordinates are rejected rather than silently normalized",
-    "canonical gate rejects a report whose runtime visual descriptor is not 0x0F0000",
-    "canonical gate rejects incomplete JLLBFR resolution on the runtime visual descriptor",
-    "canonical gate rejects any non-pixel-exact canonical visual round-trip",
-    "canonical gate rejects selector/frame count disagreement",
-    "canonical gate rejects base-ROM SHA-1 disagreement",
-    "canonical gate accepts only reports matching the expected M09C schemas and descriptor identities"
+    "canonical gate rejects descriptor, SHA-1, family and pixel-roundtrip mismatches",
+    "trace analyzer does not claim native progression when a +0x24 write intervenes",
+    "same-value reselection still blocks a native-progression claim",
+    "any +0x2C write is a hard descriptor-identity violation"
   ],
+  "blastem_toolchain": {
+    "restored": true,
+    "workflow_run_id": 37989794952,
+    "artifact_id": 11643919770,
+    "artifact_name": "blastem-linux-x86_64-6e5677969b59",
+    "artifact_digest": "sha256:cfb240d0fef27b05865f21bb53b25125f29d081c8e2336d496b96f4c8586fe5f",
+    "local_binary": "/mnt/data/blastem-restored/blastem-linux-x86_64-1.0.0-6e5677969b59/blastem",
+    "local_binary_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+    "binary_help_smoke_test": true,
+    "local_integration_test": {
+      "status": "success",
+      "fixture": "synthetic Genesis ROM alternating writes 0x1234/0x5678 to 0xFF0000",
+      "verified": [
+        "PTY debugger prompt",
+        "BLASTEM_CTRL_SOCK listener",
+        "KIT script queued while debugger paused",
+        "absolute frame-2 input action executed",
+        "frames command resumed deterministically",
+        "68K watchpoint set and hit",
+        "debugger memory dereference returned 0x1234",
+        "debugger PC read returned 0x0208"
+      ]
+    },
+    "ci_dependency_note": {
+      "first_missing_library": "libpulse.so.0",
+      "second_missing_library": "libdecor-0.so.0",
+      "workflow_fix_committed": "8aa43e996a8bd22fb04d563ba443a4d781f13eb0",
+      "ubuntu_24_04_package": "libdecor-0-0",
+      "ci_rerun": "not_triggered_by_current_connector_commit; local integration already confirms harness mechanics"
+    }
+  },
   "canonical_runner": {
     "path": "tools/rom_probe/m09c_canonical_gate.py",
     "required_rom_size": 2097152,
@@ -68,21 +101,17 @@
       "extracted_metadata/m09c_native_sequence_seam.json",
       "extracted_metadata/m09c_visual_avatar_roundtrip.json",
       "extracted_metadata/m09c_canonical_gate.json"
-    ],
-    "promotion_scope": [
-      "canonical descriptor/family reconciliation",
-      "canonical pixel-exact visual-avatar round-trip"
-    ],
-    "explicitly_not_proven_by_runner": "native authored sequence runtime progression"
+    ]
   },
-  "blastem_toolchain": {
-    "restored": true,
-    "workflow_run_id": 37989794952,
-    "artifact_id": 11643919770,
-    "artifact_name": "blastem-linux-x86_64-6e5677969b59",
-    "artifact_digest": "sha256:cfb240d0fef27b05865f21bb53b25125f29d081c8e2336d496b96f4c8586fe5f",
-    "local_binary_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
-    "binary_help_smoke_test": true
+  "runtime_trace": {
+    "tracer": "tools/runtime/m09c_animation_state_trace.py",
+    "analyzer": "tools/rom_probe/m09c_animation_progression_analysis.py",
+    "arm_frame": 2099,
+    "sprint_start_frame": 2100,
+    "sprint_release_frame": 2142,
+    "watched_offsets": ["0x20", "0x22", "0x24", "0x2C"],
+    "wide_state_additional_offsets": ["0x1C", "0x1E"],
+    "required_visual_descriptor": "0x0F0000"
   },
   "library_rom_locator": {
     "path": "/Total Recall Sega/True Lies (World).md",
@@ -90,5 +119,5 @@
     "raw_materialization": "blocked_by_current_project_authorization",
     "note": "The Library entry is located and has the exact canonical size, but current-session raw-byte materialization is denied."
   },
-  "promotion_rule": "STATIC CONFIRMED applies to probe syntax/imports, 68000 helper decoding, packed-descriptor mechanics, synthetic compiler round-trip and canonical-report promotion logic. Do not mark M09C canonical-complete until m09c_canonical_gate.py executes against SHA-1 d39174bed46ede85531b86df7ba49123ce2f8411. Do not mark M09C runtime-complete until the authored native sequence is deterministically validated in BlastEm."
+  "promotion_rule": "STATIC CONFIRMED now includes the 29-test CI suite and the real restored-BlastEm PTY/control-socket/watchpoint harness on a synthetic ROM. Do not mark M09C canonical-complete or runtime-complete until the canonical ROM can be materialized and the descriptor/family probes plus animation-state trace execute against SHA-1 d39174bed46ede85531b86df7ba49123ce2f8411."
 }
