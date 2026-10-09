@@ -1,0 +1,30 @@
+{
+  "schema": "truerecall.m08.runtime_evidence.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "build_sha1": "a540621010aa529fc2371f6c7f433f6fa1cafbac",
+  "rom_size": 4194304,
+  "avatar_descriptor": "0x0F0000",
+  "raw_bank": "0x210000",
+  "cache_namespace": "0x3F00 | chunk_index",
+  "input_window": {
+    "left_y_down": 2100,
+    "left_y_up": 2142
+  },
+  "gameplay_diff_samples": [
+    {"frame":2098,"pixels":0,"bbox":null},
+    {"frame":2102,"pixels":360,"bbox":[125,94,156,125]},
+    {"frame":2108,"pixels":323,"bbox":[109,92,140,123]},
+    {"frame":2114,"pixels":281,"bbox":[103,91,133,122]},
+    {"frame":2120,"pixels":260,"bbox":[101,94,132,125]},
+    {"frame":2128,"pixels":291,"bbox":[111,93,138,124]},
+    {"frame":2134,"pixels":358,"bbox":[113,94,144,125]},
+    {"frame":2140,"pixels":325,"bbox":[111,92,142,123]},
+    {"frame":2144,"pixels":0,"bbox":null}
+  ],
+  "descriptor_sweep": {
+    "0x0F0000": "localized avatar-sized difference only while Y is active",
+    "0x0CA38C": "no gameplay difference",
+    "0x0F6FD4": "separate small moving object, not avatar"
+  },
+  "conclusion": "Runtime confirms independently authored sprite bytes can be scoped to the player sprint state and cleanly fall back to retail presentation when inactive."
+}
