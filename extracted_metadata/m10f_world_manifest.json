@@ -1,0 +1,31 @@
+{
+  "schema": "truerecall.m10f.world_manifest.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "noop_roundtrip_scenes": 19,
+  "scene18_add": {
+    "grid": [
+      9,
+      20
+    ],
+    "record_offset": "0x0200",
+    "type": 9,
+    "rect": [
+      64,
+      64,
+      80,
+      256
+    ],
+    "pool_start": "0x0180",
+    "pool_bytes": 2,
+    "changed_cells": [
+      10,
+      19,
+      28
+    ],
+    "changed_cell_xy": [
+      [1, 1],
+      [1, 2],
+      [1, 3]
+    ]
+  }
+}
