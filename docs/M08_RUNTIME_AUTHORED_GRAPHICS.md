@@ -45,7 +45,7 @@ M0.8 avoids that ambiguity by assigning the sprint avatar an isolated cache name
 
 Other sprites and the player outside the sprint state keep their retail cache IDs.
 
-## Runtime avatar descriptor discovery
+## Runtime player-local descriptor discovery
 
 A differential sweep was performed over the small set of descriptors implicated by prior runtime initialization traces.
 
@@ -65,7 +65,7 @@ Result:
 - before Y (`frame 2098`) descriptor `0x0F0000` is pixel-identical to the reference gameplay frame;
 - after Y is released (`frame 2144`) it again becomes pixel-identical.
 
-This differential result identifies `0x0F0000` as the active avatar presentation descriptor for the tested gameplay path.
+The differential result proves that `0x0F0000` participates in a player-local visual component on the tested gameplay path. At M0.8 time it was provisionally identified as the active avatar presentation descriptor; M0.9C later refined that identity, as recorded below.
 
 ## Authored pixel payload
 
@@ -92,7 +92,7 @@ Against the correct M0.8 equivalence parent, the runtime-validated descriptor `0
 - bounding boxes track the player and stay approximately within a 32×32 actor-sized region
 - frame 2144, after Y release: **0 pixels**
 
-The authored build therefore changes only the intended player presentation during the new state and cleanly falls back to retail presentation afterwards.
+The authored build therefore changes only a player-local presentation component during the new state and cleanly falls back to retail presentation afterwards.
 
 ## Audited build
 
@@ -104,28 +104,51 @@ output SHA-1 a540621010aa529fc2371f6c7f433f6fa1cafbac
 ROM size      4,194,304 bytes
 checksum      0x934F
 raw bank      0x210000
-avatar desc   0x0F0000
+scoped desc   0x0F0000
 ```
 
 The generated ROM and screenshots are not committed.
 
+## M0.9C identity refinement — CANONICAL RUNTIME EVIDENCE
+
+After canonical ROM bytes became directly available, M0.9C traced the linked player pair through the runtime globals used by retail code.
+
+Those globals are **16-bit signed RAM pointers**, not adjacent halves of 32-bit pointers:
+
+```text
+FFFFF9F8 -> FFFFC632  world/render avatar
+FFFFFB6E -> FFFFC7FA  control/collision proxy
+```
+
+During the held-Y sprint trace, the F9F8 world/render avatar is:
+
+```text
+object+0x2A  archetype 139
+object+0x2C  descriptor 0x000A0000
+```
+
+and its descriptor does not change during the observed six-phase animation cycle.
+
+Therefore the earlier M0.8 statement that `0x0F0000` was *the* F9F8 avatar descriptor is superseded. The valid M0.8 conclusion is narrower and remains strong: scoping the renderer/cache override to `0x0F0000` changes only a compact visual component that tracks the player and cleanly disappears outside the sprint state. Its exact ownership inside the linked player presentation graph remains a separate identity question.
+
+This refinement does **not** invalidate the M0.8 renderer/cache/VRAM/SAT authoring proof.
+
 ## What M0.8 proves
 
-TrueRecall now has runtime proof for the complete player-extension presentation chain:
+TrueRecall has runtime proof for the player-extension presentation chain:
 
 ```text
 new input/state
 → new code path
-→ new animation selector/row
 → expanded ROM
 → independently addressable graphics bank
 → renderer/cache integration
-→ authored sprite pixels visible on the player
+→ authored sprite pixels visible in a player-local presentation component
 → exact fallback to retail when inactive
 ```
 
-This is sufficient to begin replacing diagnostic content with actual Quaid animation assets while preserving the same regression methodology.
+M0.9C extends that proof by binding authored resource selection to the native F9F8 animation phase rather than to a diagnostic VBlank phase counter.
 
 ## Next production gate
 
-The next step is no longer proving that new player pixels are possible. It is to build a proper source-asset compiler for Quaid frames, map them into dedicated chunk IDs/groups, measure VRAM-cache pressure, and validate a short coherent animation rather than diagnostic pixel mutations.
+The remaining M0.9C gate is a deterministic full-game visual regression of the six-phase `0x0A0000` build: prove pre/post convergence, player-local active differences and one-to-one correspondence between the native six-position phase cycle and the six authored banks.
