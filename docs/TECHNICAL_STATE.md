@@ -44,7 +44,7 @@ Runtime extension milestones:
 Active authoring milestones:
 
 - **M0.9 — ACTIVE / integration-in-progress:** multi-frame sprite compiler, global chunk deduplication, pixel-exact retail round-trip and runtime-stable four-phase authored-pixel path proven. Native `FDDC`-driven authored sequence integration remains open.
-- **M0.10 — ACTIVE:** **M0.10A COMPLETE and runtime-confirmed**. Scene-0 world spatial/collision resource can be relocated to expanded ROM with 13/13 pixel-identical gameplay screenshots. **M0.10B** is the next controlled material/type edit.
+- **M0.10 — ACTIVE:** **M0.10A and M0.10B COMPLETE / runtime-confirmed.** Existing world resources can be safely relocated and individual world records can be assigned local player/projectile collision behavior at runtime. The next M0.10 gate is geometry + broadphase/list regeneration.
 
 The first Total Recall vertical slice has not started.
 
@@ -52,7 +52,7 @@ The first Total Recall vertical slice has not started.
 
 Primary continuation branch: `m0.6c-level-stream`.
 
-Checkpoint before documentation reconciliation: `0f6a97a2f2cf0d6525da7696f8469f84565e92d2` (`Document M10A world collision relocation proof`).
+M0.10B is now the latest confirmed collision milestone. Branch head should be read before new writes; do not rely on older checkpoint SHAs embedded in past handoffs.
 
 The historical sprint branch `m0.7-sprint-runtime` remains a proof branch, not the active continuation point.
 
@@ -64,10 +64,10 @@ A debug-capable BlastEm build is controlled through deterministic frame scripts.
 - navigate title/briefing flow at fixed frames;
 - inject six-button input;
 - capture screenshots at absolute frames;
-- compare gameplay-region pixels against the correct logical parent build;
+- compare gameplay pixels against the correct logical parent build;
 - run at accelerated emulator speed for regression.
 
-Representative validated sequence:
+Representative boot path:
 
 ```text
 930   Start
@@ -76,11 +76,11 @@ Representative validated sequence:
 1680  A
 1860  A
 2040  A
-2100  Left + Y down
-2142  Y + Left up
 ```
 
-Runtime regression is now mandatory for behavior/presentation/collision authoring claims.
+Runtime regression is mandatory for behavior/presentation/collision authoring claims.
+
+The Xvfb/BlastEm socket can occasionally start slowly; local hardened runners wait for the socket and verify process liveness instead of treating a short startup delay as a ROM failure.
 
 ## Player control — CONFIRMED / HIGH CONFIDENCE
 
@@ -240,12 +240,7 @@ avatar desc   0x0F0000
 
 ## M0.9 sprite sequence authoring — ACTIVE
 
-`tools/build/sprite_sequence_compiler.py` supports multiple source frames and emits:
-
-- one shared raw 16×16 chunk bank;
-- one mapping record per frame;
-- global cross-frame chunk deduplication;
-- cost/working-set manifest.
+`tools/build/sprite_sequence_compiler.py` supports multiple source frames and emits one shared raw chunk bank, mapping records, global cross-frame deduplication and cost/working-set metadata.
 
 Pixel-exact retail round-trip proof on four player frames:
 
@@ -264,15 +259,13 @@ M09B2 retains retail mapping/geometry and selects among four authored banks whil
 Regression against M07C:
 
 - pre-Y frame 2098: 0 gameplay-region pixel difference
-- active frames 2102–2140: avatar-local non-zero authored differences
+- active frames 2102–2140: avatar-local authored differences
 - maximum active difference box ~30×17 px
 - post-Y frame 2144: 0 gameplay-region difference
 
-This proves time-varying authored player pixels can execute stably.
-
 ### M0.9 remaining gate
 
-Do **not** replace the player control/proxy descriptor wholesale. M09A showed that full descriptor replacement can cause world/camera divergence.
+Do not replace the player control/proxy descriptor wholesale. M09A showed full descriptor replacement can cause world/camera divergence.
 
 Next proof: **M0.9C** — integrate authored mapping/chunk sequence through native `FDDC` progression while preserving retail player descriptor/control semantics.
 
@@ -280,18 +273,15 @@ Next proof: **M0.9C** — integrate authored mapping/chunk sequence through nati
 
 ### M0.10A — runtime-confirmed relocation
 
-Scene-0 world spatial resource:
+Scene-0 world resource:
 
 ```text
 scene record  0x013B9A
-field         scene+0x0E
 retail base   0x07A42E
-next base     0x07C7EB
+next base     0x07C7EC
 length        0x23BE = 9,150 bytes
 relocated to  0x230000
 ```
-
-Only `scene+0x0E` is redirected; retail bytes remain untouched.
 
 Audited build:
 
@@ -301,11 +291,9 @@ ROM size     4,194,304
 checksum     0x16C5
 ```
 
-Runtime comparison at frames 2098, 2102, 2106, 2110, 2114, 2118, 2122, 2126, 2130, 2134, 2138, 2140 and 2144 is **13/13 pixel-identical**.
+A 13-frame deterministic gameplay comparison is pixel-identical. This proves `scene+0x0E` is a safe runtime relocation seam.
 
-This proves `scene+0x0E` is a safe runtime relocation seam.
-
-Base world record layout — CONFIRMED:
+World record layout:
 
 ```text
 +0x00 word world_type
@@ -315,28 +303,47 @@ Base world record layout — CONFIRMED:
 +0x08 word y_max
 ```
 
-Coordinates are world pixels.
+### M0.10B — targeted local collision behavior — COMPLETE / RUNTIME CONFIRMED
 
-### Broadphase constraint
+M10B uses M10A as its parent and changes one world record at a time while preserving geometry and broadphase membership.
 
-The dense 64×64 grid is not a trivial rasterization of record rectangles. Retail overlap/priority pruning is not fully recovered. Therefore full grid regeneration is **not authorized**.
-
-### M0.10B next proof
-
-Change one existing world record:
+Player-pass-through proof:
 
 ```text
-world_type 9 → 10
+record offset 0x1C46
+geometry      (736,544) .. (752,800)
+type          9 -> 11
+build SHA-1   80d9f2fc07d222af5d68f078de15271d27c8d66a
 ```
 
-while preserving geometry and current grid membership.
+Holding Left in the deterministic scene-0 path leaves Harry blocked in M10A and lets him cross the selected record in M10B-P.
 
-Expected isolation:
+Projectile-pass-through proof:
 
-- player collision remains normal;
-- projectile collision differs/pass-through behavior changes.
+```text
+record offset 0x1C6E
+geometry      (464,496) .. (784,544)
+type          9 -> 10
+build SHA-1   b64de77121fc80fd6e4c3389f27d26bfb0843b58
+```
 
-Runtime proof must demonstrate the semantic projectile change without player locomotion regression.
+The north-facing fire sequence is pixel-identical before the impact phase and diverges after firing; type 10 keeps standard player collision but maps projectile handling to the no-op endpoint.
+
+Each M10B build differs from M10A at only two bytes in the entire 4 MiB ROM: the selected `world_type` low byte and the checksum low byte.
+
+Tool/evidence:
+
+```text
+tools/build/m10b_targeted_collision.py
+extracted_metadata/m10b_targeted_collision_runtime.json
+docs/M10_WORLD_COLLISION_AUTHORING.md
+```
+
+### Broadphase constraint / next gate
+
+The dense 64×64 grid is not a trivial rectangle rasterization. Retail overlap/priority pruning is not fully recovered. Existing-record type editing is authorized; arbitrary geometry edits crossing cell membership are not.
+
+Next M0.10 proof: **regenerate cell/list membership for authored geometry and runtime-validate a rectangle that moves or expands across broadphase cells**.
 
 ## Audio
 
@@ -344,9 +351,10 @@ Maxmus `T Bardo 1993 V2.1a` is confirmed. Exact 68000↔Z80 command API, sequenc
 
 ## Highest-value next work
 
-1. **M0.10B** controlled world material/type edit with runtime validation.
+1. **M0.10C** broadphase/list serializer + runtime-validated geometry edit across cell boundaries.
 2. **M0.9C** native authored player sequence integration through `FDDC`.
 3. Promote proof pixels into a deterministic Quaid source-art compiler and coherent original animation.
 4. Add VRAM-cache/sprite-per-line budget assertions to production art builds.
-5. Continue collision/material/objective-script recovery and unresolved semantic classification only where it advances authoring.
-6. Start the Total Recall vertical slice only after the player-art and collision seams are deterministic and regression-protected.
+5. Decode special world-type handlers only where they advance Total Recall mechanics.
+6. Integrate typed world records into the declarative scene compiler.
+7. Start the Total Recall vertical slice once player-art sequencing and arbitrary collision geometry are deterministic and regression-protected.
