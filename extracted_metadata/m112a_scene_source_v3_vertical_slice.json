@@ -1,0 +1,87 @@
+{
+  "allocations": [
+    {
+      "address": 3145728,
+      "name": "object_desc",
+      "size": 132
+    },
+    {
+      "address": 3145872,
+      "name": "object_lz",
+      "size": 1217
+    },
+    {
+      "address": 3147264,
+      "name": "world_resource",
+      "size": 10880
+    },
+    {
+      "address": 3158144,
+      "name": "scene_palette",
+      "size": 128
+    },
+    {
+      "address": 3162112,
+      "name": "primary_graphics_descriptor",
+      "size": 12
+    },
+    {
+      "address": 3162128,
+      "name": "primary_graphics_lz",
+      "size": 12105
+    }
+  ],
+  "assertions": {
+    "closed_m111c_candidate_reproduced_exact": true,
+    "frozen_player_parent_exact": true,
+    "frozen_player_phase_banks_preserved": true,
+    "no_incompatible_overlap": true,
+    "player_only_delta_preserved": true,
+    "scene_delta_preserved": true,
+    "scene_source_v3_used": true,
+    "single_transaction_allocation_nonoverlap": true,
+    "single_transaction_has_palette": true,
+    "single_transaction_has_primary_graphics": true
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "genesis_checksum": "0xFAD7",
+  "graphics": {
+    "aux_pointer": 114554,
+    "changed_tile_indices": [2],
+    "decoded_bytes": 24960,
+    "decoded_sha256": "465981a63431b2be276992a085681b795fff6abedeac501ea06ef921858f92ac",
+    "encoded_bytes": 12105,
+    "encoded_sha256": "0b389c7693d7a9f8cac967e2a62ab4c30546b097b2327e166057c8912e9c6ebb",
+    "new_descriptor": 3162112,
+    "new_primary_lz": 3162128,
+    "retail_descriptor": 65450,
+    "retail_primary_lz": 84120,
+    "secondary_pointer": 2147580122,
+    "tile_count": 780
+  },
+  "output_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+  "output_size": 4194304,
+  "palette": {
+    "changed_color_indices": [8],
+    "new_pointer": 3158144,
+    "palette_bytes": 128,
+    "retail_pointer": 633888
+  },
+  "patch_schema": "truerecall.scene_patch.v3",
+  "phase_bank_sha1": [
+    "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+    "fce14e16bc2325ea603f7ad973a0033c56f68098",
+    "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+    "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+    "0cd1b90c15c55504e2e55e992197022a5856204f",
+    "416007b12132f06ff30fa009649e4b1c6379d5c1"
+  ],
+  "player_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "runtime_status": "PROVEN_BY_M112B_M112C",
+  "scene_index": 0,
+  "scene_parent_checksum": "0x3245",
+  "scene_parent_sha1": "4a169bec49ca6fd571c6ea621e525d7968cc79c5",
+  "scene_record_changed_offsets": [3,4,5,7,8,9,11,12,13,15,16,17,23,24,25],
+  "scene_source_schema": "truerecall.scene_source_build.v3",
+  "schema": "truerecall.m112a.scene_source_v3_vertical_slice_evidence.v1"
+}
