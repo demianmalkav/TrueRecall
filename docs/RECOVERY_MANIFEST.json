@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "0c5b3fa96e9f710ae150efd76e3c478fb60bdc54",
+  "generated_from_technical_checkpoint": "0ba0fa1fb1b5935c288b7e663af40ad28b125022",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -25,43 +25,38 @@
     "milestone": "M1.2A",
     "name": "L3 urban pursuit/subway production slice",
     "status": "OPEN",
-    "objective": "finish a readable three-zone L3 subway scene skeleton, then prove the native subway-lever/signal-box objective path in scene0 and add one scene-specific pursuit trigger"
+    "objective": "integrate the runtime-proven native subway objective pair into the three-zone L3 production layout, then add one scene-specific pursuit-pressure trigger"
   },
   "completed": {
     "m09c": {"status": "COMPLETE", "proof_build_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6", "F9F8_descriptor": "0x000A0000", "native_phase_bridge": "0x009D5E", "raw_phase_deltas": [0,2,4,6,8,10]},
     "m09d": {"status": "COMPLETE_FROZEN", "source_art_fingerprint": "da0a060e77f9da835b388ffe94a8090d75cd51ea", "build_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021", "checksum": "0x266C"},
-    "m1_0": {"status": "COMPLETE", "candidate_sha1": "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027", "checksum": "0x6E6A", "runtime_assertions": 14, "runtime_pass": true},
-    "m1_1a": {"status": "COMPLETE", "candidate_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd", "checksum": "0x6B9E", "actual_vdp_cram": true, "m100b_pass": true},
-    "m1_1b": {"status": "COMPLETE", "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0", "checksum": "0xFAD7", "actual_vdp_vram": true, "m100b_pass": true, "m110b_cram_pass": true},
-    "m1_1c": {
-      "status": "COMPLETE_SCENE0_SCOPE",
-      "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
-      "checksum": "0xFAD7",
-      "scope_matrix": {"exact_noop_scene_count": 18, "out_of_confirmed_scope": [10], "reason": "scene10 C000 references tile outside primary set; secondary/auxiliary graphics semantics unresolved"},
-      "ci": {"commit": "965d1a54117b9aad69cdc9771e2f679059e91be2", "actions_run": 38074354446, "artifact_id": 11677847802, "artifact_sha256": "c26452066d123b81f4f63b02e2b07cf297c794a175b5f9843c9067ff99c8a2b3", "static": "PASS", "blastem_harness": "PASS"}
-    },
-    "m1_2a_overlay": {
-      "status": "COMPLETE",
-      "schema": "truerecall.scene_overlay.v1",
-      "tool": "tools/build/scene_overlay.py",
-      "closed_proof_manifest": "tools/build/examples/m120a_scene0_closed_proof_overlay.json",
-      "closed_proof_builder": "tools/build/m120a_scene_overlay_vertical_slice.py",
-      "reproduces_m112a_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
-      "reproduces_checksum": "0xFAD7"
-    },
-    "m1_2a_starter": {
-      "status": "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE",
-      "manifest": "tools/build/examples/m120b_l3_urban_subway_starter_overlay.json",
-      "builder": "tools/build/m120b_l3_starter_build.py",
-      "scene_parent_sha1": "7c14d479413e0efb412027209de6b85d6c67821f",
-      "candidate_sha1": "05fafc33f96a74d57765bacdba888d79e7eee860",
-      "checksum": "0xB78C",
+    "m1_0": {"status": "COMPLETE", "candidate_sha1": "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027", "runtime_assertions": 14, "runtime_pass": true},
+    "m1_1a": {"status": "COMPLETE", "candidate_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd", "actual_vdp_cram": true},
+    "m1_1b": {"status": "COMPLETE", "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0", "actual_vdp_vram": true},
+    "m1_1c": {"status": "COMPLETE_SCENE0_SCOPE", "exact_noop_scene_count": 18, "out_of_confirmed_scope": [10]},
+    "m1_2a_overlay": {"status": "COMPLETE", "schema": "truerecall.scene_overlay.v1", "tool": "tools/build/scene_overlay.py"},
+    "m120c_three_zone": {
+      "status": "CONFIRMED_RUNTIME_NOT_ART_FREEZE",
+      "manifest": "tools/build/examples/m120c_l3_three_zone_overlay.json",
+      "builder": "tools/build/m120c_l3_three_zone_build.py",
+      "scene_parent_sha1": "be091e8e76af5d685d1ba2760ad821149141fcff",
+      "candidate_sha1": "7bd2144c22074bce5eebdf3e6e15f2f2c7db4ebe",
+      "checksum": "0x029E",
       "authored_vram_slots": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
       "authored_vram_slots_exact": 15,
-      "m100b_assertions": 14,
-      "m100b_pass": true,
-      "m110b_cram_pass": true,
-      "ci": {"commit": "0c5b3fa96e9f710ae150efd76e3c478fb60bdc54", "actions_run": 38076261154, "artifact_id": 11678700540, "artifact_sha256": "5c7f24601ba4868ebc5de8b62eb33de49e3d6674878bf3b78a71b2fae6ef3c8f", "static": "PASS", "blastem_harness": "PASS"}
+      "zones": ["pursuit_entry", "objective_platform", "subway_transition"]
+    },
+    "m120d_type60": {"status": "CONFIRMED_RUNTIME", "type_id": 60, "status_flags": "0x7800", "stride": 6, "fc54_transition": "0x0000->0x4000", "message": "0x003C"},
+    "m120e_type87": {"status": "CONFIRMED_RUNTIME", "type_id": 87, "status_flags": "0x7800", "stride": 6, "without_flag_message": "0x0034", "with_flag_message": "0x0036"},
+    "m120f_objective_pair": {
+      "status": "CONFIRMED_RUNTIME_END_TO_END",
+      "scene_parent_sha1": "c5f572ee339ca9194d497c523feffd0366cd1862",
+      "candidate_sha1": "ed3f52765d1cb76ad90df1a5bc74c5283c5115dc",
+      "checksum": "0xF642",
+      "lever": {"type_id": 60, "x": 701, "y": 558},
+      "signal_box": {"type_id": 87, "x": 724, "y": 558},
+      "native_sequence": ["FC06=0x003C", "FC54=0x4000 persists", "FC06=0x0036"],
+      "debugger_flag_injection": false
     }
   },
   "stable_scene_authoring": {
@@ -71,7 +66,7 @@
     "v3_graphics_source": "tools/build/scene_source_v3.py",
     "v3_transaction": "tools/build/scene_compiler_v3.py",
     "production_overlay": "tools/build/scene_overlay.py",
-    "policy": "production manifests contain authored deltas only and lower through the closed v3 compiler; do not infer free VRAM from unused retail tilemap indices"
+    "policy": "production manifests contain authored deltas only and lower through the closed v3 compiler; use only runtime-proven VRAM slots or a recovered allocation contract"
   },
   "authoritative_tools": [
     "tools/runtime/m09c_animation_state_trace_v2.py",
@@ -86,8 +81,7 @@
     "tools/build/scene_source_v3.py",
     "tools/build/scene_compiler_v3.py",
     "tools/build/scene_overlay.py",
-    "tools/build/m120a_scene_overlay_vertical_slice.py",
-    "tools/build/m120b_l3_starter_build.py",
+    "tools/build/m120c_l3_three_zone_build.py",
     "tools/runtime/m100b_vertical_slice_runtime.py",
     "tools/runtime/m110b_palette_runtime.py",
     "tools/runtime/m111d_graphics_runtime.py",
@@ -99,15 +93,14 @@
     "m09d_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
     "m100b": "extracted_metadata/m100b_vertical_slice_runtime.json",
     "m110b": "extracted_metadata/m110b_palette_runtime.json",
-    "m112a": "extracted_metadata/m112a_scene_source_v3_vertical_slice.json",
-    "m112b": "extracted_metadata/m112b_v3_graphics_runtime.json",
-    "m112c": "extracted_metadata/m112c_v3_regression.json",
     "m112_scope": "extracted_metadata/m112_scene_source_v3_scope_matrix.json",
-    "m120a_overlay": "extracted_metadata/m120a_scene_overlay_reproduction.json",
-    "m120b_starter": "extracted_metadata/m120b_l3_starter_runtime.json"
+    "m120c": "extracted_metadata/m120c_l3_three_zone_runtime.json",
+    "m120d_type60": "extracted_metadata/m120d_type60_scene0_runtime.json",
+    "m120e_type87": "extracted_metadata/m120e_type87_scene0_runtime.json",
+    "m120f_pair": "extracted_metadata/m120f_native_objective_pair_runtime.json"
   },
   "selected_objective_seam": {
-    "status": "CONFIRMED_RETAIL_MECHANISM_NOT_YET_SCENE0_INTEGRATED",
+    "status": "CONFIRMED_RUNTIME_END_TO_END_NOT_YET_PRODUCTION_PLACED",
     "lever_type": 60,
     "signal_box_type": 87,
     "mission_flag": "0x4000",
@@ -118,16 +111,16 @@
     {"claim": "retail-unreferenced primary tile indices 565+ are safe production VRAM slots", "reason": "runtime presentation showed dynamically overwritten/mosaic content", "replacement_rule": "use direct runtime residency evidence or a recovered allocation contract"}
   ],
   "open": [
-    {"id": "O2", "blocking": true, "name": "finish three-zone L3 pursuit-entry / combat-objective / subway-exit scene composition"},
-    {"id": "O3", "blocking": true, "name": "prove type60/type87 subway objective in scene0, then add one scripted pursuit trigger"},
-    {"id": "O4", "blocking": true, "name": "pinned BlastEm production runtime regression"}
+    {"id": "O3", "blocking": true, "name": "integrate proven type60/type87 objective pair into traversable M120C production zones"},
+    {"id": "O4", "blocking": true, "name": "add one scene-specific pursuit-pressure trigger through a recovered VM/object seam"},
+    {"id": "O5", "blocking": true, "name": "pinned BlastEm production runtime regression"}
   ],
   "next": [
-    "refine M120B into three visually distinct zones using only runtime-verified graphics slots or newly proven slots",
-    "rerun VRAM residency, presentation, M100B player semantics and M110B CRAM",
-    "create isolated scene0 type60 probe and prove FC54 0x4000 transition",
-    "create type87 signal-box probe and distinguish no-lever versus lever-present branch using FC54/message-state evidence",
-    "integrate the proven objective pair into L3 before designing the scene-specific pursuit trigger"
+    "build M120G production overlay from M120C with spatially separated type60 and type87 placements that are actually traversable",
+    "runtime-prove native 0x3C -> persistent FC54 0x4000 -> 0x36 progression without debugger state injection",
+    "rerun 15-slot VRAM residency, CRAM player-line, frozen player descriptors and applicable M100B invariants",
+    "inspect recovered VM/object controller seams and implement one scene-specific pursuit-pressure trigger only after M120G is green",
+    "persist evidence and synchronize Drive after the new production checkpoint is green"
   ],
   "anti_loop": {
     "same_hypothesis_retry_limit": 2,
