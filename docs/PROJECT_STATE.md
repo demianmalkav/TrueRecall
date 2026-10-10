@@ -17,15 +17,17 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 
 ```text
 branch:     m09c-native-sequence-seam
-milestone:  M1.0 — first Total Recall vertical-slice integration baseline
-checkpoint: 00d9a0e9db501e7f8763515ce34fbe7476dd6c67
+milestone:  M1.1A — canonical palette + scene-source-v2 promotion
+checkpoint: 0942f0d9ef58a37c37c19d9da9a5e8caa37d92d0
 ```
 
 **M0.9C is COMPLETE.**
 
-**M0.9D is COMPLETE and FROZEN.** The first production Quaid sprint/locomotion family and its source-to-ROM pipeline are closed. Do not resume v9/v10 art iteration, rewrite the M09C native phase seam, or expand the mapping contract without new contradictory evidence.
+**M0.9D is COMPLETE and FROZEN.**
 
-The active task is now the first **Total Recall** vertical-slice integration baseline: prove that the already recovered player, scene/object, world-collision and gameplay systems can coexist in one reproducible authored scene without reopening closed subsystems.
+**M1.0A/B is COMPLETE.** The first Total Recall integration baseline now proves that the frozen Quaid player, declarative persistent objects and authored world collision coexist in one reproducible gameplay scene and behave correctly at runtime.
+
+The active task is M1.1A: promote the preserved M11F/M11G/M11H palette + scene-source-v2 work onto the current branch, execute it against the canonical ROM now available in raw form, and integrate it with the closed M1.0 scene0 baseline without reopening player/control/object/collision gates.
 
 ## Canonical ROM identity
 
@@ -37,170 +39,193 @@ MD5:   2fee5ef253faebaff73c017a7bda1cff
 SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 ```
 
-The original ROM is immutable and never committed. ROM availability is session-local; verify size + SHA-1 before ROM-dependent work.
+The original ROM is immutable and never committed. Generated builds remain reproducible from source/manifests plus this verified base.
 
 ## Stable engine foundation
 
-The following are stable foundation and are not active reverse-engineering gates:
+Stable and closed unless contradictory evidence appears:
 
-- M0.1–M0.6 ROM, entity, VM, map and authoring reconstruction;
+- M0.1–M0.6 ROM/entity/VM/map/authoring reconstruction;
 - M0.7 deterministic held-Y sprint;
 - M0.8 runtime-authored player-local graphics;
-- M0.9C native six-phase player presentation integration;
-- M0.9D production Quaid sprint family and source-to-ROM pipeline;
+- M0.9C native six-phase player presentation;
+- M0.9D frozen production Quaid sprint family;
 - M0.10 world-collision authoring;
-- M0.11A–D unified canonical scene-source authoring.
+- M0.11A–D canonical scene-source authoring;
+- M1.0A/B player + object + collision integration baseline.
 
-Parallel scene-authoring branches remain preserved but are **not** automatically promoted:
-
-```text
-m11e-scene-source-matrix
-m11f-palette-authoring
-m11g-scene-source-v2
-m11h-scene-transaction-v2
-```
-
-Any switch to one of them must be deliberate and recorded here first.
-
-## M0.9C canonical runtime model — CLOSED / CONFIRMED
+## M0.9D production player — CLOSED / FROZEN
 
 ```text
-FFFFF9F8 -> FFFFC632  world/render avatar
-FFFFFB6E -> FFFFC7FA  control/collision proxy
-F9F8 object+0x2A = 139
-F9F8 object+0x2C = 0x000A0000
-native bridge = 0x009D5E
-raw phase deltas = 0,2,4,6,8,10
+source fingerprint: da0a060e77f9da835b388ffe94a8090d75cd51ea
+build SHA-1:       49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
+checksum:          0x266C
+F9F8 descriptor:   0x000A0000
+native phases:     0,2,4,6,8,10
 ```
 
-The `0x0F0000 == F9F8 descriptor` model, adjacent-word 32-bit pointer reconstruction and “every +0x24 write is external reselection” model are FALSIFIED.
-
-M09C proof build:
-
-```text
-size:     4,194,304 bytes
-SHA-1:    3256f9dcbc6376624716e3508f41c0439e17cef6
-checksum: 0x843C
-banks:    0x210000,0x218000,0x220000,0x228000,0x230000,0x238000
-cache:    0x3A00..0x3F00
-```
-
-Primary evidence:
-
-- `extracted_metadata/m09c_canonical_phase_bridge.json`
-- `extracted_metadata/m09c_native_phase_trampoline_runtime.json`
-- `extracted_metadata/m09c_native_visual_regression.json`
-
-## M0.9D production Quaid family — COMPLETE / FROZEN
-
-Freeze evidence:
+Evidence:
 
 `extracted_metadata/m09d_quaid_v11_production_freeze.json`
 
-Source of truth:
+Do not edit v11 player pixels or mapping geometry during M1.1.
 
-`tools/build/m09d_quaid_sprint_source.py`
+## M1.0A static integration — COMPLETE / CONFIRMED
 
-Production contract:
+Scene 18 was initially selected because it had a sparse static world-collision baseline. Runtime evidence later showed that scene18 follows a scripted/non-normal player-control path: distinct directional inputs produced the same scripted trajectory. That is new evidence and formally retires scene18 as the vertical-slice gameplay sandbox.
 
-```text
-descriptor:             0x000A0000
-native phases:          6
-runtime facings:        8
-authored facings:       N, NE, E, SE, S
-native H-flip reuse:    SW<-SE, W<-E, NW<-NE
-unique mapping records: 10
-resource group:         7
-reserved chunk slots:   0x68..0x7F (24 slots)
-used chunk slots/phase: 17
-max pieces/frame:       4
-transparent index:      0
-palette indices:        0..15
-```
+The active integration sandbox is **scene 0**, already used by the deterministic player/runtime harness.
 
-v11 source fingerprint:
+Source manifest:
 
-`da0a060e77f9da835b388ffe94a8090d75cd51ea`
+`tools/build/examples/m100a_scene0_baseline.json`
 
-v11 phase-bank SHA-1:
+Authored additions:
 
 ```text
-97a9f024374b75810dd060ff8c03b4b703cd7ab6
-fce14e16bc2325ea603f7ad973a0033c56f68098
-38c2f905c4f05cc01938f440f2e7cd8a9fa28d74
-12fd0abb168d4983fc3b6d2d46a4589317c8f6c2
-0cd1b90c15c55504e2e55e992197022a5856204f
-416007b12132f06ff30fa009649e4b1c6379d5c1
+shotgun pickup: type 69, stride 6, x=690, y=558
+world wall:     type 9, rect=[668,540,676,580]
 ```
 
-Frozen v11 integration build:
+Compositor:
+
+`tools/build/m100a_vertical_slice_baseline.py`
+
+Static scene-only parent:
+
+```text
+SHA-1:   fe2d8f7bbffba42379aa72d697b91364f9734c96
+checksum: 0xA5D8
+```
+
+Integrated M1.0A candidate:
 
 ```text
 size:     4,194,304 bytes
-SHA-1:    49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
-checksum: 0x266C
-parent:   3256f9dcbc6376624716e3508f41c0439e17cef6
+SHA-1:    84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027
+checksum: 0x6E6A
+direct parent: 49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
 ```
 
-Runtime regression against exact M07C parent `55e02728cb0b7f3627f410202c889197c0e3d0d2` passed all ten containment/fallback/control assertions with zero compared-state mismatches, all six native phases, first visible step 3 and maximum gameplay-difference bbox 65x64 host pixels.
+Containment proof:
 
-CI checkpoint `4e933f104292a88d6301d0c39855176253a077d1`, Actions run `38019250327`: 58 static tests PASS and BlastEm harness PASS.
+- frozen v11 phase banks remain byte-exact;
+- scene/object/world deltas are preserved exactly;
+- player and scene deltas have no incompatible overlap;
+- the only shared non-checksum byte is the identical 4 MiB ROM-end header byte;
+- final checksum is recomputed once after composition.
 
-## M1.0 objective — first integration baseline
+Evidence:
 
-M1.0 is not “build the whole first level”. It is the smallest reproducible scene proving that the Total Recall production player can coexist with authored level content through the recovered engine.
+`extracted_metadata/m100a_vertical_slice_baseline.json`
 
-The initial baseline should use **scene 18 as the sandbox unless new evidence shows a better target**, because M11D already proved exact no-op reconstruction and controlled plane/object/world-collision edits there while its world-collision scene is empty enough to isolate authored changes.
+## M1.0B runtime integration — COMPLETE / CONFIRMED
 
-The first baseline must demonstrate, in one derived ROM built from the canonical base:
+Runner:
 
-1. frozen v11 Quaid production player path remains intact;
-2. one declaratively authored scene edit through the canonical scene-source pipeline;
-3. at least one authored object/pickup chosen from an already-semanticized safe type;
-4. at least one authored world-collision record with expected player interaction;
-5. deterministic build identity and containment audit;
-6. runtime entry into the scene with no player/control regression.
+`tools/runtime/m100b_vertical_slice_runtime.py`
 
-This is an **integration scaffold**, not yet the final Mars art pass. New tile graphics, palette reauthoring and broader scene-presentation work remain separate gates and must not be smuggled into the baseline unless the baseline proves they are required.
+Verified CI snapshot:
+
+```text
+commit:          e88ffe045d339e43a95de60b8df32fd5ab553c74
+Actions run:     38053439943
+artifact id:     11670751788
+artifact SHA256: 177a35bfb755f2eea7985d8ff8a61c5c601e974e35f903bc1ec03c7a14d7c5cf
+static:          PASS
+BlastEm harness: PASS
+```
+
+Runtime comparison uses frozen v11 as the direct parent and the exact M1.0A candidate as child.
+
+Confirmed behavior under 30 frames of normalized `Y+Left = 0x2044`:
+
+```text
+spawn, both:     x=701 y=558
+parent final:    x=652 y=558, ownership=0x01, shotgun ammo=0
+candidate final: x=688 y=558, ownership=0x03, shotgun ammo=5
+```
+
+Interpretation:
+
+- the authored type-69 pickup grants the shotgun ownership bit and five shells only in the candidate;
+- the authored type-9 wall blocks the candidate at player-center x=688;
+- the direct parent crosses the authored wall zone and reaches x=652;
+- F9F8 remains `FFC632` and retains descriptor `0x000A0000`;
+- adding the pickup shifts FB6E from `FFC7FA` to `FFC86C`, but the proxy retains exact semantic type/state/mapping/facing/descriptor fields (`type 1`, descriptor `0x000F0000`), so raw slot-address equality is deliberately not an invariant;
+- all 14 runtime assertions pass.
+
+Evidence:
+
+`extracted_metadata/m100b_vertical_slice_runtime.json`
+
+## Why M1.1A is now justified
+
+M11D is sufficient for map words, persistent objects and world collision, but it intentionally treats palette identity as immutable metadata and does not provide a production source-level palette transaction. A real Total Recall environment needs authored color language before a Mars/industrial art pass can be evaluated.
+
+Preserved branches provide the minimum next layer:
+
+```text
+m11f-palette-authoring     scene_palette.v1 + CRAM relocation/validation
+m11g-scene-source-v2      versioned source schema with explicit colors[64]
+m11h-scene-transaction-v2 one allocation ledger for maps/objects/world/palette
+```
+
+Those branches were left at static/synthetic status only because raw canonical ROM access was unavailable. That blocker is now closed. This is the recorded evidence-based reason to promote their minimal functionality onto the current branch.
+
+M1.1A does **not** yet authorize new tile graphics. Palette authoring is isolated first; tile-graphics authoring becomes the next gate only after palette transactions are canonical- and runtime-confirmed.
 
 ## OPEN
 
-### O1 — M1.0A integration manifest and static build
+### O1 — port minimal M11F/G/H authoring layer
 
-Define one machine-readable vertical-slice manifest that composes the frozen v11 player build with a canonical M11D scene-18 authored edit. Select object types from confirmed semantic evidence, not guesses. Compile it from the canonical ROM and prove all modified byte ranges are intended.
+Bring only the palette/source-v2/transaction-v2 modules, probes and tests required for canonical palette transactions onto the active branch. Do not merge historical project-state files or unrelated branch changes.
 
-### O2 — M1.0B runtime smoke
+### O2 — canonical execution
 
-Boot the M1.0A candidate deterministically, enter the authored scene, verify player/control identity and show runtime evidence for the authored scene object/collision behavior. Parent/child comparison must use the correct direct parent.
+Against the verified 2 MiB ROM:
 
-### O3 — visual-world authoring gate after baseline
+- validate 19/19 retail palettes;
+- require 19/19 palette no-op compiles to exact retail bytes;
+- execute source-v2 exact no-op;
+- execute one deterministic scene0 palette edit through the single v2 transaction arena;
+- pin output SHA-1/checksum only after successful execution.
 
-Only after M1.0A/B are green, decide whether the active branch needs palette/tile authoring from the preserved M11E–H work. Any promotion must be explicit and based on a measured limitation of M11D.
+### O3 — integrate palette transaction with M1.0 baseline
+
+Compose or lower the palette transaction into the closed M1.0 scene0 build without changing v11 player banks, pickup semantics or wall behavior. Allocation overlap must be mechanically impossible or rejected.
+
+### O4 — runtime palette confirmation
+
+Boot the palette-authored M1.1 candidate under pinned BlastEm, confirm the expected CRAM/palette change is actually loaded, and rerun the M1.0B pickup/wall/control invariants.
 
 ## NEXT
 
-1. Inspect the current M11D scene-source compiler and the semantic object/pickup evidence for scene-safe types.
-2. Freeze a minimal `M1.0A` scene-18 manifest: one authored object/pickup plus one authored world-collision record, preserving all immutable scene boundaries.
-3. Add a compositor/build tool that starts from the canonical ROM, applies the frozen v11 player integration, then applies the M11D scene transaction deterministically.
-4. Run static containment/no-op invariants and record the candidate ROM fingerprint.
-5. Run a deterministic BlastEm runtime smoke against the correct parent and verify player/control identity plus authored scene behavior.
-6. If green, mark M1.0A/B complete and decide the next deliberate presentation gate.
+1. Copy the minimal M11F `scene_palette.py` + tests/probe from `m11f-palette-authoring` onto the active branch.
+2. Copy the M11G `scene_source_v2.py` semantic migration layer and static tests.
+3. Copy M11H `scene_compiler_v2.py` + canonical transaction probe/tests, preserving M11D/v1 unchanged.
+4. Run all imported static suites on the active branch.
+5. Execute the M11F canonical 19-scene palette probe against SHA-1 `d39174...f8411` and persist evidence.
+6. Execute a scene0 source-v2 palette transaction, then integrate it with M1.0A and prove no overlap with the frozen player/object/collision resources.
+7. Runtime-confirm CRAM/presentation plus all closed M1.0B invariants.
+8. If green, mark M1.1A complete and open the tile-graphics authoring gate.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
-- Closed M09C/M09D gates reopen only on contradictory evidence.
-- Do not modify v11 player pixels during M1.0 integration.
-- Do not expand player mapping geometry for scene-authoring convenience.
-- Do not switch to M11E–H merely because their features are attractive; require an evidenced M11D limitation.
+- Closed M09C/M09D/M1.0 gates reopen only on contradictory evidence.
+- Do not modify v11 player pixels during M1.1.
+- Keep `scene_source.v1` readable and unchanged as a regression anchor.
+- Do not merge whole M11F/G/H branches; port the minimum proven files deliberately.
+- Do not start new tile graphics until M1.1A palette transactions are canonical + runtime green.
 - Generated ROMs/PNGs are outputs; source code + manifests + verified canonical ROM remain source truth.
 - Prefer small semantic Git commits.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D v11 production Quaid family and player-art pipeline frozen.
-EVIDENCE extracted_metadata/m09d_quaid_v11_production_freeze.json + Actions run 38019250327.
-OPEN     M1.0 first Total Recall vertical-slice integration baseline.
-NEXT     inspect M11D + semantic object evidence, then build the minimal scene-18 v11+scene integration manifest and static candidate.
+DONE     M09C complete; M09D frozen; M1.0A/B static + runtime integration baseline complete on scene0.
+EVIDENCE extracted_metadata/m100a_vertical_slice_baseline.json + extracted_metadata/m100b_vertical_slice_runtime.json + Actions run 38053439943.
+OPEN     M1.1A canonical palette + scene-source-v2 promotion.
+NEXT     port minimal M11F/G/H palette/v2 transaction layer, run canonical ROM probes, then integrate palette authoring with the closed M1.0 scene0 baseline.
 ```
