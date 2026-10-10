@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "385e634b00901071af882ffc8d7c79bfddd40a6e",
+  "generated_from_technical_checkpoint": "4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -24,8 +24,8 @@
   "active": {
     "milestone": "M0.9D",
     "name": "production Quaid source-frame authoring and budget validation",
-    "status": "TECHNICAL_PIPELINE_PROVEN_ART_QUALITY_FREEZE_OPEN",
-    "objective": "refine the proven original Quaid prototype family to production-quality pixel art and freeze the player-art pipeline without reopening closed native-seam engineering"
+    "status": "V10_PRODUCTION_CANDIDATE_GREEN_FINAL_ART_FREEZE_OPEN",
+    "objective": "close the remaining pixel-art micro-detail gap against the retail-quality baseline without reopening the closed native-seam/mapping contract"
   },
   "completed_m09c": {
     "status": "COMPLETE",
@@ -48,6 +48,7 @@
     "resource_group": 7,
     "chunk_slot_range": ["0x68", "0x7F"],
     "reserved_chunk_slots_per_phase": 24,
+    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
     "reserved_chunk_bytes_per_phase": 3072,
     "six_phase_reserved_bytes": 18432,
     "max_pieces_per_frame": 4,
@@ -60,33 +61,42 @@
     "tool": "tools/build/m09d_mapping_constrained_sprite_compiler.py",
     "status": "CLOSED",
     "source_frames": 30,
-    "used_chunk_slots_per_phase": 17,
     "mapping_geometry_preserved": true,
     "chunk_slot_identity_preserved": true,
     "native_mirroring_preserved": true
   },
-  "m09d_source_prototype": {
+  "m09d_active_candidate": {
+    "candidate": "v10",
+    "status": "PRODUCTION_CANDIDATE_NOT_YET_FROZEN",
     "tool": "tools/build/m09d_quaid_sprint_source.py",
-    "status": "ORIGINAL_PRODUCTION_PROTOTYPE_NOT_FINAL_ART",
+    "evidence": "extracted_metadata/m09d_quaid_v10_candidate.json",
     "frame_count": 30,
-    "source_art_fingerprint": "d7affbf3fd6474ae3aead55fecb098e29ef03528",
-    "all_six_phases_distinct_per_direction": true,
-    "indexed_palette_range_valid": true,
-    "transparent_index_zero": true
+    "source_art_fingerprint": "16df51a3063eaec999b88ad7d35dd8ba7d4fdb04",
+    "phase_bank_sha1": [
+      "713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7",
+      "5270f74e4550626ea36275d11da57cbf70512fc0",
+      "3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0",
+      "a1f88979ba18ef4957ab8efedf253339b5de489b",
+      "e31bafa3d922343a8b29f0bf406d22d8c0f7b4da",
+      "ed27b3d7630ae71b8e9dc518a36f1647630edfdb"
+    ],
+    "art_review": "v10 improves silhouette/body mass/gait over v9 but still trails retail player micro-detail at neck, sleeves/hands, cloth folds and boot/leg separation",
+    "freeze_ready": false
   },
-  "m09d_prototype_build": {
+  "m09d_candidate_build": {
     "tool": "tools/build/m09d_quaid_sprint_build.py",
     "size_bytes": 4194304,
-    "sha1": "b279469147ff4b7d76290d2da2738a5d4bb58919",
-    "genesis_checksum": "0x968B",
+    "sha1": "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87",
+    "genesis_checksum": "0xD3EF",
+    "parent_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
     "integration_policy": "rebuild canonical M09C parent then replace only the six phase banks and checksum",
     "status": "CONFIRMED"
   },
   "m09d_runtime_regression": {
     "tool": "tools/runtime/m09d_quaid_runtime_regression.py",
-    "evidence": "extracted_metadata/m09d_quaid_runtime_regression.json",
     "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
-    "candidate_m09d_sha1": "b279469147ff4b7d76290d2da2738a5d4bb58919",
+    "candidate_m09d_sha1": "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87",
+    "common_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
     "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
     "active_samples": 42,
     "runtime_state_mismatches": 0,
@@ -94,8 +104,16 @@
     "post_release_scene_exact": true,
     "descriptor_preserved": true,
     "all_six_phases_visible": true,
-    "max_diff_bbox_scaled_2x": [68, 64],
+    "first_visible_step": 3,
+    "max_diff_bbox": [65, 64],
     "pass": true
+  },
+  "runtime_palette": {
+    "evidence": "extracted_metadata/m09d_player_palette_runtime.json",
+    "player_palette_line": 2,
+    "priority": 0,
+    "palette_indices_within_0_15": true,
+    "status": "CONFIRMED_FOR_TESTED_SPRINT_PATH"
   },
   "falsified_models": [
     {
@@ -129,43 +147,44 @@
     "tools/runtime/m09c_animation_state_trace.py",
     "tools/rom_probe/m09c_canonical_gate.py",
     "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
-    "tools/rom_probe/m09c_animation_progression_analysis.py"
+    "tools/rom_probe/m09c_animation_progression_analysis.py",
+    "extracted_metadata/m09d_quaid_v9_candidate.json"
   ],
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
     "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
     "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
     "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
-    "m09d_runtime_regression": "extracted_metadata/m09d_quaid_runtime_regression.json",
+    "m09d_palette": "extracted_metadata/m09d_player_palette_runtime.json",
+    "m09d_v10_candidate": "extracted_metadata/m09d_quaid_v10_candidate.json",
     "m09c_result": "COMPLETE",
     "m09d_engineering_result": "PASS"
   },
   "recovery_validation": {
-    "checkpoint_commit": "d6de2347995167904c600783b9ee57c05f5d5dc6",
-    "actions_run": 38013011483,
+    "checkpoint_commit": "4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2",
+    "actions_run": 38018819486,
     "static_and_recovery_tests": 58,
     "tests_result": "PASS",
-    "blastem_harness_result": "PASS",
-    "recovery_doctor_result": "PASS",
-    "note": "M09D source/compiler/integration static gate; rerun after current state synchronization"
+    "blastem_harness_result": "PASS"
   },
   "closed_m09d_engineering_gates": [
     "production sprite contract",
     "mapping-constrained compiler",
     "machine-checkable piece/chunk/palette budgets",
-    "first reproducible original 30-frame source family as technical prototype",
+    "reproducible 30-frame indexed source pipeline",
     "deterministic ROM integration",
-    "player-local runtime integration and exact inactive fallback"
+    "player-local runtime integration and exact inactive fallback",
+    "v10 candidate source/bank/build identity"
   ],
   "open": [
     {
       "id": "O1",
       "blocking": true,
-      "name": "Quaid art-quality refinement and production freeze",
+      "name": "final Quaid micro-detail/art-quality refinement and production freeze",
       "completion": [
         "coherent Quaid identity across five authored and eight runtime facings",
-        "production-quality silhouette and animation character",
-        "six native phases remain readable as a sprint/locomotion cycle",
+        "neck/face, sleeve/hand, cloth-fold and boot/leg separation reaches production pixel-art density",
+        "broad/heavy Quaid silhouette and six native phases remain readable",
         "source remains original and reproducible",
         "compile and budget assertions remain green",
         "runtime regression remains player-local with exact inactive fallback",
@@ -174,12 +193,12 @@
     }
   ],
   "next": [
-    "refine the reproducible Quaid sprint source family from prototype quality to production-quality pixel art while preserving the current contract",
-    "visually review all five authored facings and six native phases for silhouette, gait readability and Total Recall identity",
-    "recompile with the mapping-constrained compiler and require all budgets/assertions green",
-    "update audited source/bank/build fingerprints only when art pixels legitimately change",
-    "rerun the M09D runtime regression against M07C and require containment/fallback/control invariants",
-    "if green, mark M0.9D COMPLETE, freeze the production player-art pipeline and establish the first M1.0 vertical-slice integration baseline"
+    "use v10 as the fixed baseline and make one focused micro-detail pass inside the existing mapping masks",
+    "review all five authored facings and six phases against the decoded canonical retail player visual-density baseline",
+    "recompile and require the closed mapping/chunk/palette budgets to remain green",
+    "update fingerprints only for legitimate pixel changes and rebuild from the canonical ROM",
+    "rerun the M09D runtime regression against M07C and require the same containment/fallback/control invariants",
+    "if visual quality and all gates are green, mark M0.9D COMPLETE and freeze the production player-art pipeline"
   ],
   "parallel_preserved_branches": [
     "m11e-scene-source-matrix",
@@ -193,7 +212,8 @@
     "runtime_identity_evidence_outranks_static_naming": true,
     "m09c_visual_gate_closed": true,
     "m09d_engineering_gates_closed": true,
-    "do_not_expand_mapping_geometry_without_measured_need": true
+    "do_not_expand_mapping_geometry_without_measured_need": true,
+    "do_not_return_to_v9": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
