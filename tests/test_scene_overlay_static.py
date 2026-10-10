@@ -115,6 +115,29 @@ class SceneOverlayStaticTests(unittest.TestCase):
         self.assertEqual(len(rect["tile_words"]), 27 * 11)
         self.assertEqual(len(rect["expect_sha256"]), 64)
 
+    def test_l3_three_zone_refinement_stays_inside_verified_slots(self) -> None:
+        manifest = json.loads((ROOT / "tools/build/examples/m120c_l3_three_zone_overlay.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["status"], "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE")
+        self.assertEqual([row["tile_index"] for row in manifest["primary_graphics"]], list(range(2, 17)))
+        self.assertTrue(all(len(bytes.fromhex(row["tile_hex"])) == 32 for row in manifest["primary_graphics"]))
+        rect = manifest["maps"][0]
+        self.assertEqual((rect["x"], rect["y"], rect["width"], rect["height"]), (0, 12, 27, 11))
+        words = [int(v) for v in rect["tile_words"]]
+        self.assertEqual(len(words), 27 * 11)
+        self.assertTrue(set(words).issubset(set(range(2, 17))))
+        rows = [words[y * 27:(y + 1) * 27] for y in range(11)]
+        for y in range(1, 11):
+            self.assertEqual(rows[y][8], 7)
+            self.assertEqual(rows[y][19], 7)
+        left = {v for row in rows for v in row[0:8]}
+        middle = {v for row in rows for v in row[9:19]}
+        right = {v for row in rows for v in row[20:27]}
+        self.assertNotEqual(left, middle)
+        self.assertNotEqual(middle, right)
+        self.assertIn(16, left)
+        self.assertIn(14, middle)
+        self.assertIn(15, right)
+
 
 if __name__ == "__main__":
     unittest.main()
