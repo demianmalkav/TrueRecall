@@ -121,6 +121,26 @@
       "compare against the correct direct parent"
     ]
   },
+  "authoritative_tools": [
+    "tools/runtime/m09c_animation_state_trace_v2.py",
+    "tools/rom_probe/m09c_phase_bridge_analysis.py",
+    "tools/build/m09c_native_phase_pixel_sequence.py",
+    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
+    "tools/build/m09d_quaid_sprint_source.py",
+    "tools/build/m09d_quaid_sprint_build.py",
+    "tools/runtime/m09d_quaid_runtime_regression.py",
+    "tools/build/scene_source.py",
+    "tools/build/scene_compiler.py",
+    "tools/build/m100a_vertical_slice_baseline.py"
+  ],
+  "evidence": {
+    "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
+    "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
+    "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
+    "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
+    "m09d_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
+    "m11d_scene_source": "extracted_metadata/m11d_scene_source.json"
+  },
   "open": [
     {
       "id": "O1",
