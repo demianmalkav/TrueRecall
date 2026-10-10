@@ -1,0 +1,44 @@
+{
+  "all_scene_noop_exact": true,
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "canonical_json_sha256": {
+    "0": "45ccc1d3bd725c396dc45361647cf5b8f4365348eb2d30cb74f37db59e1888bf",
+    "1": "56847f9d7fd47483cb8fe2788cb2a4e1f2c8b8dc26a3642f13bfdda208ce45a2",
+    "10": "b26ed8bc643c3ed23e8e5d038ebd04a284ea6876a63cb4b680d89e57d6720ce9",
+    "11": "9d1bbe2db922a0793f66dc408a6e3d2bb597bafb11b9ae2787ee76f405f532b1",
+    "12": "200dfba03a135724e1ef29b16776a7bb796ad5e1e7fd3de9bf1ea0ef3d1c8012",
+    "13": "89f6c36340d9bb2224ba733290dc9a05693794f216d476fbeb33b2622a5a9231",
+    "14": "61869dfe433df13fca415fa2bb6f462d46fce159da96c8e81aaff704ffa4286c",
+    "15": "b11f40406f27992b654c3ca1bdf44d4fe84dcd4a9f3b6968bb2baab75111f723",
+    "16": "769cc4020a7333cbdced3e1c221f0e88a5c2368ea6801329dd5867dfbf8fb666",
+    "17": "8e2c0a276e0252c5a063e5a48fe1fc0894dc5920d49fb719229132ba77ed4864",
+    "18": "1be16fe55bdd235b5c91b910fefa2fb6993ef0a12078373acc4b378df1f4b98c",
+    "2": "40553ffbe82311f53a5279bc41418ca300573f6a925a6d6af05b0d613621a7ae",
+    "3": "3b286ab445eefbc20bca4639653c46e716fc1903e76d63153b61bc83a736e37f",
+    "4": "38b0a42055156efa0c629e78cbd074f2bd89979ea78233d2ad621ebd22a461cb",
+    "5": "e17e2452b6d5cfe18d058b71a742f9d99f40168d828ed8fd1f3be85a885392b2",
+    "6": "2966396d1c06faae4aad94c25d98489b6ea261661351a6b7086fcf7884750452",
+    "7": "58c83dd0adfb80e4571161bf48c5d629eeced21cfac315023cba021cbe7692dc",
+    "8": "5512ae1a268b3747d5e23517542a188ba85c893f92d3e68939604e9ea31135a4",
+    "9": "f836c3d79826a4a238ca7403450bc55cffa7d4f234c18214da0a180c76c2e753"
+  },
+  "edited_scene18": {
+    "after": 3822,
+    "before": 546,
+    "checksum": "0x2CA8",
+    "color_index": 1,
+    "new_pointer": 3145728,
+    "output_sha1": "7f67fb00c810fc0e1d1706c1af069fb72c667fa2",
+    "scene_record_changed_offsets": [3, 4, 5, 7, 8, 9]
+  },
+  "invalid_cram_rejected": true,
+  "retail_pointers": {
+    "0": 633888, "1": 634016, "2": 634144, "3": 634272, "4": 634400,
+    "5": 634528, "6": 634656, "7": 634784, "8": 634912, "9": 635040,
+    "10": 635168, "11": 635296, "12": 635424, "13": 635552, "14": 635680,
+    "15": 635808, "16": 635808, "17": 635808, "18": 635936
+  },
+  "runtime_validation": "covered_by_m110b_for_scene0",
+  "scene_count": 19,
+  "schema": "truerecall.m11f.scene_palette_canonical.v1"
+}
