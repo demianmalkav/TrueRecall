@@ -1,48 +1,52 @@
 # Player System
 
-## Model recovered in M0.6
+This document records the cumulative player-control architecture. Live continuation priority comes from `docs/PROJECT_STATE.md`.
 
-The player is **not** controlled by one monolithic state enum. Static reconstruction shows five cooperating layers:
+## Layered control model — CONFIRMED
 
-1. normalized input (`F6EA/F6EC/F6EE/F6F0`)
-2. a 16-bit action/state word (`FB7C`, low byte `FB7D`)
-3. a 16-bit overlay/context flag word (`FB7E`, low byte `FB7F`)
-4. per-frame event bits returned in `D7`
-5. a synchronized pair of engine entities (`F9F8` avatar + `FB6E` control/collision proxy)
+The player is not controlled by one monolithic state enum. Five cooperating layers are established:
 
-This layered model explains combinations such as walking while Lock is held, firing from a roll, temporary invulnerability, and alternate-player overlays without requiring a separate combined state for every possibility.
+1. normalized input (`F6EA/F6EC/F6EE/F6F0`);
+2. 16-bit action/state word `FB7C`;
+3. 16-bit overlay/context word `FB7E`;
+4. per-frame event bits returned in `D7`;
+5. a synchronized linked pair: F9F8 world/render avatar + FB6E control/collision proxy.
 
-## Normalized controller input — CONFIRMED / HIGH CONFIDENCE
+This explains combinations such as walking while Lock is held, firing from a roll, temporary invulnerability and alternate-player overlays without inventing a combined enum state for every combination.
+
+## Normalized input — CONFIRMED / HIGH CONFIDENCE
 
 The input update around `0x012B62` maintains:
 
-- `FFFFF6EA`: previous normalized input word
-- `FFFFF6EC`: current normalized input word
-- `FFFFF6EE`: newly pressed edges
-- `FFFFF6F0`: inputs continuously held across the previous and current sample
+```text
+FFFFF6EA  previous normalized input
+FFFFF6EC  current normalized input
+FFFFF6EE  newly pressed edges
+FFFFF6F0  continuously held overlap
+```
 
-The formulas are directly visible in the input routine:
+Derived relations:
 
 ```text
 F6EE = current & (current XOR previous)
 F6F0 = current & previous
 ```
 
-Known normalized controls:
+Known controls:
 
-- `F6EC & 0x000F`: directional pad mask
-- `F6EC bit 6`: Lock held — HIGH CONFIDENCE, corroborated by control behavior
-- `F6EE bit 4`: Fire press — CONFIRMED by primary weapon dispatch
-- `F6EE bit 5`: Roll press — CONFIRMED by branch to `0x008600`
-- `F6EE bit 12`: next owned weapon (`FB8C += 2`, wrapping `0x000C→0`) — CONFIRMED
-- `F6EE bit 14`: previous owned weapon (`FB8C -= 2`, wrapping below zero→`0x000C`) — CONFIRMED
-- main action-edge filter: `0x5030`
+- `F6EC & 0x000F`: D-pad mask;
+- `F6EC bit 6`: Lock held — HIGH CONFIDENCE;
+- `F6EE bit 4`: Fire press — CONFIRMED;
+- `F6EE bit 5`: Roll press — CONFIRMED;
+- `F6EE bit 12`: next owned weapon — CONFIRMED;
+- `F6EE bit 14`: previous owned weapon — CONFIRMED;
+- main action-edge filter: `0x5030`.
 
-## Direction and facing — CONFIRMED
+## Direction / facing — CONFIRMED
 
-The direction lookup table at `0x0147C4` maps normalized D-pad combinations to `object+0x50` facing:
+Direction table at `0x0147C4` maps D-pad mask to `object+0x50` facing:
 
-| D-pad mask | Facing | Direction |
+| D-pad | Facing | Direction |
 |---:|---:|---|
 | `0x1` | 0 | N |
 | `0x9` | 1 | NE |
@@ -55,132 +59,173 @@ The direction lookup table at `0x0147C4` maps normalized D-pad combinations to `
 
 `0x009B12` is the direct D-pad→facing helper used by player control.
 
-## Dual player entities — M0.6B
+## Linked player entities — CONFIRMED architecture
 
-The controllable character is implemented as two linked engine objects rather than one object doing everything.
+The controllable character is represented by two synchronized engine objects.
 
-### `F9F8` — world/render avatar entity — HIGH CONFIDENCE
+### Runtime globals are signed word pointers — CONFIRMED
 
-- stored from the stage/world object path at `0x0109D0`
-- used as the linked visual/world-side entity throughout player synchronization
-- receives synchronized motion and facing from the player proxy
-- visibility/blink and geometry synchronization operate on it directly
+M0.9C canonical tracing corrected an earlier tooling assumption. Retail loads both globals using `MOVEA.W`; they are signed 16-bit RAM pointers, not adjacent halves of 32-bit pointers.
 
-### `FB6E` — control/collision proxy/companion — HIGH CONFIDENCE
+Observed canonical gameplay values:
 
-- allocated during player-control construction and stored at `0x008284`
-- allocator helper `0x00F8E8` promotes the newly allocated `A0` object into `A5`
-- receives the player callback pair and the control/motion state
-- its entity-interaction callback at `0x00356C` explicitly ignores `F9F8`, suppressing collision with its own linked avatar
+```text
+FFFFF9F8 -> FFFFC632  world/render avatar
+FFFFFB6E -> FFFFC7FA  control/collision proxy
+```
 
-### Synchronization
+The exact RAM object addresses are allocation-dependent; do not hard-code `C632/C7FA` as universal object locations.
 
-At `0x009B60`, the frame synchronizer loads `F9F8→A1` and `FB6E→A5`.
+### F9F8 world/render avatar — CONFIRMED role in tested path
 
-- `0x009BE8`: motion fields `+0x18/+0x1A/+0x56` are copied proxy→avatar
-- `0x009C7A`: position/geometry fields `+0x10/+0x12/+0x14/+0x16` and `+0x54` can be copied avatar→proxy
-- aim/facing synchronization can be suppressed by Lock/fire context
-- animation-phase synchronization is conditional on action bits
+Evidence accumulated from construction/synchronization plus canonical runtime tracing:
 
-This architecture is directly relevant to M0.7: a new movement or melee state must respect both representations rather than patching only one object.
+- stored from stage/world object path at `0x0109D0`;
+- loaded throughout synchronization as the linked world/render-side object;
+- receives synchronized motion/facing from proxy;
+- visibility/blink and geometry synchronization operate on it;
+- canonical held-Y sprint runtime: `object+0x2A = 139`, `object+0x2C = 0x000A0000`;
+- descriptor remains stable through the observed native animation cycle.
 
-## Action/state word `FB7C` — CONFIRMED structure
+### FB6E control/collision proxy — CONFIRMED role in tested path
 
-`FFFFFB7C` is a **16-bit bitfield/action word**. `FB7D` is merely its low byte and must not be documented as a separate variable.
+- allocated during player-control construction and stored at `0x008284`;
+- helper `0x00F8E8` promotes newly allocated `A0` into `A5`;
+- receives player callbacks/control/motion state;
+- entity-interaction callback `0x00356C` explicitly ignores F9F8, suppressing collision with its linked avatar.
 
-Direct values observed in player code:
+Original Beam source terminology remains unknown; `world/render avatar` and `control/collision proxy` are project names for the recovered roles.
+
+## Synchronization — CONFIRMED / HIGH CONFIDENCE
+
+At `0x009B60`, the frame synchronizer loads the linked pair.
+
+- `0x009BE8`: `+0x18/+0x1A/+0x56` motion fields copy proxy→avatar;
+- `0x009C7A`: `+0x10/+0x12/+0x14/+0x16` and `+0x54` geometry/position can copy avatar→proxy;
+- aim/facing synchronization can be suppressed by Lock/fire context;
+- animation-phase synchronization is conditional on player action state.
+
+M0.9C recovered a specific phase-transfer bridge at `0x009D5E`:
+
+```text
+phase_delta = proxy(+0x1E) - proxy(+0x1C)
+current     = avatar(+0x1C) + phase_delta
+avatar(+0x1E) = current
+avatar(+0x24) = encoded_entry(avatar_descriptor, current)
+avatar(+0x20) = mapping_record(avatar_descriptor, current)
+```
+
+Observed writer cluster:
+
+```text
+0x009D72 -> avatar+0x1E
+0x009D7E -> avatar+0x24
+0x009D88 -> avatar+0x20
+```
+
+This cluster is one native phase-advance transaction. The `+0x24` write inside it is not automatically a new external selector event.
+
+## Canonical native sprint phase — CONFIRMED
+
+During the M0.9C held-Y runtime trace:
+
+```text
+F9F8 descriptor       0x000A0000
+F9F8 base +0x1C       0x08B6
+raw phase deltas      0, 2, 4, 6, 8, 10
+```
+
+Current `+0x1E` cycles:
+
+```text
+0x08B6 -> 0x08B8 -> 0x08BA -> 0x08BC -> 0x08BE -> 0x08C0 -> wrap
+```
+
+No F9F8 `+0x2C` write occurred in the observed cycle.
+
+### M0.8 identity refinement
+
+M0.8 proved that scoping renderer/cache substitution to `0x0F0000` produces a compact player-local visual difference with exact inactive fallback. M0.9C later falsified the stronger interpretation that `0x0F0000` is the canonical F9F8 world/render-avatar descriptor. In the tested canonical sprint path F9F8 is `0x000A0000`.
+
+## `FB7C` action/state word — CONFIRMED structure
+
+`FFFFFB7C` is a composable 16-bit bitfield. `FB7D` is its low byte, not a separate variable.
 
 | Value | Working interpretation | Status |
 |---:|---|---|
-| `0x0000` | idle / neutral control | CONFIRMED |
+| `0x0000` | idle / neutral | CONFIRMED |
 | `0x0002` | walking / locomotion | CONFIRMED |
 | `0x0004` | normal weapon-fire class | CONFIRMED |
-| `0x0008` | special-weapon/action base bit | HIGH CONFIDENCE |
-| `0x000C` | special-action + normal-fire bits | STRUCTURAL FACT; phase label unresolved |
-| `0x0028` | special-action + `0x20` modifier; Uzi/flamethrower phases | HIGH CONFIDENCE |
-| `0x0048` | special-action + `0x40` modifier; grenade phase | HIGH CONFIDENCE |
+| `0x0008` | special-action base bit | HIGH CONFIDENCE |
+| `0x000C` | special-action + normal-fire bits | STRUCTURAL; phase label unresolved |
+| `0x0028` | special-action + `0x20`; Uzi/flamethrower phases | HIGH CONFIDENCE |
+| `0x0048` | special-action + `0x40`; grenade phase | HIGH CONFIDENCE |
 | `0x0001` | auxiliary/transition bit | UNRESOLVED |
 
-Idle is written at `0x00832A`; walking at `0x0083A0`; ordinary pistol/shotgun/Uzi fire sets bit `0x0004` in their handlers.
+Idle is written at `0x00832A`, walking at `0x0083A0`; ordinary pistol/shotgun/Uzi paths set `0x0004`.
 
-The word should therefore be treated as **composable action-class bits**, not an enum.
-
-## Overlay/context flags `FB7E` — CONFIRMED structure
+## `FB7E` overlay/context word — CONFIRMED structure
 
 `FFFFFB7E` is a second 16-bit flag word. `FB7F` is its low byte.
 
-Current low-bit map:
-
 | Bit | Working interpretation | Status |
 |---:|---|---|
-| `0x0001` | roll/dive active phase | HIGH CONFIDENCE |
-| `0x0002` | post-roll transition phase | HIGH CONFIDENCE |
+| `0x0001` | roll active phase | HIGH CONFIDENCE |
+| `0x0002` | post-roll transition | HIGH CONFIDENCE |
 | `0x0004` | roll-fire / kneeling-fire context | CONFIRMED |
 | `0x0008` | normal-control/update context | UNRESOLVED exact label |
-| `0x0040` | JLLBFR alternate-player/maniac/chainsaw overlay | HIGH CONFIDENCE |
+| `0x0040` | JLLBFR alternate-player/maniac overlay | HIGH CONFIDENCE |
 | `0x0080` | lock/fire pose latch | HIGH CONFIDENCE |
 
-Higher bits `0x0100–0x4000` are used by terminal/special sequences and remain intentionally unnamed until their cause-level semantics are proven.
+Higher bits `0x0100–0x4000` occur in terminal/special sequences and remain intentionally unnamed.
 
-## Roll and roll-fire — CONFIRMED / HIGH CONFIDENCE
+## Roll / roll-fire — CONFIRMED / HIGH CONFIDENCE
 
-Roll starts at `0x008600`.
+Roll begins at `0x008600`:
 
-The routine:
+1. optionally update facing;
+2. clear normal `FB7C` action word;
+3. set `FB7E bit 0`;
+4. select animation `0x0142`;
+5. execute movement/collision;
+6. later set `FB7E bit 1`;
+7. test current Fire held (`F6EC bit 4`).
 
-1. optionally updates facing from the D-pad
-2. clears the normal `FB7C` action word
-3. sets `FB7E bit 0`
-4. plays animation `0x0142`
-5. runs movement/collision updates
-6. later sets `FB7E bit 1` for the transition phase
-7. tests **current Fire held** (`F6EC bit 4`)
+Fire held branches to secondary weapon dispatcher `0x0084BA`. Secondary pistol/shotgun/Uzi/grenade/flamethrower paths set `FB7E bit 2`; Mine returns to normal control. `0x0098BA` manages associated kneeling/roll-fire transition using animation `0x0172`.
 
-If Fire is held, control branches to the secondary weapon dispatcher at `0x0084BA`. The secondary pistol/shotgun/Uzi/grenade/flamethrower paths set `FB7E bit 2` and enter their firing handlers. Mine deliberately routes back to normal control.
-
-`0x0098BA` manages the associated kneeling/roll-fire transition and uses animation `0x0172`.
-
-This statically proves that roll-fire is a context layered on top of weapon firing, not a separate weapon family.
+Roll-fire is therefore an overlay/context layered over weapon firing.
 
 ## Lock / strafe — HIGH CONFIDENCE
 
-Lock is also an overlay, not an exclusive player state.
+Around `0x009BC0–0x009BE8`, when Lock (`F6EC bit 6`) is not held, aim/display-facing is resynchronized to locomotion facing. Holding Lock suppresses that synchronization, preserving aim while movement changes.
 
-The control synchronization region around `0x009BC0–0x009BE8` tests `F6EC bit 6`. When Lock is **not** held, the aim/display-facing representation is resynchronized to locomotion facing. When Lock **is** held, that synchronization is skipped, preserving the previous firing direction while movement can change.
+`FB7E bit 7` acts as a pose latch around `0x0099D2` during Lock/normal-fire context.
 
-`FB7E bit 7` is used as a pose latch around `0x0099D2` while Lock or normal-fire context is active.
+## JLLBFR alternate-player overlay — HIGH CONFIDENCE
 
-This is the structural mechanism behind True Lies' independent movement/firing-direction behavior.
+Retail JLLBFR behavior remains useful architectural precedent:
 
-## JLLBFR alternate-player/maniac overlay — HIGH CONFIDENCE
+- password path enables a cheat flag (`FBEE bit 1`);
+- hidden input can toggle `FB7E bit 6 / 0x0040`;
+- idle/walk logic uses presentation family `0x00F2`;
+- movement parameters rise approximately `0x0180/0x0120 -> 0x0280/0x0220`.
 
-The retail cheat path provides a valuable precedent for Total Recall extensions:
-
-- decoded password `JLLBFR` enables a cheat flag (`FBEE bit 1`)
-- a hidden normalized-input combination can toggle `FB7E bit 6 / 0x0040`
-- idle/walk logic switches to animation `0x00F2`
-- movement parameters increase from approximately `0x0180/0x0120` to `0x0280/0x0220`
-
-This demonstrates that Beam already supports an alternate player presentation/behavior layered over the normal control architecture rather than requiring a completely separate engine path.
+Important M0.9C correction: the JLLBFR family selector does **not** imply that F9F8's canonical descriptor is `0x0F0000`. That older identity hypothesis is falsified.
 
 ## Nonfatal hit / invulnerability overlay — HIGH CONFIDENCE
 
-`0x009714` begins temporary invulnerability:
+`0x009714`:
 
-- tests whether `object+0x06 bit 0x0020` is already active
-- sets `FB90 = 24`
-- sets `FB92 = 1`
-- sets `object+0x06 bit 0x0020`
+- checks `object+0x06 bit 0x0020`;
+- sets `FB90 = 24`;
+- sets `FB92 = 1`;
+- sets `object+0x06 bit 0x0020`.
 
-The constructor establishes a longer initial protection window with `FB90 = 100`, `FB92 = 1` and the same object flag.
+Constructor uses a longer initial window (`FB90 = 100`). `0x009CA0` manages countdown/blink and eventual teardown. Normal loops route `D7 bit 13` into this response after terminal-mask handling, supporting the overlay model.
 
-`0x009CA0` decrements `FB90`, uses `FB92` as the blink cadence, toggles visibility-related flags, and eventually clears the protection state.
+## Terminal events / death routing — CONFIRMED routing, semantics partial
 
-In normal locomotion and weapon loops, `D7 bit 13` triggers `0x009714` after the terminal-event mask has been ruled out. Therefore a nonfatal hit/invulnerability response is an **overlay**, not a dedicated `FB7C` action state.
-
-## Terminal events and death — CONFIRMED routing, cause semantics partial
-
-Most active player loops use the pattern:
+Many active loops use:
 
 ```text
 MOVE.L D7,D6
@@ -188,89 +233,76 @@ ANDI.L #$00000063,D6
 BNE.W  $009244
 ```
 
-The static probe finds this convergence from at least 27 player-action sites.
+At least 27 player-action sites converge on `0x009244`, a terminal-event dispatcher for `D7` bits `0,1,5,6`.
 
-`0x009244` is therefore a terminal-event dispatcher for `D7` bits `0,1,5,6`.
+- external `FC47 bit 5` or `D7 bit 1` -> `0x0096B6`, no lives decrement observed — HIGH CONFIDENCE non-life-loss transition;
+- `D7 bit 5` -> `0x00944E`, life decremented unless cheat applies;
+- `D7 bit 0` -> `0x00960C`, life-loss path;
+- remaining masked case, normally `D7 bit 6`, -> default life-loss path.
 
-Routing inside the dispatcher:
+Therefore `D7 & 0x63` is not simply a “fatal mask.” Several life-loss variants use animation `0x0262`; exact cause labels remain unresolved.
 
-- external `FC47 bit 5` or `D7 bit 1` → `0x0096B6`; **no lives decrement observed**, so this is a non-life-loss terminal/transition path — HIGH CONFIDENCE
-- `D7 bit 5` → `0x00944E`; life is decremented unless the relevant cheat flag is active
-- `D7 bit 0` → `0x00960C`; life-loss path
-- remaining masked case (normally `D7 bit 6`) → default life-loss path
-
-Therefore **not every `D7 & 0x63` event is a death**. The old shorthand “fatal mask” would be incorrect.
-
-Several life-loss variants use animation `0x0262`; the exact semantic names of the different death causes remain unresolved.
-
-## Animation tables — CONFIRMED
+## Animation family anchors — CONFIRMED
 
 Per-weapon locomotion tables:
 
-- walk table `0x0147E4`: `0x02, 0x12, 0x22, 0x32, 0x32, 0x42`
-- idle table `0x0147F0`: `0x52, 0x62, 0x72, 0x82, 0x82, 0x92`
+```text
+walk  0x0147E4: 02 12 22 32 32 42
+idle  0x0147F0: 52 62 72 82 82 92
+```
 
-Additional player animations currently anchored:
+Additional anchors:
 
-- roll `0x0142`
-- roll-fire/kneeling transition `0x0172`
-- JLLBFR/maniac `0x00F2`
-- life-loss paths commonly use `0x0262`
+- roll `0x0142`;
+- roll-fire/kneeling `0x0172`;
+- JLLBFR/maniac `0x00F2`;
+- common life-loss family `0x0262`.
 
-## Current static state graph
+## Current architecture graph
 
 ```text
 normalized input
-   |
-   +--> idle (FB7C=0)
-   |      \--> walk (FB7C=2) when D-pad active
-   |
-   +--> Fire edge --> primary weapon dispatcher --> fire/special weapon phases
-   |
-   +--> Roll edge --> roll overlay
-   |                    \--> Fire held --> secondary weapon dispatcher + kneeling-fire overlay
-   |
-   +--> bit12 edge --> next owned weapon
-   +--> bit14 edge --> previous owned weapon
+   +--> FB7C action classes
+   +--> FB7E overlays/contexts
+   +--> weapon / roll / lock / hit routing
 
-continuous overlays:
-   Lock held --------> preserve aim-facing while locomotion changes
-   JLLBFR mode ------> alternate presentation/movement behavior
-   nonfatal hit -----> temporary invulnerability/blink overlay
+FB6E control/collision proxy
+   ---- motion + phase ----> F9F8 world/render avatar
 
-linked objects:
-   FB6E proxy/control ----motion----> F9F8 world/avatar
-   F9F8 world/avatar ----geometry--> FB6E proxy/control
+F9F8 world/render avatar
+   ---- geometry/position -> FB6E proxy when allowed
 
-after each active update:
-   D7 & 0x63 --------> terminal-event dispatcher
+after active update:
+   D7 event bits -> terminal/nonfatal routing
 ```
 
-## Important unresolved area
+## Remaining semantic gaps
 
-`object+0x54` is now classified as a spatial/collision-response or positional-correction field, not a control mode. Its exact physical axis/unit is still unresolved.
+Still intentionally unresolved:
 
-Also still unresolved:
+- exact labels for all special weapon phases (`0x0008/0x000C/0x0028/0x0048`);
+- cause-level meanings of higher `FB7E` bits;
+- exact cause labels for terminal/death `D7` bits;
+- original Beam terminology for linked objects;
+- exact physical interpretation of `object+0x54` beyond spatial/collision-response/positional-correction role.
 
-- exact semantic names for all special weapon phases (`0x0008/0x000C/0x0028/0x0048`)
-- cause-level meanings of higher `FB7E` bits
-- exact cause labels for each terminal/death `D7` bit
-- exact original Beam terminology and lifecycle ordering for the `F9F8`/`FB6E` pair
-- dynamic timing confirmation for the static graph
+## Reproducible evidence
 
-## Reproducible probes
+Static probes:
 
 ```text
 python tools/rom_probe/player_state_probe.py "True Lies (World).md" --json state.json
 python tools/rom_probe/player_links_probe.py "True Lies (World).md" --json links.json
 ```
 
-Both probes verify the canonical SHA-1 before producing data and assert the core offsets/signatures used by this document.
+Canonical M0.9C runtime tooling/evidence:
 
-## M0.6 status
+```text
+tools/runtime/m09c_animation_state_trace_v2.py
+tools/rom_probe/m09c_phase_bridge_analysis.py
+extracted_metadata/m09c_canonical_phase_bridge.json
+```
 
-**Static player-control architecture is substantially recovered through M0.6B.** M0.6 remains active until runtime/playtest validation of the remaining special phases and a minimal runtime regression suite exist.
+## Production extension rule
 
-## Extension target
-
-The first controlled extension should add one isolated player state/animation while keeping `FB7C` action classes, `FB7E` overlays and the `F9F8`/`FB6E` synchronization contract compatible. This is the proof required before implementing Total Recall-specific movement or melee.
+M0.7 already proved an isolated player extension. M0.9C has now recovered the native presentation-phase seam. New Total Recall movement/presentation mechanics must preserve the linked F9F8/FB6E contract, avoid wholesale descriptor replacement, and pass deterministic parent/child regressions before integration.
