@@ -1,0 +1,42 @@
+{
+  "schema": "truerecall.m120e.type87_scene0_runtime.v1",
+  "status": "CONFIRMED_RUNTIME",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_parent_sha1": "c727f6adb48bf27d6f30f5459ba7ba71b2d2a046",
+  "candidate_sha1": "536f4e8561bb3040403726b0b084f294288cf90b",
+  "genesis_checksum": "0xA84E",
+  "overlay": "tools/build/examples/m120e_scene0_type87_branch_probe_overlay.json",
+  "object_contract": {
+    "type_id": 87,
+    "status_flags": "0x7800",
+    "stride": 6,
+    "x": 701,
+    "y": 558,
+    "param": null
+  },
+  "mission_state": {
+    "flag_ram": "0xFFFFFC54",
+    "message_offset_ram": "0xFFFFFC06",
+    "required_flag": "0x4000"
+  },
+  "no_lever_branch": {
+    "frame_1380": {"fc54": "0x0000", "fc06": "0x0000", "active_count": 1},
+    "frame_1390": {"fc54": "0x0000", "fc06": "0x0034", "active_count": 7},
+    "frame_1500": {"fc54": "0x0000", "fc06": "0x0034", "active_count": 7}
+  },
+  "lever_flag_present_branch": {
+    "method": "debugger sets FC54=0x4000 at frame 1380 after scene initialization and before type87 branch evaluation",
+    "frame_1380_before_set": {"fc54": "0x0000", "fc06": "0x0000", "active_count": 1},
+    "frame_1390": {"fc54": "0x4000", "fc06": "0x0036", "active_count": 7},
+    "frame_1500": {"fc54": "0x4000", "fc06": "0x0036", "active_count": 7}
+  },
+  "interpretation": "the same type87 instance takes distinct runtime message branches based only on FC54 bit 0x4000: 0x34 without the lever flag and 0x36 with the flag present",
+  "scope_limit": "the lever-present branch is discriminated by debugger state injection; end-to-end native type60-to-type87 sequencing remains the next gate",
+  "assertions": {
+    "no_lever_branch_message_0x34": true,
+    "flag_present_branch_message_0x36": true,
+    "type87_does_not_create_lever_flag": true,
+    "branch_discrimination_is_fc54_dependent": true
+  },
+  "pass": true
+}
