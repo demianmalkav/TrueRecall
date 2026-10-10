@@ -11,21 +11,21 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 3. `docs/TECHNICAL_STATE.md` is cumulative background and never overrides `NEXT` here.
 4. HISTORICAL/FALSIFIED material is provenance, not a promotion gate.
 5. Drive is the recovery/design mirror; duplicated dynamic technical state defers to GitHub.
-6. Refresh the live branch before writes. The checkpoint below is the material proof checkpoint; later documentation-only commits may advance HEAD.
+6. Refresh the live branch before writes. Closed gates reopen only on contradictory evidence.
 
 ## Active continuation
 
 ```text
 branch:     m09c-native-sequence-seam
-milestone:  M0.9D — production Quaid source-frame authoring and budget validation
-checkpoint: 4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2
+milestone:  M1.0 — first Total Recall vertical-slice integration baseline
+checkpoint: 00d9a0e9db501e7f8763515ce34fbe7476dd6c67
 ```
 
 **M0.9C is COMPLETE.**
 
-**M0.9D is technically proven end-to-end and now has a validated v10 production candidate, but is not frozen as final production art.** All native-seam, mapping, palette, budget, deterministic-build and runtime-containment gates are green. The only remaining gate is micro-detail/art-quality refinement against the retail player-art quality baseline. Do not reopen the M09C native animation seam or expand mapping geometry merely to continue art iteration.
+**M0.9D is COMPLETE and FROZEN.** The first production Quaid sprint/locomotion family and its source-to-ROM pipeline are closed. Do not resume v9/v10 art iteration, rewrite the M09C native phase seam, or expand the mapping contract without new contradictory evidence.
 
-The first Total Recall production vertical slice has not begun.
+The active task is now the first **Total Recall** vertical-slice integration baseline: prove that the already recovered player, scene/object, world-collision and gameplay systems can coexist in one reproducible authored scene without reopening closed subsystems.
 
 ## Canonical ROM identity
 
@@ -41,11 +41,28 @@ The original ROM is immutable and never committed. ROM availability is session-l
 
 ## Stable engine foundation
 
-M0.1–M0.6 reconstruction/authoring, M0.7 deterministic held-Y sprint, M0.8 runtime-authored player-local graphics, M0.10 world-collision authoring and M0.11A–D canonical scene-source authoring remain stable foundation. Parallel M11E–H branches are preserved but are not the active track.
+The following are stable foundation and are not active reverse-engineering gates:
+
+- M0.1–M0.6 ROM, entity, VM, map and authoring reconstruction;
+- M0.7 deterministic held-Y sprint;
+- M0.8 runtime-authored player-local graphics;
+- M0.9C native six-phase player presentation integration;
+- M0.9D production Quaid sprint family and source-to-ROM pipeline;
+- M0.10 world-collision authoring;
+- M0.11A–D unified canonical scene-source authoring.
+
+Parallel scene-authoring branches remain preserved but are **not** automatically promoted:
+
+```text
+m11e-scene-source-matrix
+m11f-palette-authoring
+m11g-scene-source-v2
+m11h-scene-transaction-v2
+```
+
+Any switch to one of them must be deliberate and recorded here first.
 
 ## M0.9C canonical runtime model — CLOSED / CONFIRMED
-
-Retail loads `FFFFF9F8` and `FFFFFB6E` with `MOVEA.W`; each global stores a signed 16-bit RAM pointer.
 
 ```text
 FFFFF9F8 -> FFFFC632  world/render avatar
@@ -58,12 +75,6 @@ raw phase deltas = 0,2,4,6,8,10
 
 The `0x0F0000 == F9F8 descriptor` model, adjacent-word 32-bit pointer reconstruction and “every +0x24 write is external reselection” model are FALSIFIED.
 
-Primary evidence:
-
-- `extracted_metadata/m09c_canonical_phase_bridge.json`
-- `extracted_metadata/m09c_native_phase_trampoline_runtime.json`
-- `extracted_metadata/m09c_native_visual_regression.json`
-
 M09C proof build:
 
 ```text
@@ -74,11 +85,23 @@ banks:    0x210000,0x218000,0x220000,0x228000,0x230000,0x238000
 cache:    0x3A00..0x3F00
 ```
 
-The final M09C runtime comparison against M07C proved exact pre/post fallback, zero control/RAM mismatches, canonical descriptor preservation, all six native phases and player-local active differences.
+Primary evidence:
 
-## M0.9D production sprite contract — CLOSED / CONFIRMED
+- `extracted_metadata/m09c_canonical_phase_bridge.json`
+- `extracted_metadata/m09c_native_phase_trampoline_runtime.json`
+- `extracted_metadata/m09c_native_visual_regression.json`
 
-Machine-readable contract: `extracted_metadata/m09d_quaid_sprint_contract.json`.
+## M0.9D production Quaid family — COMPLETE / FROZEN
+
+Freeze evidence:
+
+`extracted_metadata/m09d_quaid_v11_production_freeze.json`
+
+Source of truth:
+
+`tools/build/m09d_quaid_sprint_source.py`
+
+Production contract:
 
 ```text
 descriptor:             0x000A0000
@@ -89,174 +112,95 @@ native H-flip reuse:    SW<-SE, W<-E, NW<-NE
 unique mapping records: 10
 resource group:         7
 reserved chunk slots:   0x68..0x7F (24 slots)
-reserved bytes/phase:   3,072
-six-phase reservation:  18,432 bytes
+used chunk slots/phase: 17
 max pieces/frame:       4
-max retail clip:        48x64
 transparent index:      0
 palette indices:        0..15
 ```
 
-The first production family preserves retail mapping geometry and the 24 proven group-7 slot identities. No mapping-geometry expansion is currently justified.
+v11 source fingerprint:
 
-## Runtime player palette — CONFIRMED
+`da0a060e77f9da835b388ffe94a8090d75cd51ea`
 
-`extracted_metadata/m09d_player_palette_runtime.json` confirms that the tested F9F8 sprint path uses player palette line 2 at priority 0 through all sampled native phases. The first Quaid family therefore authors directly to the proven 0..15 indexed palette; no palette reauthoring is required for this gate.
-
-## M0.9D mapping-constrained compiler — CLOSED / CONFIRMED
-
-`tools/build/m09d_mapping_constrained_sprite_compiler.py` reuses the recovered Genesis chunk encoder and supports the non-grid retail piece offsets required by the ten canonical records.
-
-Current v10 contract use:
+v11 phase-bank SHA-1:
 
 ```text
-source frames:              30
-used chunk slots/phase:     17
-reserved chunk slots/phase: 24
-max pieces/frame:           4
-palette range:              <= 15
+97a9f024374b75810dd060ff8c03b4b703cd7ab6
+fce14e16bc2325ea603f7ad973a0033c56f68098
+38c2f905c4f05cc01938f440f2e7cd8a9fa28d74
+12fd0abb168d4983fc3b6d2d46a4589317c8f6c2
+0cd1b90c15c55504e2e55e992197022a5856204f
+416007b12132f06ff30fa009649e4b1c6379d5c1
 ```
 
-All mapping-geometry, chunk-slot, transparency, palette, phase-budget and native-mirroring assertions remain green.
-
-## Quaid source family v10 — ACTIVE PRODUCTION CANDIDATE / NOT YET FROZEN
-
-Source of truth: `tools/build/m09d_quaid_sprint_source.py`.
-
-Evidence: `extracted_metadata/m09d_quaid_v10_candidate.json`.
-
-v10 replaces v9 as the active candidate. It preserves the facing-correct head treatment introduced in v9 and makes the following art-only changes inside the same contract:
-
-- broader shoulder line with a tapered waist rather than a rectangular armor-panel read;
-- cloth-fold shirt shading with restrained highlights;
-- thicker upper arms with tapered forearms;
-- heavier thighs/boots and a wider sprint stance;
-- stronger overall Quaid physical weight while retaining all five authored/eight runtime facings.
-
-Deterministic indexed-pixel source fingerprint:
-
-`16df51a3063eaec999b88ad7d35dd8ba7d4fdb04`
-
-Per-phase bank SHA-1:
-
-```text
-713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7
-5270f74e4550626ea36275d11da57cbf70512fc0
-3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0
-a1f88979ba18ef4957ab8efedf253339b5de489b
-e31bafa3d922343a8b29f0bf406d22d8c0f7b4da
-ed27b3d7630ae71b8e9dc518a36f1647630edfdb
-```
-
-## Deterministic M0.9D v10 integration build — CONFIRMED
-
-Builder: `tools/build/m09d_quaid_sprint_build.py`.
-
-Policy remains unchanged: rebuild canonical M09C, replace only the six 0x8000-byte phase banks, recompute the Genesis checksum, preserve descriptor/trampolines/mapping/control.
+Frozen v11 integration build:
 
 ```text
 size:     4,194,304 bytes
-SHA-1:    a7ee31cb12e17965696fbd4591ddc6b5e96d5d87
-checksum: 0xD3EF
+SHA-1:    49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
+checksum: 0x266C
 parent:   3256f9dcbc6376624716e3508f41c0439e17cef6
 ```
 
-## M0.9D v10 runtime regression — CONFIRMED
+Runtime regression against exact M07C parent `55e02728cb0b7f3627f410202c889197c0e3d0d2` passed all ten containment/fallback/control assertions with zero compared-state mismatches, all six native phases, first visible step 3 and maximum gameplay-difference bbox 65x64 host pixels.
 
-v10 was compared against the correct M07C sprint parent from the common native pre-Y state.
+CI checkpoint `4e933f104292a88d6301d0c39855176253a077d1`, Actions run `38019250327`: 58 static tests PASS and BlastEm harness PASS.
 
-```text
-M07C parent SHA-1: 55e02728cb0b7f3627f410202c889197c0e3d0d2
-common state SHA-256: 72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f
-active samples: 42
-first visible step: 3
-state mismatches: 0
-observed deltas: 0,2,4,6,8,10
-max gameplay difference bbox: 65x64 host pixels
-```
+## M1.0 objective — first integration baseline
 
-All ten runtime assertions pass: exact pre-trigger and post-release fallback, Y+Left normalized input throughout the active window, exact parent/candidate compared state, canonical descriptor preservation, all six native phases, bounded activation latency, continuous authored presentation after warmup, visible evidence for every phase and actor-local visual containment.
+M1.0 is not “build the whole first level”. It is the smallest reproducible scene proving that the Total Recall production player can coexist with authored level content through the recovered engine.
 
-## Retail visual-quality comparison — NEW EVIDENCE
+The initial baseline should use **scene 18 as the sandbox unless new evidence shows a better target**, because M11D already proved exact no-op reconstruction and controlled plane/object/world-collision edits there while its world-collision scene is empty enough to isolate authored changes.
 
-The canonical retail group-7 player frames were decoded from descriptor `0x000A0000` and used only as a visual-quality baseline. v10 now has comparable occupancy/silhouette density, but retail Tasker still uses finer micro-contrast to separate neck, sleeves/hands, torso folds, legs/boots and weapon/anatomical detail.
+The first baseline must demonstrate, in one derived ROM built from the canonical base:
 
-This is **not** evidence that the mapping contract is insufficient. It narrows the remaining work to pixel-level art refinement inside the existing contract.
+1. frozen v11 Quaid production player path remains intact;
+2. one declaratively authored scene edit through the canonical scene-source pipeline;
+3. at least one authored object/pickup chosen from an already-semanticized safe type;
+4. at least one authored world-collision record with expected player interaction;
+5. deterministic build identity and containment audit;
+6. runtime entry into the scene with no player/control regression.
 
-## CI state
-
-Actions run `38018819486` at commit `4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2`:
-
-```text
-58 tests / 0 failures / 0 errors
-static: PASS
-BlastEm harness: PASS
-```
-
-The first v10 source commit intentionally failed only the two v9 fingerprint pins; after updating those expected fingerprints, all functional/budget tests remained green. The final v10 build fingerprint commit is also fully green.
-
-## CLOSED M0.9D engineering gates
-
-- production sprite contract — CLOSED;
-- mapping-constrained compiler — CLOSED;
-- machine-checkable piece/chunk/palette budgets — CLOSED;
-- reproducible 30-frame indexed source pipeline — CLOSED;
-- deterministic ROM integration — CLOSED;
-- player-local runtime integration + exact inactive fallback — CLOSED;
-- v10 source/bank/build identity — CLOSED as current candidate.
+This is an **integration scaffold**, not yet the final Mars art pass. New tile graphics, palette reauthoring and broader scene-presentation work remain separate gates and must not be smuggled into the baseline unless the baseline proves they are required.
 
 ## OPEN
 
-### O1 — final micro-detail/art-quality refinement and production freeze
+### O1 — M1.0A integration manifest and static build
 
-v10 is the active production candidate and is materially stronger than v9, but it is not yet frozen as final player art. Remaining work is deliberately narrow: raise micro-detail/readability to the retail-quality baseline without changing the closed engineering contract.
+Define one machine-readable vertical-slice manifest that composes the frozen v11 player build with a canonical M11D scene-18 authored edit. Select object types from confirmed semantic evidence, not guesses. Compile it from the canonical ROM and prove all modified byte ranges are intended.
 
-Completion requires:
+### O2 — M1.0B runtime smoke
 
-- coherent Quaid identity across five authored/eight runtime facings;
-- neck/face, sleeve/hand, cloth-fold and boot/leg separation at production-quality pixel-art density;
-- broad/heavy Quaid silhouette and six-phase gait remain readable;
-- source remains original and reproducible;
-- compile/budget assertions remain green;
-- runtime remains player-local with exact inactive fallback;
-- final source/bank/ROM fingerprints are audited;
-- explicit production freeze of the player-art pipeline.
+Boot the M1.0A candidate deterministically, enter the authored scene, verify player/control identity and show runtime evidence for the authored scene object/collision behavior. Parent/child comparison must use the correct direct parent.
 
-## Parallel scene-authoring branches — PRESERVED, NOT ACTIVE NEXT
+### O3 — visual-world authoring gate after baseline
 
-```text
-m11e-scene-source-matrix
-m11f-palette-authoring
-m11g-scene-source-v2
-m11h-scene-transaction-v2
-```
-
-Do not switch tracks merely because the remaining work is artistic. A deliberate switch must first be recorded here.
+Only after M1.0A/B are green, decide whether the active branch needs palette/tile authoring from the preserved M11E–H work. Any promotion must be explicit and based on a measured limitation of M11D.
 
 ## NEXT
 
-1. Use v10 as the fixed technical/art baseline; do not return to v9.
-2. Make one focused micro-detail pass inside the same source canvases/mapping masks: neckline/jaw, sleeves/hands, shirt folds, thigh/boot separation.
-3. Review all five authored facings across all six phases against the retail visual-density baseline while preserving distinct Quaid identity.
-4. Recompile; require 17/24-or-better slot use, <=4 pieces/frame, palette 0..15 and all closed assertions green.
-5. Update fingerprints only for legitimate pixel changes and rebuild from the canonical ROM.
-6. Re-run M09D runtime regression against M07C; require the same ten containment/fallback/control invariants.
-7. If the quality gap is closed and all gates remain green, mark M0.9D COMPLETE, freeze the production player-art pipeline and establish the first M1.0 vertical-slice integration baseline.
+1. Inspect the current M11D scene-source compiler and the semantic object/pickup evidence for scene-safe types.
+2. Freeze a minimal `M1.0A` scene-18 manifest: one authored object/pickup plus one authored world-collision record, preserving all immutable scene boundaries.
+3. Add a compositor/build tool that starts from the canonical ROM, applies the frozen v11 player integration, then applies the M11D scene transaction deterministically.
+4. Run static containment/no-op invariants and record the candidate ROM fingerprint.
+5. Run a deterministic BlastEm runtime smoke against the correct parent and verify player/control identity plus authored scene behavior.
+6. If green, mark M1.0A/B complete and decide the next deliberate presentation gate.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
-- Closed engineering gates reopen only on contradictory evidence.
-- Do not rewrite the M09C native seam for art convenience.
-- Do not expand mapping geometry until the fixed ten-record/24-slot contract is demonstrably insufficient.
-- Generated PNGs/ROMs are outputs; source code + contract + verified ROM remain source truth.
+- Closed M09C/M09D gates reopen only on contradictory evidence.
+- Do not modify v11 player pixels during M1.0 integration.
+- Do not expand player mapping geometry for scene-authoring convenience.
+- Do not switch to M11E–H merely because their features are attractive; require an evidenced M11D limitation.
+- Generated ROMs/PNGs are outputs; source code + manifests + verified canonical ROM remain source truth.
 - Prefer small semantic Git commits.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D engineering closed; v10 Quaid candidate reproducible, budget-clean, CI-green and runtime-regression green.
-EVIDENCE extracted_metadata/m09d_quaid_v10_candidate.json + Actions run 38018819486 + canonical retail group-7 visual baseline.
-OPEN     final Quaid micro-detail/art-quality refinement and production player-art freeze.
-NEXT     one focused v11 micro-detail pass inside the closed v10 contract, then compile/build/runtime gate and freeze if the visual bar is met.
+DONE     M09C complete; M09D v11 production Quaid family and player-art pipeline frozen.
+EVIDENCE extracted_metadata/m09d_quaid_v11_production_freeze.json + Actions run 38019250327.
+OPEN     M1.0 first Total Recall vertical-slice integration baseline.
+NEXT     inspect M11D + semantic object evidence, then build the minimal scene-18 v11+scene integration manifest and static candidate.
 ```
