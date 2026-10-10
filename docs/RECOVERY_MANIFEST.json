@@ -1,9 +1,9 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "03eca058804efe54cef675de5e736ed0b80cf143",
+  "generated_from_technical_checkpoint": "f2c8c5ac6e7d3b44608f6f56fa8207cb7e68ef3e",
   "authority": {
-    "active_branch": "m1.0a-integration-baseline",
+    "active_branch": "m1.0b-post-rekall-apartment",
     "human_state": "docs/PROJECT_STATE.md",
     "machine_state": "docs/RECOVERY_MANIFEST.json",
     "technical_compendium": "docs/TECHNICAL_STATE.md",
@@ -17,159 +17,119 @@
     "crc32": "18C09468",
     "md5": "2fee5ef253faebaff73c017a7bda1cff",
     "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
-    "reset_entry": "0x00000200",
     "availability_is_session_local": true,
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
-    "milestone": "M1.0A",
-    "name": "Total Recall integration baseline",
-    "status": "SCENE_PLAYER_COMPOSITION_PROOF_OPEN",
-    "objective": "compose the frozen M09D Quaid player layer with one canonical M11D authored scene mutation, reparse it and runtime-regress the combined build"
+    "milestone": "M1.0B",
+    "name": "Post-Rekall apartment production source baseline",
+    "status": "PALETTE_SOURCE_V2_PROMOTION_OPEN",
+    "objective": "promote canonical palette/source-v2 transaction support and use scene 18 as the first structural Post-Rekall apartment/escape production source"
   },
-  "completed_m09c": {
-    "status": "COMPLETE",
-    "F9F8_descriptor": "0x000A0000",
-    "native_phase_bridge": "0x009D5E",
-    "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
-    "proof_build_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
-    "proof_build_checksum": "0x843C",
-    "visual_regression": "PASS"
+  "completed": {
+    "M09C": "COMPLETE_NATIVE_PLAYER_PRESENTATION",
+    "M09D": "COMPLETE_FIRST_PRODUCTION_PLAYER_ART_BASELINE",
+    "M10": "WORLD_COLLISION_AUTHORING_FOUNDATION",
+    "M11A_D": "CANONICAL_SCENE_SOURCE_FOUNDATION",
+    "M1.0A": {
+      "status": "COMPLETE",
+      "evidence": "extracted_metadata/m1a_integration_baseline.json",
+      "combined_sha1": "b96cfb9652a4c5dce7142fe0e03bfb1b257cc474",
+      "checksum": "0x5E8B",
+      "ci_run": 38016506348,
+      "ci_tests": 61,
+      "runtime_pixel_mismatches": 0,
+      "runtime_state_mismatches": 0,
+      "range_intersections": 0
+    }
   },
-  "completed_m09d": {
-    "status": "COMPLETE_FIRST_PRODUCTION_BASELINE",
-    "source_tool": "tools/build/m09d_quaid_sprint_source.py",
-    "compiler": "tools/build/m09d_mapping_constrained_sprite_compiler.py",
-    "build_tool": "tools/build/m09d_quaid_sprint_build.py",
-    "runtime_tool": "tools/runtime/m09d_quaid_runtime_regression.py",
-    "source_art_fingerprint": "94db7b28dca13720fd2656c37de4e57dc74d6dd4",
-    "frame_count": 30,
-    "authored_facings": ["N", "NE", "E", "SE", "S"],
-    "runtime_facings": 8,
-    "native_phase_deltas": [0, 2, 4, 6, 8, 10],
+  "frozen_player": {
     "descriptor": "0x000A0000",
-    "mapping_records": 10,
-    "reserved_slots_per_phase": 24,
-    "used_slots_per_phase": 17,
-    "max_pieces_per_frame": 4,
+    "native_phase_deltas": [0, 2, 4, 6, 8, 10],
+    "source_art_fingerprint": "94db7b28dca13720fd2656c37de4e57dc74d6dd4",
     "build_sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
     "genesis_checksum": "0x7DCB",
-    "runtime_state_mismatches": 0,
-    "runtime_regression": "PASS",
-    "ci_run": 38015926111,
-    "ci_tests": 58,
-    "ci_result": "PASS",
-    "evidence": "extracted_metadata/m09d_quaid_v9_candidate.json",
-    "freeze_policy": "pipeline and mapping contract are frozen; later pixel polish is content revision unless an engineering invariant is contradicted"
+    "evidence": "extracted_metadata/m09d_quaid_v9_candidate.json"
   },
-  "stable_scene_foundation": {
-    "status": "M11A_D_FOUNDATION",
-    "canonical_scene_source_tool": "tools/build/scene_source.py",
-    "scene_probe": "tools/rom_probe/scene_source_probe.py",
-    "world_collision_manifest_tool": "tools/build/world_collision_manifest.py",
-    "policy": "reuse canonical scene/object/world-collision tooling; do not create a parallel scene format for M1.0A"
+  "vertical_slice_target": {
+    "film_sequence": "L2 — Post-Rekall escape / apartment",
+    "technical_scene_slot": 18,
+    "canonical_shape": {
+      "plane_dimensions": [18, 40],
+      "world_grid": [9, 20],
+      "world_records": 0,
+      "placements": 40,
+      "retail_type_ids": [114, 115],
+      "placement_stride": 8
+    },
+    "scope": "structural apartment/escape skeleton first; final tileset, Lori art, bespoke melee/contact behavior, cutscene/audio polish later"
   },
-  "falsified_models": [
-    {
-      "claim": "F9F8 world/render avatar descriptor is 0x0F0000",
-      "status": "FALSIFIED_BY_CANONICAL_RUNTIME",
-      "replacement": "F9F8 descriptor is 0x000A0000; 0x0F0000 remains M0.8 player-local visual-component evidence"
-    },
-    {
-      "claim": "F9F8/FB6E globals are 32-bit pointers reconstructed from adjacent words",
-      "status": "FALSIFIED_BY_RETAIL_CODE_AND_RUNTIME",
-      "replacement": "each global is a signed 16-bit RAM pointer"
-    },
-    {
-      "claim": "every +0x24 write is an external animation reselection",
-      "status": "FALSIFIED_BY_NATIVE_PHASE_BRIDGE",
-      "replacement": "0x009D72 -> 0x009D7E -> 0x009D88 is one native phase-advance transaction"
-    }
-  ],
+  "promotion_target": {
+    "M11F": "scene_palette.py — 64-word Genesis CRAM source",
+    "M11G": "scene_source_v2.py — versioned scene source with editable palette",
+    "M11H": "scene_compiler_v2.py — palette allocated after highest scene allocation",
+    "reason": "naive M11F default allocation at 0x300000 collides with M11D scene arena; M11H allocation ledger resolves this structurally"
+  },
   "authoritative_tools": [
-    "tools/build/m09c_native_phase_pixel_sequence.py",
-    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
-    "tools/build/m09d_quaid_sprint_source.py",
     "tools/build/m09d_quaid_sprint_build.py",
-    "tools/runtime/m09d_quaid_runtime_regression.py",
+    "tools/build/m1a_integration_baseline.py",
     "tools/build/scene_source.py",
-    "tools/rom_probe/scene_source_probe.py",
+    "tools/build/scene_compiler.py",
     "tools/build/world_collision_manifest.py"
   ],
-  "historical_not_promotion_gates": [
-    "tools/runtime/m09c_animation_state_trace.py",
-    "tools/rom_probe/m09c_canonical_gate.py",
-    "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
-    "tools/rom_probe/m09c_animation_progression_analysis.py"
-  ],
   "evidence": {
-    "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
-    "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
-    "m09c_full_visual_regression": "extracted_metadata/m09c_native_full_visual_regression.json",
-    "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
-    "m09d_v9": "extracted_metadata/m09d_quaid_v9_candidate.json",
-    "m09c_result": "COMPLETE",
-    "m09d_result": "COMPLETE_FIRST_PRODUCTION_BASELINE"
-  },
-  "recovery_validation": {
-    "validated_code_commit": "0bb9e8dc1fed55107969a1cdc2a12ffe74bf82cd",
-    "actions_run": 38015926111,
-    "static_and_recovery_tests": 58,
-    "tests_result": "PASS",
-    "blastem_harness_result": "PASS",
-    "recovery_doctor_result": "PASS"
+    "m09d": "extracted_metadata/m09d_quaid_v9_candidate.json",
+    "m1a": "extracted_metadata/m1a_integration_baseline.json",
+    "m1a_ci_run": 38016506348,
+    "m1a_ci_result": "PASS"
   },
   "open": [
     {
       "id": "O1",
       "blocking": true,
-      "name": "M1.0A scene/player composition proof",
+      "name": "promote and canonically validate M11F/G/H scene-source-v2 transaction",
       "completion": [
-        "reproduce frozen M09D v9 build",
-        "compile one canonical M11D authored scene mutation",
-        "compose both layers with explicit non-overlap accounting",
-        "reparse expected tile/object/world-collision semantics",
-        "runtime-regress against the correct logical parent",
-        "preserve M09D player control, link, descriptor and inactive fallback invariants",
-        "persist a machine-readable integration manifest"
+        "port scene_palette.py, scene_source_v2.py and scene_compiler_v2.py without semantic rewrites",
+        "run canonical palette/source-v2 gates against d39174bed46ede85531b86df7ba49123ce2f8411",
+        "prove palette allocation follows scene allocation ledger",
+        "compose source-v2 transaction with frozen M09D layer without unplanned overlap",
+        "persist canonical fingerprints and runtime evidence"
       ]
     },
     {
       "id": "O2",
       "blocking": false,
       "blocked_by": "O1",
-      "name": "freeze the production vertical-slice sequence"
+      "name": "scene-18 Post-Rekall structural source"
+    },
+    {
+      "id": "O3",
+      "blocking": false,
+      "blocked_by": "O2",
+      "name": "vertical-slice encounter and Quaid-specific mechanic layer"
     }
   ],
   "next": [
-    "verify canonical ROM locally and reproduce M09D v9 fingerprint eccbd54596c932ba3d7d2361af2437e59087b853 / 0x7DCB",
-    "inspect the M11D canonical scene-source compiler and choose the smallest controlled scene mutation for composition proof",
-    "build the authored scene component from canonical base and record relocated/patched ROM ranges",
-    "compose scene and frozen M09D layers with one deterministic builder and reject unplanned overlap",
-    "reparse scene/object/world-collision output and run deterministic BlastEm regression against the correct parent",
-    "if green, persist M1.0A integration evidence, close M1.0A and freeze the production vertical-slice sequence target"
-  ],
-  "parallel_preserved_branches": [
-    "m11e-scene-source-matrix",
-    "m11f-palette-authoring",
-    "m11g-scene-source-v2",
-    "m11h-scene-transaction-v2"
+    "promote M11F/G/H transaction stack into active branch with original tests/probes",
+    "execute canonical gates against the verified True Lies World ROM",
+    "extend integration composer to include source-v2 palette transaction with explicit allocation/range ledger",
+    "produce and reparse one scene-18 palette+map+object+world edit",
+    "runtime-load the authored scene and preserve frozen M09D invariants",
+    "then author the Post-Rekall apartment/escape structural layout"
   ],
   "anti_loop": {
     "same_hypothesis_retry_limit": 2,
     "closed_gate_reopen_requires_new_evidence": true,
-    "runtime_identity_evidence_outranks_static_naming": true,
-    "m09c_closed": true,
-    "m09d_pipeline_and_contract_frozen": true,
-    "do_not_expand_mapping_geometry_without_measured_need": true,
-    "rom_range_collision_must_be_resolved_in_composer_not_by_hand_edit": true
+    "m09c_m09d_m1a_closed": true,
+    "do_not_create_parallel_palette_schema": true,
+    "all_expanded_resources_must_be_ledgered": true,
+    "scene18_is_production_slot_not_semantic_reuse_claim": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
     "read docs/RECOVERY_MANIFEST.json",
     "read docs/PROJECT_STATE.md",
     "read AGENTS.md",
-    "read docs/TECHNICAL_STATE.md only for cumulative background",
     "verify canonical ROM before ROM-dependent work",
     "execute NEXT from docs/PROJECT_STATE.md"
   ]
