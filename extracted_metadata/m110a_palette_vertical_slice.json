@@ -1,0 +1,52 @@
+{
+  "allocations": [
+    {"address": 3145728, "name": "object_desc", "size": 132},
+    {"address": 3145872, "name": "object_lz", "size": 1217},
+    {"address": 3147264, "name": "world_resource", "size": 10880},
+    {"address": 3158144, "name": "scene_palette", "size": 128}
+  ],
+  "assertions": {
+    "allocation_ledger_nonoverlap": true,
+    "deterministic_integrated_fingerprint": true,
+    "deterministic_scene_v2_fingerprint": true,
+    "frozen_player_parent_exact": true,
+    "frozen_player_phase_banks_preserved": true,
+    "no_incompatible_overlap": true,
+    "palette_outside_player_line": true,
+    "player_only_delta_preserved": true,
+    "scene_delta_preserved": true,
+    "scene_source_v2_used": true,
+    "single_transaction_palette_present": true
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "genesis_checksum": "0x6B9E",
+  "object_operations": [
+    {"op": "add", "status_flags": 30720, "stride": 6, "type_id": 69, "x": 690, "y": 558}
+  ],
+  "output_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd",
+  "output_size": 4194304,
+  "palette_edit": {
+    "after": 1608,
+    "before": 1124,
+    "index": 8,
+    "new_pointer": 3158144,
+    "player_palette_range": [32, 47]
+  },
+  "phase_bank_sha1": [
+    "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+    "fce14e16bc2325ea603f7ad973a0033c56f68098",
+    "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+    "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+    "0cd1b90c15c55504e2e55e992197022a5856204f",
+    "416007b12132f06ff30fa009649e4b1c6379d5c1"
+  ],
+  "player_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "runtime_status": "PROVEN_BY_M110B",
+  "scene_index": 0,
+  "scene_parent_checksum": "0xA30C",
+  "scene_parent_sha1": "427b842188b29e4fa040802c94b7d60fe44976cc",
+  "schema": "truerecall.m110a.palette_vertical_slice.v1",
+  "world_operations": [
+    {"id": "m100a_wall_0000", "op": "add", "rect": [668, 540, 676, 580], "type": 9}
+  ]
+}
