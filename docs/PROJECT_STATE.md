@@ -18,12 +18,12 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 ```text
 branch:     m09c-native-sequence-seam
 milestone:  M0.9D — production Quaid source-frame authoring and budget validation
-checkpoint: 385e634b00901071af882ffc8d7c79bfddd40a6e
+checkpoint: 4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2
 ```
 
 **M0.9C is COMPLETE.**
 
-**M0.9D is technically proven end-to-end but is not frozen as final production art.** The contract, compiler, original 30-frame source prototype, deterministic ROM integration and runtime containment/fallback proof are green. The remaining gate is art-quality refinement/freeze of the Quaid family; do not redo the native animation seam or the mapping compiler unless new evidence requires it.
+**M0.9D is technically proven end-to-end and now has a validated v10 production candidate, but is not frozen as final production art.** All native-seam, mapping, palette, budget, deterministic-build and runtime-containment gates are green. The only remaining gate is micro-detail/art-quality refinement against the retail player-art quality baseline. Do not reopen the M09C native animation seam or expand mapping geometry merely to continue art iteration.
 
 The first Total Recall production vertical slice has not begun.
 
@@ -76,13 +76,9 @@ cache:    0x3A00..0x3F00
 
 The final M09C runtime comparison against M07C proved exact pre/post fallback, zero control/RAM mismatches, canonical descriptor preservation, all six native phases and player-local active differences.
 
-## M0.9D production sprite contract — CONFIRMED
+## M0.9D production sprite contract — CLOSED / CONFIRMED
 
-Machine-readable contract:
-
-`extracted_metadata/m09d_quaid_sprint_contract.json`
-
-Recovered production constraints:
+Machine-readable contract: `extracted_metadata/m09d_quaid_sprint_contract.json`.
 
 ```text
 descriptor:             0x000A0000
@@ -101,13 +97,17 @@ transparent index:      0
 palette indices:        0..15
 ```
 
-The first production family deliberately preserves retail mapping geometry and the 24 proven group-7 slot identities. No mapping-geometry expansion is required for the first Quaid family.
+The first production family preserves retail mapping geometry and the 24 proven group-7 slot identities. No mapping-geometry expansion is currently justified.
 
-## M0.9D mapping-constrained compiler — CONFIRMED
+## Runtime player palette — CONFIRMED
 
-`tools/build/m09d_mapping_constrained_sprite_compiler.py` extends the existing sprite encoder without creating a second Genesis codec. It reuses `sprite_asset_compiler.encode_chunk` and supports the non-grid retail piece offsets required by the ten canonical records.
+`extracted_metadata/m09d_player_palette_runtime.json` confirms that the tested F9F8 sprint path uses player palette line 2 at priority 0 through all sampled native phases. The first Quaid family therefore authors directly to the proven 0..15 indexed palette; no palette reauthoring is required for this gate.
 
-It accepts five authored directions × six indexed source frames and emits six raw 32 KiB banks. For the current contract:
+## M0.9D mapping-constrained compiler — CLOSED / CONFIRMED
+
+`tools/build/m09d_mapping_constrained_sprite_compiler.py` reuses the recovered Genesis chunk encoder and supports the non-grid retail piece offsets required by the ten canonical records.
+
+Current v10 contract use:
 
 ```text
 source frames:              30
@@ -117,120 +117,110 @@ max pieces/frame:           4
 palette range:              <= 15
 ```
 
-Assertions enforce mapping-geometry preservation, chunk-slot identity, transparency, palette range, per-phase slot budget and native mirrored facings.
+All mapping-geometry, chunk-slot, transparency, palette, phase-budget and native-mirroring assertions remain green.
 
-## First original Quaid source family — PRODUCTION PROTOTYPE / NOT FINAL ART
+## Quaid source family v10 — ACTIVE PRODUCTION CANDIDATE / NOT YET FROZEN
 
-Source of truth:
+Source of truth: `tools/build/m09d_quaid_sprint_source.py`.
 
-`tools/build/m09d_quaid_sprint_source.py`
+Evidence: `extracted_metadata/m09d_quaid_v10_candidate.json`.
 
-The generator produces **30 original indexed frames** (five authored directions × six native phases) plus a source manifest and palette. PNGs are generated outputs, not opaque source truth.
+v10 replaces v9 as the active candidate. It preserves the facing-correct head treatment introduced in v9 and makes the following art-only changes inside the same contract:
 
-The current prototype uses a heavier, broad-shouldered silhouette, arm/leg counter-swing and Total Recall-specific rust/industrial accents. It is intentionally a technical production prototype, not an assertion that the final Quaid look is approved.
+- broader shoulder line with a tapered waist rather than a rectangular armor-panel read;
+- cloth-fold shirt shading with restrained highlights;
+- thicker upper arms with tapered forearms;
+- heavier thighs/boots and a wider sprint stance;
+- stronger overall Quaid physical weight while retaining all five authored/eight runtime facings.
 
-Stable indexed-pixel source fingerprint:
+Deterministic indexed-pixel source fingerprint:
 
-`d7affbf3fd6474ae3aead55fecb098e29ef03528`
+`16df51a3063eaec999b88ad7d35dd8ba7d4fdb04`
 
-All thirty phases are distinct, remain within Genesis indices `0..15`, reserve index `0` for transparency and compile through the closed mapping contract.
+Per-phase bank SHA-1:
 
-## Deterministic M0.9D integration build — CONFIRMED
+```text
+713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7
+5270f74e4550626ea36275d11da57cbf70512fc0
+3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0
+a1f88979ba18ef4957ab8efedf253339b5de489b
+e31bafa3d922343a8b29f0bf406d22d8c0f7b4da
+ed27b3d7630ae71b8e9dc518a36f1647630edfdb
+```
 
-Builder:
+## Deterministic M0.9D v10 integration build — CONFIRMED
 
-`tools/build/m09d_quaid_sprint_build.py`
+Builder: `tools/build/m09d_quaid_sprint_build.py`.
 
-Policy:
-
-1. rebuild the canonical M09C parent;
-2. compile the generated Quaid family;
-3. replace **only** the six 0x8000-byte authored phase banks;
-4. recompute the Genesis checksum;
-5. leave descriptor, trampolines, mapping geometry and player control untouched.
-
-Current audited prototype build:
+Policy remains unchanged: rebuild canonical M09C, replace only the six 0x8000-byte phase banks, recompute the Genesis checksum, preserve descriptor/trampolines/mapping/control.
 
 ```text
 size:     4,194,304 bytes
-SHA-1:    b279469147ff4b7d76290d2da2738a5d4bb58919
-checksum: 0x968B
+SHA-1:    a7ee31cb12e17965696fbd4591ddc6b5e96d5d87
+checksum: 0xD3EF
+parent:   3256f9dcbc6376624716e3508f41c0439e17cef6
 ```
 
-Per-phase bank SHA-1 values are statically pinned by `tests/test_m09d_quaid_sprint_build_static.py`.
+## M0.9D v10 runtime regression — CONFIRMED
 
-## M0.9D runtime regression — CONFIRMED
+v10 was compared against the correct M07C sprint parent from the common native pre-Y state.
 
-Evidence:
+```text
+M07C parent SHA-1: 55e02728cb0b7f3627f410202c889197c0e3d0d2
+common state SHA-256: 72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f
+active samples: 42
+first visible step: 3
+state mismatches: 0
+observed deltas: 0,2,4,6,8,10
+max gameplay difference bbox: 65x64 host pixels
+```
 
-`extracted_metadata/m09d_quaid_runtime_regression.json`
+All ten runtime assertions pass: exact pre-trigger and post-release fallback, Y+Left normalized input throughout the active window, exact parent/candidate compared state, canonical descriptor preservation, all six native phases, bounded activation latency, continuous authored presentation after warmup, visible evidence for every phase and actor-local visual containment.
 
-Runner:
+## Retail visual-quality comparison — NEW EVIDENCE
 
-`tools/runtime/m09d_quaid_runtime_regression.py`
+The canonical retail group-7 player frames were decoded from descriptor `0x000A0000` and used only as a visual-quality baseline. v10 now has comparable occupancy/silhouette density, but retail Tasker still uses finer micro-contrast to separate neck, sleeves/hands, torso folds, legs/boots and weapon/anatomical detail.
 
-Parent M07C:
-
-`55e02728cb0b7f3627f410202c889197c0e3d0d2`
-
-Candidate M09D prototype:
-
-`b279469147ff4b7d76290d2da2738a5d4bb58919`
-
-Pinned BlastEm SHA-256:
-
-`b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2`
-
-Confirmed results:
-
-- pre-trigger scene exact;
-- post-release scene exact;
-- active normalized input contains Y+Left on all 42 active samples (`F6EC=0x2044`);
-- parent/candidate runtime state is identical in all compared control/object fields;
-- F9F8 descriptor stays `0x000A0000`;
-- all six native deltas `0,2,4,6,8,10` occur;
-- two-frame presentation/cache warm-up, then visible authored output on every remaining active frame;
-- every native phase has visible authored output;
-- maximum active difference bbox is `68x64` in 2x host capture, within the established scaled retail envelope.
-
-Therefore source -> mapping-constrained compile -> six phase banks -> native M09C phase selection -> renderer/cache/VRAM/SAT is proven end-to-end for original Quaid prototype pixels without control/link/scene regression.
+This is **not** evidence that the mapping contract is insufficient. It narrows the remaining work to pixel-level art refinement inside the existing contract.
 
 ## CI state
 
-Actions run `38013011483` passed at commit `d6de2347995167904c600783b9ee57c05f5d5dc6`:
+Actions run `38018819486` at commit `4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2`:
 
 ```text
 58 tests / 0 failures / 0 errors
+static: PASS
 BlastEm harness: PASS
-recovery_doctor: PASS
 ```
 
-Later commits add the parameterized M09D runtime runner/evidence and documentation. Re-run CI after each material source/pipeline change.
+The first v10 source commit intentionally failed only the two v9 fingerprint pins; after updating those expected fingerprints, all functional/budget tests remained green. The final v10 build fingerprint commit is also fully green.
 
 ## CLOSED M0.9D engineering gates
 
 - production sprite contract — CLOSED;
 - mapping-constrained compiler — CLOSED;
 - machine-checkable piece/chunk/palette budgets — CLOSED;
-- first reproducible original 30-frame source family — CLOSED as technical prototype;
+- reproducible 30-frame indexed source pipeline — CLOSED;
 - deterministic ROM integration — CLOSED;
-- player-local runtime integration + exact inactive fallback — CLOSED.
+- player-local runtime integration + exact inactive fallback — CLOSED;
+- v10 source/bank/build identity — CLOSED as current candidate.
 
 ## OPEN
 
-### O1 — Quaid art-quality refinement and production freeze
+### O1 — final micro-detail/art-quality refinement and production freeze
 
-The procedural source family proves the pipeline but is **not final art**. Refine the source family until it meets the project visual bar while preserving the closed M09D contract unless measured evidence shows that geometry must change.
+v10 is the active production candidate and is materially stronger than v9, but it is not yet frozen as final player art. Remaining work is deliberately narrow: raise micro-detail/readability to the retail-quality baseline without changing the closed engineering contract.
 
 Completion requires:
 
 - coherent Quaid identity across five authored/eight runtime facings;
-- production-quality silhouette and animation character, not diagnostic/procedural placeholder quality;
-- six native phases remain readable as a sprint/locomotion cycle;
+- neck/face, sleeve/hand, cloth-fold and boot/leg separation at production-quality pixel-art density;
+- broad/heavy Quaid silhouette and six-phase gait remain readable;
 - source remains original and reproducible;
 - compile/budget assertions remain green;
-- runtime regression remains player-local with exact inactive fallback;
-- final source and ROM fingerprints are audited and the player-art pipeline is then frozen.
+- runtime remains player-local with exact inactive fallback;
+- final source/bank/ROM fingerprints are audited;
+- explicit production freeze of the player-art pipeline.
 
 ## Parallel scene-authoring branches — PRESERVED, NOT ACTIVE NEXT
 
@@ -241,22 +231,23 @@ m11g-scene-source-v2
 m11h-scene-transaction-v2
 ```
 
-Do not switch tracks merely because player-art refinement is creative work. A deliberate switch must first be recorded here.
+Do not switch tracks merely because the remaining work is artistic. A deliberate switch must first be recorded here.
 
 ## NEXT
 
-1. Refine the reproducible Quaid sprint source family from prototype quality to production-quality pixel art while preserving the current contract.
-2. Visually review all five authored facings and six native phases for silhouette, gait readability and Total Recall identity.
-3. Recompile with `m09d_mapping_constrained_sprite_compiler.py`; require all budgets/assertions green.
-4. Update the audited source/bank/build fingerprints only if art pixels legitimately change.
-5. Re-run `m09d_quaid_runtime_regression.py` against M07C and require the same containment/fallback/control invariants.
-6. If green, mark M0.9D COMPLETE, freeze the production player-art pipeline and establish the first M1.0 Total Recall vertical-slice integration baseline.
+1. Use v10 as the fixed technical/art baseline; do not return to v9.
+2. Make one focused micro-detail pass inside the same source canvases/mapping masks: neckline/jaw, sleeves/hands, shirt folds, thigh/boot separation.
+3. Review all five authored facings across all six phases against the retail visual-density baseline while preserving distinct Quaid identity.
+4. Recompile; require 17/24-or-better slot use, <=4 pieces/frame, palette 0..15 and all closed assertions green.
+5. Update fingerprints only for legitimate pixel changes and rebuild from the canonical ROM.
+6. Re-run M09D runtime regression against M07C; require the same ten containment/fallback/control invariants.
+7. If the quality gap is closed and all gates remain green, mark M0.9D COMPLETE, freeze the production player-art pipeline and establish the first M1.0 vertical-slice integration baseline.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
 - Closed engineering gates reopen only on contradictory evidence.
-- Do not rewrite the M09C native seam merely to make art authoring easier unless a measured production constraint requires it.
+- Do not rewrite the M09C native seam for art convenience.
 - Do not expand mapping geometry until the fixed ten-record/24-slot contract is demonstrably insufficient.
 - Generated PNGs/ROMs are outputs; source code + contract + verified ROM remain source truth.
 - Prefer small semantic Git commits.
@@ -264,8 +255,8 @@ Do not switch tracks merely because player-art refinement is creative work. A de
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D contract + mapping compiler + 30-frame original prototype + deterministic build + runtime regression proven.
-EVIDENCE extracted_metadata/m09d_quaid_sprint_contract.json + extracted_metadata/m09d_quaid_runtime_regression.json + Actions run 38013011483.
-OPEN     Quaid art-quality refinement and production player-art freeze.
-NEXT     refine source art within the closed contract, then recompile/re-regress and freeze M09D if green.
+DONE     M09C complete; M09D engineering closed; v10 Quaid candidate reproducible, budget-clean, CI-green and runtime-regression green.
+EVIDENCE extracted_metadata/m09d_quaid_v10_candidate.json + Actions run 38018819486 + canonical retail group-7 visual baseline.
+OPEN     final Quaid micro-detail/art-quality refinement and production player-art freeze.
+NEXT     one focused v11 micro-detail pass inside the closed v10 contract, then compile/build/runtime gate and freeze if the visual bar is met.
 ```
