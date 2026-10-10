@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "e77565bd0a56bc807806f9a91d2e87af70ed89e6",
+  "generated_from_technical_checkpoint": "6b0556aac44b960b43fcf7e19e0abe94f64e4305",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -22,24 +22,47 @@
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
-    "milestone": "M0.9C",
-    "name": "native player sequence integration seam",
-    "status": "ONE_MATERIAL_RUNTIME_GATE_OPEN",
-    "objective": "prove full-game visual containment and fallback for the six-phase native F9F8 authored-pixel build"
+    "milestone": "M0.9D",
+    "name": "production Quaid source-frame authoring and budget validation",
+    "status": "PRODUCTION_PLAYER_ART_PIPELINE_ACTIVE",
+    "objective": "replace diagnostic proof pixels with reproducible original Quaid source frames while preserving the closed M09C native phase/cache seam"
   },
-  "canonical_player_runtime": {
-    "global_pointer_encoding": "signed_16_bit_RAM_pointer_loaded_via_MOVEA.W",
-    "F9F8_world_render_avatar": "FFFFC632",
-    "FB6E_control_collision_proxy": "FFFFC7FA",
-    "F9F8_archetype": 139,
-    "F9F8_descriptor": "0x000A0000",
-    "descriptor_stable_during_observed_sprint_cycle": true,
-    "native_phase_bridge": "0x009D5E",
-    "writer_cluster": ["0x009D72", "0x009D7E", "0x009D88"],
-    "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
-    "base_phase": "0x08B6",
-    "mapping_record_cycle": ["0x2C08", "0x2C24", "0x2C44", "0x2C64", "0x2C80", "0x2CA0"],
-    "encoded_entry_cycle": ["0x02AC", "0x02AE", "0x02B0", "0x02B2", "0x02B4", "0x32B6"]
+  "completed_m09c": {
+    "status": "COMPLETE",
+    "completion_checkpoint": "6b0556aac44b960b43fcf7e19e0abe94f64e4305",
+    "canonical_player_runtime": {
+      "global_pointer_encoding": "signed_16_bit_RAM_pointer_loaded_via_MOVEA.W",
+      "F9F8_world_render_avatar": "FFFFC632",
+      "FB6E_control_collision_proxy": "FFFFC7FA",
+      "F9F8_archetype": 139,
+      "F9F8_descriptor": "0x000A0000",
+      "descriptor_stable_during_observed_sprint_cycle": true,
+      "native_phase_bridge": "0x009D5E",
+      "writer_cluster": ["0x009D72", "0x009D7E", "0x009D88"],
+      "raw_phase_deltas": [0, 2, 4, 6, 8, 10]
+    },
+    "proof_build": {
+      "size_bytes": 4194304,
+      "sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+      "genesis_checksum": "0x843C",
+      "render_source_banks": ["0x210000", "0x218000", "0x220000", "0x228000", "0x230000", "0x238000"],
+      "cache_namespaces": ["0x3A00", "0x3B00", "0x3C00", "0x3D00", "0x3E00", "0x3F00"]
+    },
+    "visual_regression": {
+      "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+      "candidate_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+      "active_samples": 42,
+      "total_state_samples": 44,
+      "state_mismatches": 0,
+      "first_visible_active_step": 3,
+      "activation_presentation_latency_frames": 2,
+      "observed_max_diff_bbox_scaled_2x": [78, 64],
+      "retail_clip_limit_scaled_2x": [96, 78],
+      "pre_trigger_gameplay_exact": true,
+      "post_release_gameplay_exact": true,
+      "all_six_native_phases_visible": true,
+      "pass": true
+    }
   },
   "falsified_models": [
     {
@@ -61,7 +84,9 @@
   "authoritative_tools": [
     "tools/runtime/m09c_animation_state_trace_v2.py",
     "tools/rom_probe/m09c_phase_bridge_analysis.py",
-    "tools/build/m09c_native_phase_pixel_sequence.py"
+    "tools/build/m09c_native_phase_pixel_sequence.py",
+    "tools/build/sprite_sequence_compiler.py",
+    "tools/build/sprite_asset_compiler.py"
   ],
   "historical_not_promotion_gates": [
     "tools/runtime/m09c_animation_state_trace.py",
@@ -69,75 +94,57 @@
     "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
     "tools/rom_probe/m09c_animation_progression_analysis.py"
   ],
-  "proof_build": {
-    "size_bytes": 4194304,
-    "sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
-    "genesis_checksum": "0x843C",
-    "render_source_banks": ["0x210000", "0x218000", "0x220000", "0x228000", "0x230000", "0x238000"],
-    "cache_namespaces": ["0x3A00", "0x3B00", "0x3C00", "0x3D00", "0x3E00", "0x3F00"]
-  },
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
     "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
+    "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
     "static_gate_history": "extracted_metadata/m09c_static_gate.json",
-    "ci_workflow": "m09c-static",
-    "ci_run": 37997040444,
-    "ci_result": "success",
-    "tests": 42,
-    "failures": 0,
-    "errors": 0,
-    "trampoline_executions": 12,
-    "trampoline_passes": 12
+    "m09c_visual_result": "PASS"
   },
   "recovery_validation": {
-    "checkpoint_commit": "1f2b572722b4696913816af1fda9fd873f6abdfd",
-    "actions_run": 38007003551,
+    "checkpoint_commit": "ad71c3db832a04de0946253bf5a1bac23192efb3",
+    "actions_run": 38007750295,
     "static_and_recovery_tests": 45,
     "tests_result": "PASS",
     "blastem_harness_result": "PASS",
     "recovery_doctor_result": "PASS",
-    "validated_contract": [
-      "manifest schema",
-      "authority files",
-      "active branch agreement",
-      "active milestone agreement",
-      "technical checkpoint agreement",
-      "authoritative tool presence",
-      "primary evidence presence",
-      "OPEN gate presence",
-      "ordered NEXT sequence"
-    ],
-    "note": "this is a recorded validation checkpoint, not a self-referential live workflow-run pointer"
+    "note": "recorded recovery-system validation before the M09C visual gate closed; rerun CI after this promotion"
   },
   "open": [
     {
       "id": "O1",
       "blocking": true,
-      "name": "full-game visual containment/fallback regression",
+      "name": "production Quaid source-frame contract",
       "completion": [
-        "pre-Y exact convergence to correct M07 sprint parent",
-        "held-Y differences remain player-local",
-        "six authored states correlate one-to-one with F9F8 deltas 0,2,4,6,8,10",
-        "no unrelated cache contamination",
-        "post-Y exact convergence",
-        "M07 movement/control remains intact",
-        "F9F8/FB6E semantics and descriptor 0x000A0000 remain intact"
+        "define canvas/anchor/clip geometry from confirmed F9F8 records",
+        "define palette and transparency policy",
+        "define per-frame piece and sprite-line limits",
+        "define global chunk and cache working-set budgets",
+        "define eight-direction coverage and directional reuse policy",
+        "encode budgets as machine-checkable assertions"
       ]
     },
     {
       "id": "O2",
-      "blocking": false,
+      "blocking": true,
       "blocked_by": "O1",
-      "name": "production Quaid source frames"
+      "name": "first production Quaid locomotion/sprint family",
+      "completion": [
+        "original reproducible source art",
+        "deterministic compile through 16x16 sequence pipeline",
+        "budget checks green",
+        "native M09C integration without F9F8/FB6E semantic changes",
+        "player-local runtime output and exact inactive fallback"
+      ]
     }
   ],
   "next": [
-    "verify canonical ROM is locally available and matches size/SHA-1",
-    "build tools/build/m09c_native_phase_pixel_sequence.py and verify proof-build fingerprint",
-    "run deterministic M07-parent vs M09C-six-phase gameplay regression without BlastEm shot + -g",
-    "prove pre/post convergence and player-local active differences",
-    "correlate six visual states with F9F8 raw deltas 0,2,4,6,8,10",
-    "if green, mark M09C COMPLETE and begin production Quaid-frame authoring"
+    "derive the production Quaid sprite specification from confirmed F9F8 mapping geometry and current sprite compiler",
+    "audit compiler limits against piece/chunk/cache/palette/eight-direction requirements",
+    "add machine-readable production budgets and assertions",
+    "build a reproducible original Quaid source-frame template and first locomotion/sprint family",
+    "compile and run static round-trip/budget checks",
+    "integrate through the closed M09C native phase seam and runtime-regress against M07 semantics"
   ],
   "parallel_preserved_branches": [
     "m11e-scene-source-matrix",
@@ -149,7 +156,8 @@
     "same_hypothesis_retry_limit": 2,
     "closed_gate_reopen_requires_new_evidence": true,
     "runtime_identity_evidence_outranks_static_naming": true,
-    "do_not_reopen_JLLBFR_at_0x0F0000_as_F9F8_identity": true
+    "do_not_reopen_JLLBFR_at_0x0F0000_as_F9F8_identity": true,
+    "m09c_visual_gate_closed": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
