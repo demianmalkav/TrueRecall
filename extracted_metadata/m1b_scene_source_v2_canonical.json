@@ -1,0 +1,86 @@
+{
+  "schema": "truerecall.m1b.scene_source_v2_canonical.v1",
+  "canonical_base": {
+    "size": 2097152,
+    "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411"
+  },
+  "all_scene_noop_gate": {
+    "scene_count": 19,
+    "palette_export_valid": 19,
+    "palette_compile_exact": 19,
+    "scene_source_v2_compile_exact": 19,
+    "pass": true,
+    "scene18_palette_pointer": "0x09B420",
+    "scene18_palette_words_sha1": "ed731e6bc9705fbc78a3055146266a8c582dd8e4"
+  },
+  "historical_m11h_map_palette_transaction": {
+    "scene_index": 18,
+    "map_edit": "C000 tile[0] -> 1",
+    "palette_edit": "color[1] -> 0x0EEE",
+    "output_sha1": "bf6c875b04f813eb4682687b0ebbe2f4eced6a49",
+    "checksum": "0x1D08",
+    "allocations": [
+      ["C000_map_desc", "0x300000", 8],
+      ["C000_map_lz", "0x300010", 266],
+      ["scene_palette", "0x300120", 128]
+    ],
+    "palette_last_in_ledger": true,
+    "pass": true
+  },
+  "full_scene18_transaction": {
+    "edits": {
+      "map": "C000 tile[0] = 1",
+      "object": "add type 54 health @ 128,120 stride 6",
+      "world": "add type 9 rect [64,64,80,256]",
+      "palette": "color[1] = 0x0EEE"
+    },
+    "output_sha1": "0afeedac59fd2f13deef00ad886bc3d16edd4e3d",
+    "checksum": "0x16A8",
+    "allocations": [
+      ["C000_map_desc", "0x300000", 8],
+      ["C000_map_lz", "0x300010", 266],
+      ["object_desc", "0x300120", 16],
+      ["object_lz", "0x300130", 229],
+      ["world_resource", "0x300300", 416],
+      ["scene_palette", "0x3004A0", 128]
+    ],
+    "authored_reparse": {
+      "tile_0": 1,
+      "health_matches": 1,
+      "world_wall_matches": 1,
+      "world_record_refs": [384],
+      "palette_pointer_0": "0x3004A0",
+      "palette_pointer_1": "0x3004A0",
+      "palette_word_1": "0x0EEE",
+      "checksum_valid": true
+    },
+    "reparse_note": "post-authoring world validation uses the transaction ledger/pool sentinel, not the retail first-FFFF discovery heuristic; the copied retail sentinel remains inside the preserved payload but runtime grid pointers target the new pool",
+    "pass": true
+  },
+  "m09d_composition": {
+    "frozen_player_sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
+    "scene_v2_changed_ranges": 17,
+    "m09d_changed_ranges": 384,
+    "range_intersections": 0,
+    "combined_sha1": "a59ac3be60849aa0c5fe1539a9d82c69102107fc",
+    "combined_checksum": "0x3699",
+    "pass": true
+  },
+  "runtime_isolation": {
+    "logical_parent_sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
+    "candidate_sha1": "a59ac3be60849aa0c5fe1539a9d82c69102107fc",
+    "captures": 44,
+    "active_samples": 42,
+    "phase_deltas": [0, 2, 4, 6, 8, 10],
+    "state_mismatches": 0,
+    "pixel_mismatches": 0,
+    "active_y_left": true,
+    "descriptor_preserved": true,
+    "parent_capture_set_sha256": "c24aebe94589d329da3f24795faf5ad829fc55df4ca76ec5a05cbcf0a643220b",
+    "candidate_capture_set_sha256": "c24aebe94589d329da3f24795faf5ad829fc55df4ca76ec5a05cbcf0a643220b",
+    "parent_run_json_sha256": "f6a044a529071c781297d892296d16319ea8165f067e17b3b2c51fa65f61ca85",
+    "candidate_run_json_sha256": "b28a5256feb84af0422f73c44191d5c6eac5e0ade3f78e921f061b8dcf13804c",
+    "pass": true
+  },
+  "conclusion": "M11F/G/H palette/source-v2 transaction mechanics are canonically validated and compose without overlap or runtime contamination with the frozen M09D player layer. Production may use source-v2 as the Post-Rekall scene source, with authored world reparsing driven by the transaction allocation ledger rather than retail-only layout discovery."
+}
