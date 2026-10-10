@@ -103,10 +103,10 @@ class SceneOverlayStaticTests(unittest.TestCase):
         self.assertEqual(len(manifest["primary_graphics"]), 1)
         self.assertEqual(len(bytes.fromhex(manifest["primary_graphics"][0]["tile_hex"])), 32)
 
-    def test_l3_starter_uses_only_authored_unused_tiles_and_hashed_rect(self) -> None:
+    def test_l3_starter_uses_verified_resident_tiles_and_hashed_rect(self) -> None:
         manifest = json.loads((ROOT / "tools/build/examples/m120b_l3_urban_subway_starter_overlay.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["status"], "PROTOTYPE_NOT_ART_FREEZE")
-        self.assertEqual([row["tile_index"] for row in manifest["primary_graphics"]], [565, 566, 567, 568, 569, 570])
+        self.assertEqual(manifest["status"], "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE")
+        self.assertEqual([row["tile_index"] for row in manifest["primary_graphics"]], list(range(2, 17)))
         self.assertTrue(all(len(bytes.fromhex(row["tile_hex"])) == 32 for row in manifest["primary_graphics"]))
         self.assertEqual(len(manifest["maps"]), 1)
         rect = manifest["maps"][0]
