@@ -1,0 +1,56 @@
+{
+  "schema": "truerecall.m120c.l3_three_zone_runtime_evidence.v1",
+  "status": "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "starter_sha1": "05fafc33f96a74d57765bacdba888d79e7eee860",
+  "scene_parent_sha1": "be091e8e76af5d685d1ba2760ad821149141fcff",
+  "candidate_sha1": "7bd2144c22074bce5eebdf3e6e15f2f2c7db4ebe",
+  "genesis_checksum": "0x029E",
+  "overlay": "tools/build/examples/m120c_l3_three_zone_overlay.json",
+  "builder": "tools/build/m120c_l3_three_zone_build.py",
+  "composition": {
+    "plane": "E000",
+    "rect": [0, 12, 27, 11],
+    "zones": [
+      {"name": "pursuit_entry", "columns": [0, 7]},
+      {"name": "objective_platform", "columns": [9, 18]},
+      {"name": "subway_transition", "columns": [20, 26]}
+    ],
+    "separator_columns": [8, 19],
+    "runtime_verified_tile_slots": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+  },
+  "runtime": {
+    "scene0": true,
+    "f9_descriptor": "0x000A0000",
+    "proxy_descriptor": "0x000F0000",
+    "spawn_position": [701, 558],
+    "shotgun_ownership_after_probe": 3,
+    "shotgun_ammo_after_probe": 5,
+    "candidate_min_x": 688,
+    "candidate_final_x": 688,
+    "authored_tiles_exact_in_vram": 15,
+    "authored_tiles_total": 15,
+    "cram_index_8": "0x0648",
+    "state_sha256": "01771d7d0ca79b2f8144fa886e39ccf60bcce05012fb41c588756cf88bce7197"
+  },
+  "presentation": {
+    "comparison_parent": "M120B corrected safe-slot starter at same deterministic scene0 stage",
+    "starter_png_sha256": "f89ae6aa7c57b239c71ab70fa4309a05faccd35f25a3d3d1a7ac234d60a8c511",
+    "candidate_png_sha256": "740ba2cf0a22ff7d2f82de1011beca8155682f49b53c027573118076341e9230",
+    "changed_pixels": 29836,
+    "bbox": [0,9,256,185],
+    "interpretation": "three-zone recomposition is visibly confined to the gameplay environment above the HUD; entry, central objective platform and subway-transition bands use distinct composition while reusing only the 15 runtime-confirmed primary slots"
+  },
+  "assertions": {
+    "no_incompatible_player_scene_overlap": true,
+    "frozen_quaid_descriptor_preserved": true,
+    "frozen_proxy_descriptor_preserved": true,
+    "closed_pickup_effect_preserved": true,
+    "closed_wall_effect_preserved": true,
+    "all_15_authored_tiles_exact_in_vram": true,
+    "m110a_palette_value_preserved": true,
+    "presentation_change_excludes_hud": true
+  },
+  "pass": true
+}
