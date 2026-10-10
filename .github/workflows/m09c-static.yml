@@ -20,12 +20,14 @@ on:
       - 'tools/runtime/m09c_*'
       - 'tools/runtime/m09d_*'
       - 'tools/runtime/m100b_*'
+      - 'tools/runtime/m110b_*'
       - 'tools/recovery_doctor.py'
       - 'tests/test_m09c_*'
       - 'tests/test_m09d_*'
       - 'tests/test_m100a_*'
       - 'tests/test_m100b_*'
       - 'tests/test_m110a_*'
+      - 'tests/test_m110b_*'
       - 'tests/test_scene_palette_static.py'
       - 'tests/test_scene_source_v2_static.py'
       - 'tests/test_scene_compiler_v2_static.py'
@@ -70,6 +72,7 @@ jobs:
             tools/runtime/m09c_animation_state_trace_v2.py \
             tools/runtime/m09d_quaid_runtime_regression.py \
             tools/runtime/m100b_vertical_slice_runtime.py \
+            tools/runtime/m110b_palette_runtime.py \
             tools/recovery_doctor.py
       - name: Run M09C/M09D/M1.0/M1.1A static and recovery tests
         run: |
@@ -88,13 +91,14 @@ jobs:
             tests.test_m100a_vertical_slice_baseline_static \
             tests.test_m100b_vertical_slice_runtime_static \
             tests.test_m110a_palette_vertical_slice_static \
+            tests.test_m110b_palette_runtime_static \
             tests.test_scene_palette_static \
             tests.test_scene_source_v2_static \
             tests.test_scene_compiler_v2_static \
             tests.test_recovery_doctor_static
       - name: Run recovery doctor without ROM
         run: python tools/recovery_doctor.py
-      - name: Publish verified M1.1A builder snapshot
+      - name: Publish verified M1.1A builder/runtime snapshot
         uses: actions/upload-artifact@v4
         with:
           name: m11a-builder-${{ github.sha }}
@@ -102,6 +106,7 @@ jobs:
             tools/build
             tools/rom_probe
             tools/runtime/m100b_vertical_slice_runtime.py
+            tools/runtime/m110b_palette_runtime.py
             extracted_metadata/m09d_quaid_sprint_contract.json
           if-no-files-found: error
           retention-days: 7
