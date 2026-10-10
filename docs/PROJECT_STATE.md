@@ -17,21 +17,23 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 
 ```text
 branch:     m09c-native-sequence-seam
-milestone:  M1.1C — canonical scene-source-v3 graphics transaction
-checkpoint: 79c1e485441f92b536baa00d5401caa5c24076f8
+milestone:  M1.2A — L3 urban pursuit/subway production slice
+checkpoint: 965d1a54117b9aad69cdc9771e2f679059e91be2
 ```
 
 **M0.9C is COMPLETE.**
 
 **M0.9D is COMPLETE and FROZEN.**
 
-**M1.0A/B is COMPLETE.** Frozen Quaid, persistent object authoring and world collision coexist in one reproducible scene0 gameplay baseline and are runtime-confirmed.
+**M1.0A/B is COMPLETE.** Frozen Quaid, persistent object authoring and world collision coexist in one reproducible scene0 baseline and are runtime-confirmed.
 
 **M1.1A is COMPLETE.** Palette authoring is canonical, source-level, transactional and runtime-confirmed at actual VDP CRAM.
 
-**M1.1B is COMPLETE.** Scene0 primary environment graphics can be exported, exactly round-tripped, relocated, authored at tile granularity, integrated with M110A and runtime-confirmed at actual VDP VRAM/presentation without reopening player, gameplay or palette gates.
+**M1.1B is COMPLETE.** Primary scene0 environment graphics are source-authorable and runtime-confirmed at actual VDP VRAM/presentation.
 
-The active task is M1.1C: migrate the now-confirmed primary-graphics model into a new versioned canonical scene source/transaction so map + objects + world collision + palette + primary environment graphics are authored through one source-level transaction instead of a post-build composition step.
+**M1.1C is COMPLETE for the production scene0 path.** `scene_source.v3` now owns map + objects + world collision + palette + confirmed primary environment graphics through one source-level transaction and reproduces the closed M1.1B candidate byte-for-byte.
+
+The active task returns to product work: build the first recognizably **Total Recall** production slice using scene0 as a technical chassis. The selected sequence is **L3 — urban pursuit / subway** from the Level Bible because it exercises normal combat, the proven sprint, objective flow, civilians/pursuit pressure and one film-specific scripted chase subsystem without forcing the still-unproven melee system as the first content blocker.
 
 ## Canonical ROM identity
 
@@ -45,258 +47,178 @@ SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 
 The original ROM is immutable and never committed. Generated builds remain reproducible from source/manifests plus this verified base.
 
-## Closed engine/integration foundation
-
-Stable unless contradictory runtime evidence appears:
-
-- M0.1–M0.6 ROM/entity/VM/map/authoring reconstruction;
-- M0.7 deterministic held-Y sprint;
-- M0.8 runtime-authored player-local graphics;
-- M0.9C native six-phase player presentation;
-- M0.9D frozen production Quaid sprint family;
-- M0.10 world-collision authoring;
-- M0.11A–D canonical scene-source authoring;
-- M1.0A/B player + object + collision scene0 integration;
-- M1.1A palette + scene-source-v2 transaction/runtime proof;
-- M1.1B primary gameplay graphics authoring + actual VRAM/presentation proof.
-
-## M0.9D production player — CLOSED / FROZEN
+## Frozen player contract
 
 ```text
-source fingerprint: da0a060e77f9da835b388ffe94a8090d75cd51ea
-build SHA-1:       49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
-checksum:          0x266C
-F9F8 descriptor:   0x000A0000
-native phases:     0,2,4,6,8,10
+M0.9D source fingerprint: da0a060e77f9da835b388ffe94a8090d75cd51ea
+build SHA-1:              49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
+checksum:                 0x266C
+F9F8 descriptor:          0x000A0000
+native phases:            0,2,4,6,8,10
 ```
 
-Do not edit v11 player pixels or mapping geometry during M1.1C.
+Do not edit v11 player pixels or mapping geometry during M1.2A unless a deliberate new player milestone is opened.
 
-## M1.0 scene0 gameplay baseline — CLOSED / CONFIRMED
+## Closed scene0 integration contracts
 
-Source manifest: `tools/build/examples/m100a_scene0_baseline.json`.
-
-Authored resources:
+M1.0 gameplay baseline:
 
 ```text
 shotgun pickup: type 69, stride 6, x=690, y=558
 world wall:     type 9, rect=[668,540,676,580]
+SHA-1:          84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027
+checksum:       0x6E6A
+M100B runtime:  14/14 PASS
 ```
 
-Integrated candidate:
+M1.1A palette proof:
 
 ```text
-SHA-1:    84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027
-checksum: 0x6E6A
-direct parent: 49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
+palette index:       8
+retail/authored:     0x0464 -> 0x0648
+player line:         32..47 exact
+palette allocation:  0x303080
+M110A SHA-1:         270e1d633db7883c9170bb1e4eb367abdf97a2bd
+checksum:            0x6B9E
 ```
 
-M1.0B proves the pickup grants shotgun + five shells only in the candidate, the type-9 wall blocks the candidate while the direct parent crosses the zone, canonical player/proxy semantics remain stable and all 14 behavioral/control assertions pass.
+Actual VDP CRAM proof: exactly index 8 differs; M100B remains green.
+
+M1.1B graphics proof:
+
+```text
+scene0 graphics descriptor: 0x00FFAA
+primary LZBeam:             0x014898
+decoded resource:           24,960 bytes / 780 tiles
+retail decoded SHA256:      0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171
+authored tile:              index 2
+integrated SHA-1:           b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
+checksum:                   0xFAD7
+```
+
+Runtime proof: exactly VRAM `[0x0040,0x0060)` changes (32 bytes), CRAM is unchanged versus M110A, presentation delta is confined to the expected upper-environment region, M100B remains 14/14 and M110B remains green.
+
+## M1.1C scene-source-v3 transaction — COMPLETE / CONFIRMED
+
+Canonical additive tooling:
+
+```text
+tools/build/scene_source_v3.py
+tools/build/scene_compiler_v3.py
+tools/build/m112a_scene_source_v3_vertical_slice.py
+```
+
+`scene_source.v1` and v2 remain unchanged regression anchors. v3 adds only the M1.1B-confirmed primary graphics payload/identity. Secondary and auxiliary graphics pointers are preserved as opaque immutable identity; their semantics are **not** inferred.
+
+The v3 transaction builds the existing v2 scene/palette stage first, allocates primary graphics after the same ledger with a `0x304000` floor, verifies non-overlap and repairs the Genesis checksum once at the end.
+
+Canonical scene0 result:
+
+```text
+scene parent SHA-1: 4a169bec49ca6fd571c6ea621e525d7968cc79c5
+scene checksum:     0x3245
+integrated SHA-1:   b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
+checksum:           0xFAD7
+```
+
+The v3 path reproduces the closed M1.1B ROM **byte-for-byte**. Runtime reruns reproduce the exact M111D VRAM/presentation result and M111E closed-gate regression.
 
 Evidence:
 
-- `extracted_metadata/m100a_vertical_slice_baseline.json`
-- `extracted_metadata/m100b_vertical_slice_runtime.json`
-
-## M1.1A canonical palette/source-v2 — COMPLETE / CONFIRMED
-
-Canonical source/tooling:
-
-```text
-tools/build/scene_palette.py
-tools/build/scene_source_v2.py
-tools/build/scene_compiler_v2.py
-tools/build/m110a_palette_vertical_slice.py
-tools/runtime/m110b_palette_runtime.py
-```
-
-`scene_source.v1` remains unchanged as a regression anchor. `scene_source.v2` exposes explicit `colors[64]`; `scene_compiler_v2` places palette data after the scene allocation ledger and repairs final checksum once.
-
-Canonical matrix:
-
-- 19/19 gameplay scenes export valid 64-word Genesis CRAM palettes;
-- 19/19 palette no-op compiles are byte-exact;
-- invalid CRAM words are rejected;
-- source-v2 exact no-op is confirmed across all 19 scenes.
-
-Scene0 palette proof:
-
-```text
-palette index:      8
-retail word:        0x0464
-authored word:      0x0648
-player line:        indices 32..47, untouched
-palette allocation: 0x303080
-M110A SHA-1:        270e1d633db7883c9170bb1e4eb367abdf97a2bd
-checksum:           0x6B9E
-```
-
-Actual VDP CRAM proof confirms exactly one changed CRAM word at index 8; player line 32..47 remains exact; M100B remains 14/14 PASS.
-
-Evidence:
-
-- `extracted_metadata/m11f_scene_palette_canonical.json`
-- `extracted_metadata/m11h_scene_source_v2_transaction_canonical.json`
-- `extracted_metadata/m110a_palette_vertical_slice.json`
-- `extracted_metadata/m110b_palette_runtime.json`
+- `extracted_metadata/m112a_scene_source_v3_vertical_slice.json`
+- `extracted_metadata/m112b_v3_graphics_runtime.json`
+- `extracted_metadata/m112c_v3_regression.json`
+- `extracted_metadata/m112_scene_source_v3_scope_matrix.json`
 
 CI checkpoint:
 
 ```text
-commit:          9db2910e30007ad49ab58b27785055e7753c3f8a
-Actions run:     38068084778
-artifact id:     11675387267
-artifact SHA256: 2cc4c0c2394f03745e5d362c95e9ce56e475d0fbabc72ee99a765e16c36c6ba6
+commit:          965d1a54117b9aad69cdc9771e2f679059e91be2
+Actions run:     38074354446
+artifact id:     11677847802
+artifact SHA256: c26452066d123b81f4f63b02e2b07cf297c794a175b5f9843c9067ff99c8a2b3
 static:          PASS
 BlastEm harness: PASS
 ```
 
-## M1.1B gameplay graphics — COMPLETE / CONFIRMED
+### Scope boundary — important
 
-Durable subsystem document: `docs/M111_GAMEPLAY_GRAPHICS_AUTHORING.md`.
+The current primary-only v3 graphics model is exact/no-op for 18 of 19 retail scenes:
 
-### Scene0 primary resource
+`0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18`.
 
-The non-zero primary gameplay graphics descriptor is authorable as a three-long structure while unresolved secondary/auxiliary identity is preserved:
+**Scene 10 is deliberately out of confirmed graphics scope.** Its C000 map references tile indices beyond the decoded primary set. This is evidence that unresolved secondary/auxiliary graphics ownership matters there. Do not generalize or guess those semantics merely to obtain 19/19. Scene0 — the current production chassis — is fully inside the confirmed model.
 
-```text
-retail descriptor:    0x00FFAA
-primary LZBeam:       0x014898
-secondary pointer:    0x800178DA
-auxiliary pointer:    0x01BF7A
-secondary-plane desc: 0x00000000
-```
+## M1.2A product target — L3 urban pursuit/subway
 
-Decoded primary resource:
+Design-source rationale:
 
-```text
-24,960 bytes
-780 tiles × 32 bytes
-SHA256 0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171
-```
+- Level Bible L3: city/subway escalation, civilians and pursuit pressure with Total Recall-specific scripting.
+- Game Design Bible: preserve responsive top-down combat/objectives, make Quaid physically distinct, and use custom modules for film-specific spectacle.
+- Roadmap vertical-slice bar: converted/new environment, authored placements, enemies/props, objective flow, cutscene transition, audio path and at least one genuinely new mechanic/subsystem.
 
-Exact raw no-op is confirmed. Forced relocation to `0x304000/0x304010` reparses to identical decoded bytes.
+M1.2A uses scene0 only as a proven technical chassis; it is **not** a claim that True Lies scene0 geography is final Total Recall level design.
 
-Evidence: `extracted_metadata/m111b_scene_graphics_primary.json`.
+### Production-source rule
 
-### One authored environment tile
+Do not commit a full exported scene_source.v3 because it contains derived retail maps/placements/graphics. Production content must be stored as a declarative **authored-delta overlay** containing only new/original project data and stable references to retail identities. The build exports canonical v3 in memory, applies the overlay, validates identity and compiles the result.
 
-M111C changes only tile index `2`, replacing its retail 32-byte payload with an 8×8 X diagnostic pattern using palette index `0xE`.
+## OPEN — M1.2A
 
-```text
-retail tile2 SHA256: e0e77a507412b120f6ede61f62295b1a7b2ff19d3dcc8f7253e51663470c888e
-graphics-only SHA-1: a26f74937233e155e025bcd45a220660c75e110f
-integrated SHA-1:    b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
-checksum:             0xFAD7
-```
+### O1 — declarative authored-delta overlay
 
-Combined allocation ledger:
+Create a source-controlled overlay schema for scene0 supporting the already-confirmed production domains without copying retail payloads:
 
-```text
-0x300000 object_desc                    132
-0x300090 object_lz                     1217
-0x300600 world_resource               10880
-0x303080 scene_palette                  128
-0x304000 primary_graphics_descriptor     12
-0x304010 primary_graphics_lz          12105
-```
+- palette index replacements;
+- map tile-word replacements;
+- object add/remove/replace by stable source ID;
+- world-collision add/remove/replace by stable ID;
+- primary-graphics tile replacements by tile index + original 32-byte authored payload.
 
-No overlaps occur; all six frozen Quaid phase banks and M110A palette bytes remain exact.
+The first overlay must be able to reproduce the closed M112A candidate exactly from canonical ROM + overlay + frozen player contract.
 
-Evidence: `extracted_metadata/m111c_graphics_vertical_slice.json`.
+### O2 — L3 production scene skeleton
 
-### Actual VDP VRAM + presentation proof
+Replace diagnostic proof content with a first original urban/subway kit and layout pass. It must establish at least three readable zones: pursuit entry, combat/objective space, and subway-transition exit. Temporary proof pickup/wall may remain only where explicitly tagged temporary.
 
-Correct logical comparison: M110A vs M1.1B candidate under the same deterministic scene0 sequence.
+### O3 — objective + pursuit subsystem
 
-```text
-VRAM changed range: [0x0040,0x0060)
-changed bytes:      32
-candidate VRAM tile: exact authored tile2 bytes
-CRAM M110A→M1.1B:  exact / no differences
-```
+Author one concrete objective/interact path and one scripted pursuit/chase trigger using recovered object/VM seams. Do not invent new universal AI systems if a scene-specific controller is sufficient.
 
-BlastEm internal screenshot comparison:
+### O4 — production runtime gate
 
-```text
-size:            256×240
-changed pixels:  1440
-bbox:            [15,9,199,45]
-```
+Run the slice under pinned BlastEm and require:
 
-The visual delta is confined to the upper environment region containing the repeated E000 tile.
-
-Evidence: `extracted_metadata/m111d_graphics_runtime.json`.
-
-### Closed-gate regression
-
-Against frozen M09D:
-
-- M100B behavioral/control assertions: **14/14 PASS**;
-- M110B CRAM contract remains exact: only index 8 differs `0x0464 → 0x0648`;
-- player palette line 32..47 remains exact.
-
-Evidence: `extracted_metadata/m111e_graphics_regression.json`.
-
-### M1.1B CI/reproduction checkpoint
-
-```text
-source commit:    79c1e485441f92b536baa00d5401caa5c24076f8
-Actions run:      38073075203
-artifact id:      11677736118
-artifact SHA256:  be0b0a2cdc1016f33cb9828b7c970fc50f9898d7dea3e79d77564b38ff862c58
-static:           PASS
-BlastEm harness:  PASS
-```
-
-The exact CI artifact rebuilt the pinned M111C candidate byte-for-byte and its artifact-published M111D/M111E runners reproduced all runtime evidence above.
-
-## OPEN — M1.1C
-
-### O1 — source schema v3
-
-Add the confirmed primary gameplay graphics identity/payload to a new versioned scene source. Keep `scene_source.v1` and v2 unchanged as regression anchors. Preserve secondary and auxiliary graphics pointers as immutable identity; do not guess their semantics.
-
-### O2 — unified transaction allocator
-
-Extend the scene transaction so map/object/world/palette/primary-graphics allocations are owned by one ledger and one final checksum repair, rather than composing an independently generated graphics ROM after M110A.
-
-### O3 — exact no-op migration gate
-
-Prove v2→v3 upgrade/downgrade losslessness where applicable and exact/no-op behavior for scenes with primary graphics resources. Pin decoded graphics/resource fingerprints mechanically.
-
-### O4 — reproduce the closed scene0 graphics proof through v3
-
-Rebuild the same tile-2 environment edit through the unified v3 source. The output should either reproduce the pinned M111C bytes exactly or be mechanically equivalent with exact decoded resources and the same runtime behavior.
-
-### O5 — runtime regression
-
-Run the v3-generated candidate through M111D and M111E. Promotion requires exact VRAM/presentation semantics plus M110B and M100B gates remaining green.
+- frozen Quaid presentation intact;
+- M100B/M110B closed contracts unaffected unless the production manifest deliberately replaces their proof content;
+- authored environment reaches VRAM/presentation;
+- objective/pursuit state transitions are deterministic;
+- no allocator overlap or scene-record containment violation.
 
 ## NEXT
 
-1. Define `scene_source.v3` by extending v2 with the confirmed primary-graphics source; leave v1/v2 untouched.
-2. Implement v2↔v3 migration helpers and strict graphics identity validation.
-3. Extend the transactional compiler so primary graphics allocate after existing scene/palette allocations in the same ledger.
-4. Establish exact no-op/migration probes before any new graphics edit.
-5. Rebuild the already-confirmed scene0 tile-2 proof through v3.
-6. Runtime-verify the v3 candidate with M111D + M111E; only then freeze M1.1C.
+1. Implement `scene_overlay.v1`, containing authored deltas only, and strict validation against exported canonical `scene_source.v3` identity.
+2. Add an overlay compiler that applies the manifest in memory and lowers through `scene_compiler_v3`; do not duplicate v3 allocation logic.
+3. Encode the current tile-2/palette/pickup/wall proof as the first overlay and require byte-exact reproduction of `b6c0303b... / 0xFAD7`.
+4. Once the overlay gate is green, replace proof-only visual data with a small original L3 urban/subway environment starter kit while preserving the closed engine contracts.
+5. Define the first objective and pursuit trigger only after the production scene skeleton is runtime-visible.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
-- Closed M09C/M09D/M1.0/M1.1A/M1.1B gates reopen only on contradictory evidence.
-- Do not modify v11 player pixels or mapping geometry during M1.1C.
-- Keep `scene_source.v1` and v2 immutable; v3 is additive/versioned.
-- Primary graphics semantics confirmed by M1.1B may be used; secondary/auxiliary semantics may not be guessed.
-- Generated ROMs/PNGs are outputs; source code + manifests + verified canonical ROM remain source truth.
+- Closed M09C/M09D/M1.0/M1.1A/B/C gates reopen only on contradictory evidence.
+- Do not edit v11 player pixels during M1.2A.
+- Keep `scene_source.v1`, v2 and the closed v3 contract stable; production overlays sit above v3.
+- Do not resolve scene10 secondary/aux graphics unless the selected production content actually needs it.
+- Never commit exported retail scene sources or retail tile dumps.
+- Prefer scene-specific scripted modules over speculative universal systems.
 - Prefer small semantic Git commits.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D frozen; M1.0A/B complete; M1.1A palette/source-v2 complete; M1.1B primary gameplay graphics authoring + actual VRAM/presentation proof complete.
-EVIDENCE m111b_scene_graphics_primary.json + m111c_graphics_vertical_slice.json + m111d_graphics_runtime.json + m111e_graphics_regression.json + Actions run 38073075203.
-OPEN     M1.1C canonical scene-source-v3 graphics transaction.
-NEXT     migrate confirmed primary graphics into an additive v3 scene source/transaction, prove no-op, reproduce the tile-2 proof, then rerun M111D/M111E.
+DONE     M09C complete; M09D frozen; M1.0A/B complete; M1.1A/B/C complete, including source-v3 unified scene graphics transaction and runtime regression.
+EVIDENCE m112a_scene_source_v3_vertical_slice.json + m112b_v3_graphics_runtime.json + m112c_v3_regression.json + m112_scene_source_v3_scope_matrix.json + Actions run 38074354446.
+OPEN     M1.2A L3 urban pursuit/subway production slice.
+NEXT     implement an authored-delta scene_overlay.v1 above scene_source.v3 and require it to reproduce the closed M112A candidate exactly before replacing proof content with original L3 production content.
 ```
