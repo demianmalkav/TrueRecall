@@ -39,6 +39,7 @@ on:
       - 'tests/test_m110a_*'
       - 'tests/test_m110b_*'
       - 'tests/test_m111*'
+      - 'tests/test_m120*'
       - 'tests/test_scene_palette_static.py'
       - 'tests/test_scene_source_v2_static.py'
       - 'tests/test_scene_compiler_v2_static.py'
@@ -77,6 +78,8 @@ jobs:
             tools/build/m112a_scene_source_v3_vertical_slice.py \
             tools/build/m120a_scene_overlay_vertical_slice.py \
             tools/build/m120b_l3_starter_build.py \
+            tools/build/m120c_l3_three_zone_build.py \
+            tools/build/m120g_l3_objective_build.py \
             tools/build/scene_palette.py \
             tools/build/scene_source_v2.py \
             tools/build/scene_compiler_v2.py \
@@ -122,6 +125,7 @@ jobs:
             tests.test_m110b_palette_runtime_static \
             tests.test_m111c_graphics_vertical_slice_static \
             tests.test_m111d_graphics_runtime_static \
+            tests.test_m120g_l3_objective_static \
             tests.test_scene_palette_static \
             tests.test_scene_source_v2_static \
             tests.test_scene_compiler_v2_static \
