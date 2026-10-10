@@ -8,6 +8,7 @@ on:
       - 'tools/build/m09d_*'
       - 'tools/build/m100a_*'
       - 'tools/build/m110a_*'
+      - 'tools/build/m111*'
       - 'tools/build/scene_palette.py'
       - 'tools/build/scene_source_v2.py'
       - 'tools/build/scene_compiler_v2.py'
@@ -23,6 +24,7 @@ on:
       - 'tools/runtime/m09d_*'
       - 'tools/runtime/m100b_*'
       - 'tools/runtime/m110b_*'
+      - 'tools/runtime/m111*'
       - 'tools/recovery_doctor.py'
       - 'tests/test_m09c_*'
       - 'tests/test_m09d_*'
@@ -30,6 +32,7 @@ on:
       - 'tests/test_m100b_*'
       - 'tests/test_m110a_*'
       - 'tests/test_m110b_*'
+      - 'tests/test_m111*'
       - 'tests/test_scene_palette_static.py'
       - 'tests/test_scene_source_v2_static.py'
       - 'tests/test_scene_compiler_v2_static.py'
@@ -59,6 +62,7 @@ jobs:
             tools/build/m09d_quaid_sprint_build.py \
             tools/build/m100a_vertical_slice_baseline.py \
             tools/build/m110a_palette_vertical_slice.py \
+            tools/build/m111c_graphics_vertical_slice.py \
             tools/build/scene_palette.py \
             tools/build/scene_source_v2.py \
             tools/build/scene_compiler_v2.py \
@@ -78,6 +82,8 @@ jobs:
             tools/runtime/m09d_quaid_runtime_regression.py \
             tools/runtime/m100b_vertical_slice_runtime.py \
             tools/runtime/m110b_palette_runtime.py \
+            tools/runtime/m111d_graphics_runtime.py \
+            tools/runtime/m111e_graphics_regression.py \
             tools/recovery_doctor.py
       - name: Run active static and recovery tests
         run: |
@@ -97,6 +103,8 @@ jobs:
             tests.test_m100b_vertical_slice_runtime_static \
             tests.test_m110a_palette_vertical_slice_static \
             tests.test_m110b_palette_runtime_static \
+            tests.test_m111c_graphics_vertical_slice_static \
+            tests.test_m111d_graphics_runtime_static \
             tests.test_scene_palette_static \
             tests.test_scene_source_v2_static \
             tests.test_scene_compiler_v2_static \
@@ -113,6 +121,8 @@ jobs:
             tools/rom_probe
             tools/runtime/m100b_vertical_slice_runtime.py
             tools/runtime/m110b_palette_runtime.py
+            tools/runtime/m111d_graphics_runtime.py
+            tools/runtime/m111e_graphics_regression.py
             extracted_metadata/m09d_quaid_sprint_contract.json
           if-no-files-found: error
           retention-days: 7
