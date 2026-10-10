@@ -22,8 +22,8 @@ def synthetic_source() -> dict:
         "immutable": {},
         "palette": {"retail_pointer": 0x2000, "colors": [0] * 64},
         "planes": {
-            "C000": {"graphics_descriptor": 0x2200, "width": 2, "height": 2, "tile_words": [1, 2, 3, 4]},
-            "E000": {"graphics_descriptor": 0, "width": 2, "height": 2, "tile_words": [4, 3, 2, 1]},
+            "C000": {"graphics_descriptor": 0x2200, "width": 4, "height": 3, "tile_words": list(range(12))},
+            "E000": {"graphics_descriptor": 0, "width": 4, "height": 3, "tile_words": list(range(12, 24))},
         },
         "objects": {
             "prefix_hex": "",
@@ -62,7 +62,7 @@ def synthetic_overlay(source: dict) -> dict:
             },
         },
         "palette": [{"index": 1, "expect": 0, "value": 0x0002}],
-        "maps": [{"plane": "C000", "x": 1, "y": 0, "expect": 2, "value": 7}],
+        "maps": [{"plane": "C000", "x": 1, "y": 0, "expect": 1, "value": 7}],
         "objects": [{"op": "add", "id": "authored_object", "type_id": 69, "status_flags": 0x7800, "stride": 6, "x": 30, "y": 40, "param": None}],
         "world": [{"op": "add", "id": "authored_wall", "type": 9, "rect": [8, 8, 16, 16]}],
         "primary_graphics": [{"tile_index": 1, "expect_sha256": hashlib.sha256(tile1).hexdigest(), "tile_hex": (bytes([0xEE]) * 32).hex()}],
@@ -81,6 +81,30 @@ class SceneOverlayStaticTests(unittest.TestCase):
         self.assertEqual(edited["world"]["records"][-1]["id"], "authored_wall")
         payload = bytes.fromhex(edited["primary_graphics"]["tile_bytes_hex"])
         self.assertEqual(payload[32:64], bytes([0xEE]) * 32)
+
+    def test_replace_rect_uses_hash_guard_and_authored_words(self) -> None:
+        source = synthetic_source()
+        overlay = synthetic_overlay(source)
+        plane = source["planes"]["E000"]
+        words = [plane["tile_words"][y * 4 + x] for y in range(1, 3) for x in range(1, 3)]
+        blob = b"".join(word.to_bytes(2, "big") for word in words)
+        overlay["maps"] = [{
+            "op": "replace_rect", "plane": "E000", "x": 1, "y": 1, "width": 2, "height": 2,
+            "expect_sha256": hashlib.sha256(blob).hexdigest(), "tile_words": [101, 102, 103, 104],
+        }]
+        edited = so.apply_overlay_to_source(source, overlay)
+        actual = [edited["planes"]["E000"]["tile_words"][y * 4 + x] for y in range(1, 3) for x in range(1, 3)]
+        self.assertEqual(actual, [101, 102, 103, 104])
+
+    def test_replace_rect_hash_mismatch_is_rejected(self) -> None:
+        source = synthetic_source()
+        overlay = synthetic_overlay(source)
+        overlay["maps"] = [{
+            "op": "replace_rect", "plane": "E000", "x": 0, "y": 0, "width": 1, "height": 1,
+            "expect_sha256": "0" * 64, "tile_words": [1],
+        }]
+        with self.assertRaises(ValueError):
+            so.apply_overlay_to_source(source, overlay)
 
     def test_identity_mismatch_is_rejected(self) -> None:
         source = synthetic_source()
