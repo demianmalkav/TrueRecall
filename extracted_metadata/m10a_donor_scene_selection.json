@@ -1,0 +1,98 @@
+{
+  "schema": "truerecall.m10a.donor_scene_selection.v1",
+  "milestone": "M1.0A",
+  "slice_target": "Post-Rekall / apartment and escape",
+  "canonical_rom_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "selected_scene": 15,
+  "selection_status": "FROZEN_FOR_M1_0A_BASELINE",
+  "selection_basis": {
+    "map_dimensions_source": "docs/MAP_FORMAT.md canonical scene dimension inventory",
+    "object_pressure_source": "extracted_metadata/level_objects_summary.json plus canonical level_objects parser",
+    "collision_source": "extracted_metadata/world_collision_all_scenes.json",
+    "semantic_baggage_source": "docs/OBJECT_TYPES.md plus canonical scene placement type inventory",
+    "retail_area_mapping": "HIGH_CONFIDENCE_SEQUENCE_CORRELATION: scene 14 is vehicle/Harrier-specific by independent type distribution; scenes 15-17 therefore correspond to the final Office Building sequence, consistent with public level order"
+  },
+  "selected_scene_metrics": {
+    "scene": 15,
+    "probable_retail_area": "Office Building 1",
+    "area_label_status": "HIGH_CONFIDENCE",
+    "plane_c000_tiles": [32, 43],
+    "plane_e000_tiles": [32, 43],
+    "tile_area": 1376,
+    "aspect_ratio": 1.34375,
+    "placements": 98,
+    "unique_type_ids": 24,
+    "activation_11x9_upper_bound": 13,
+    "keep_alive_upper_bound": 22,
+    "world_grid_cells": [16, 22],
+    "world_collision_records": 279,
+    "world_max_list": 7,
+    "known_pickup_placements": 22,
+    "known_civilian_placements": 0,
+    "known_objective_or_door_placements": 0,
+    "known_controller_placements": 0,
+    "known_unique_final_hostile_placements": 0,
+    "m11d_representative_noop_previously_proven": false
+  },
+  "all_scene_matrix": [
+    {"scene":0,"map":[107,45],"placements":168,"unique_types":32,"activation_upper_bound":13,"keep_alive_upper_bound":20,"collision_records":375,"known_civilians":33,"known_controllers":2},
+    {"scene":1,"map":[20,253],"placements":72,"unique_types":10,"activation_upper_bound":6,"keep_alive_upper_bound":9,"collision_records":621,"known_civilians":0,"known_controllers":5},
+    {"scene":2,"map":[50,39],"placements":116,"unique_types":28,"activation_upper_bound":14,"keep_alive_upper_bound":18,"collision_records":211,"known_civilians":40,"known_controllers":0},
+    {"scene":3,"map":[9,13],"placements":3,"unique_types":2,"activation_upper_bound":3,"keep_alive_upper_bound":3,"collision_records":24,"known_civilians":0,"known_controllers":1},
+    {"scene":4,"map":[50,78],"placements":182,"unique_types":29,"activation_upper_bound":12,"keep_alive_upper_bound":19,"collision_records":697,"known_civilians":7,"known_controllers":0},
+    {"scene":5,"map":[104,48],"placements":139,"unique_types":33,"activation_upper_bound":13,"keep_alive_upper_bound":18,"collision_records":314,"known_civilians":0,"known_controllers":2},
+    {"scene":6,"map":[71,110],"placements":206,"unique_types":27,"activation_upper_bound":20,"keep_alive_upper_bound":25,"collision_records":375,"known_civilians":0,"known_controllers":0},
+    {"scene":7,"map":[74,60],"placements":190,"unique_types":33,"activation_upper_bound":16,"keep_alive_upper_bound":22,"collision_records":404,"known_civilians":0,"known_controllers":1},
+    {"scene":8,"map":[45,16],"placements":30,"unique_types":13,"activation_upper_bound":11,"keep_alive_upper_bound":14,"collision_records":78,"known_civilians":0,"known_controllers":1},
+    {"scene":9,"map":[70,69],"placements":161,"unique_types":34,"activation_upper_bound":15,"keep_alive_upper_bound":20,"collision_records":337,"known_civilians":0,"known_controllers":0},
+    {"scene":10,"map":[95,54],"placements":157,"unique_types":25,"activation_upper_bound":13,"keep_alive_upper_bound":19,"collision_records":403,"known_civilians":0,"known_controllers":1},
+    {"scene":11,"map":[60,58],"placements":131,"unique_types":28,"activation_upper_bound":15,"keep_alive_upper_bound":19,"collision_records":359,"known_civilians":0,"known_controllers":0},
+    {"scene":12,"map":[45,80],"placements":212,"unique_types":23,"activation_upper_bound":16,"keep_alive_upper_bound":21,"collision_records":398,"known_civilians":0,"known_controllers":0},
+    {"scene":13,"map":[78,66],"placements":296,"unique_types":42,"activation_upper_bound":16,"keep_alive_upper_bound":22,"collision_records":311,"known_civilians":0,"known_controllers":1},
+    {"scene":14,"map":[13,400],"placements":44,"unique_types":7,"activation_upper_bound":3,"keep_alive_upper_bound":4,"collision_records":17,"known_civilians":0,"known_controllers":0,"vehicle_setpiece_placements":18},
+    {"scene":15,"map":[32,43],"placements":98,"unique_types":24,"activation_upper_bound":13,"keep_alive_upper_bound":22,"collision_records":279,"known_civilians":0,"known_controllers":0},
+    {"scene":16,"map":[36,44],"placements":139,"unique_types":22,"activation_upper_bound":21,"keep_alive_upper_bound":35,"collision_records":254,"known_civilians":0,"known_controllers":0},
+    {"scene":17,"map":[46,31],"placements":65,"unique_types":22,"activation_upper_bound":11,"keep_alive_upper_bound":14,"collision_records":256,"known_civilians":0,"known_controllers":0,"unique_final_hostile_type3":1},
+    {"scene":18,"map":[18,40],"placements":40,"unique_types":2,"activation_upper_bound":22,"keep_alive_upper_bound":25,"collision_records":0,"known_civilians":0,"known_controllers":0}
+  ],
+  "shortlist": [
+    {
+      "scene": 15,
+      "rank": 1,
+      "decision": "SELECT",
+      "rationale": "compact neutral indoor-scale footprint, moderate placement/collision load, no confirmed mission controller/civilian/final-hostile baggage, and sufficient room density for an apartment/escape slice"
+    },
+    {
+      "scene": 17,
+      "rank": 2,
+      "decision": "REJECT_FOR_BASELINE",
+      "rationale": "excellent low object pressure and compact footprint, but carries the unique type_id 3 hostile tied by script evidence to the final Crimson Jihad/Aziz encounter; avoid boss/finale baggage in the first integration baseline"
+    },
+    {
+      "scene": 8,
+      "rank": 3,
+      "decision": "REJECT_FOR_BASELINE",
+      "rationale": "very cheap structurally but narrow 45x16 topology and crate-objective controller make it less representative of a room-based apartment escape"
+    },
+    {
+      "scene": 2,
+      "rank": 4,
+      "decision": "REJECT_FOR_BASELINE",
+      "rationale": "good indoor proportions and moderate collision complexity, but approximately 40 confirmed civilian placements create unnecessary stream/behavior baggage for the first Total Recall slice"
+    },
+    {
+      "scene": 16,
+      "rank": 5,
+      "decision": "REJECT_FOR_BASELINE",
+      "rationale": "appropriate indoor footprint but keep-alive upper bound reaches 35, equal to the complete generic entity pool budget; poor first integration risk profile"
+    },
+    {
+      "scene": 3,
+      "rank": 6,
+      "decision": "REJECT_FOR_BASELINE",
+      "rationale": "extremely cheap but only 9x13 tiles and three placements, including a mission-completion controller; too small to represent the intended combat/objective/melee slice"
+    }
+  ],
+  "m11d_risk_note": "scene 15 was not one of the four representative M11D exact-noop scenes (0,5,6,18), so the first O2 requirement is an exact scene-15 no-op transaction before any authored delta",
+  "next": "prove exact M11D no-op reconstruction for scene 15, then compose that no-op scene transaction with the frozen M09D-v11 4MiB player build after allocation-overlap audit"
+}
