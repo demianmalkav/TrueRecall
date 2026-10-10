@@ -1,0 +1,63 @@
+name: m11a-diagnostic
+
+on:
+  push:
+    branches: [m09c-native-sequence-seam]
+    paths:
+      - 'tools/build/scene_palette.py'
+      - 'tools/build/scene_source_v2.py'
+      - 'tools/build/scene_compiler_v2.py'
+      - 'tools/rom_probe/scene_palette_probe.py'
+      - 'tools/rom_probe/scene_source_v2_transaction_probe.py'
+      - 'tests/test_scene_palette_static.py'
+      - 'tests/test_scene_source_v2_static.py'
+      - 'tests/test_scene_compiler_v2_static.py'
+      - '.github/workflows/m11a-diagnostic.yml'
+  workflow_dispatch:
+
+jobs:
+  m11a-static-diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run diagnostic suite and retain output
+        id: diagnostic
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          {
+            echo '=== PY_COMPILE ==='
+            python -m py_compile \
+              tools/build/scene_palette.py \
+              tools/build/scene_source_v2.py \
+              tools/build/scene_compiler_v2.py \
+              tools/rom_probe/scene_palette_probe.py \
+              tools/rom_probe/scene_source_v2_transaction_probe.py
+            compile_status=$?
+            echo "compile_status=$compile_status"
+            echo '=== UNITTEST ==='
+            python -m unittest -v \
+              tests.test_scene_palette_static \
+              tests.test_scene_source_v2_static \
+              tests.test_scene_compiler_v2_static
+            test_status=$?
+            echo "test_status=$test_status"
+            if [ "$compile_status" -ne 0 ] || [ "$test_status" -ne 0 ]; then
+              exit 1
+            fi
+          } > m11a-diagnostic.log 2>&1
+      - name: Publish diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m11a-diagnostic-${{ github.sha }}
+          path: m11a-diagnostic.log
+          if-no-files-found: error
+          retention-days: 3
+      - name: Preserve diagnostic failure
+        if: steps.diagnostic.outcome == 'failure'
+        run: exit 1
