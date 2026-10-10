@@ -1,57 +1,28 @@
-# AGENTS.md — TrueRecall operating contract
+# AGENTS.md — TrueRecall bootstrap contract
 
 ## Purpose
 
-This repository reconstructs the True Lies (World) Mega Drive / Genesis engine and extends it into a new Total Recall game. Every agent must preserve reproducibility and distinguish evidence from inference.
+`main` is not guaranteed to contain the live technical continuation. Its job is to provide a safe recovery entrypoint.
 
-## Non-negotiable rules
+## Before technical work
 
-1. **Never commit the original True Lies ROM or copyrighted extracted asset dumps.**
-2. The canonical base ROM is identified by SHA-1 `d39174bed46ede85531b86df7ba49123ce2f8411`.
-3. Verify the base ROM before every extraction, patch or build operation.
-4. ROM addresses are written in hexadecimal with `0x` prefix.
-5. Every reverse-engineering claim must carry one of these states:
-   - `CONFIRMED`: reproduced directly from ROM/runtime evidence.
-   - `HIGH CONFIDENCE`: multiple consistent observations, but not fully proven.
-   - `HYPOTHESIS`: useful interpretation still requiring a probe.
-6. Never silently promote a hypothesis to confirmed knowledge.
-7. Every important discovery must record the evidence that supports it: ROM offsets, RAM addresses, code paths, observed behavior, cheat correlation, extracted structure or runtime trace.
-8. Preserve original behavior until a deliberate design decision replaces it.
-9. New mechanics must be isolated and regression-tested before integration.
-10. Generated artifacts must be reproducible from source assets, tools and the verified base ROM.
-11. No single hand-edited ROM is a source of truth.
-12. Keep reverse-engineering facts separate from Total Recall creative decisions.
+1. Read `RECOVERY_POINTER.md` on `main`.
+2. Fetch/switch to the active branch named there.
+3. Read that branch's `docs/RECOVERY_MANIFEST.json`.
+4. Refresh the live active-branch HEAD.
+5. Read `docs/PROJECT_STATE.md`.
+6. Read the active branch's `AGENTS.md` for the full operating contract.
+7. Verify the canonical ROM before any ROM-dependent operation.
 
-## Sources of truth
+Do not resume from milestone statements embedded in older `main` documents.
 
-- Google Drive: project state, decisions, roadmap, recovery handoff, design bibles, references and checkpoints.
-- GitHub: technical state, code, tools, symbols, tests, build logic and reproducible patch data.
+## Non-negotiable bootstrap invariants
 
-## Required recovery sequence
+- Never commit the original True Lies ROM or copyrighted extracted asset dumps.
+- Canonical base SHA-1: `d39174bed46ede85531b86df7ba49123ce2f8411`.
+- No hand-edited ROM is a source of truth.
+- Do not silently promote hypotheses or revive falsified models.
+- Technical continuation authority lives in the active branch's `docs/PROJECT_STATE.md` and `docs/RECOVERY_MANIFEST.json`.
+- Google Drive provides project/design continuity and a redundant recovery mirror; it does not override the active GitHub project state.
 
-Before starting work in a fresh context:
-
-1. Read Drive `START_HERE — True Recall`.
-2. Read Drive `PROJECT_STATE_MASTER — True Recall`.
-3. Read Drive `RECOVERY_HANDOFF — True Recall`.
-4. Read this file.
-5. Read `docs/TECHNICAL_STATE.md`.
-6. Read the subsystem document relevant to the task.
-7. Check the current `main` head and last stable checkpoint before changing code.
-
-## Checkpoint discipline
-
-A milestone is not complete until all four are updated:
-
-1. Drive project state.
-2. GitHub technical state.
-3. Stable Git commit/tag or explicitly recorded commit SHA.
-4. Drive recovery handoff.
-
-## Current milestone
-
-Completed: **M0.5 — map format recovered**.
-
-Active: **M0.6 — player state machine recovery**.
-
-Next: **M0.7 — first controlled engine extension**.
+If the recovery pointer and active-branch manifest disagree, inspect branch history and treat the active branch's internally consistent `PROJECT_STATE.md` + manifest pair as the stronger technical evidence; repair the bootstrap pointer before continuing work.
