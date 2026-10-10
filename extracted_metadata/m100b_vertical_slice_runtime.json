@@ -1,0 +1,130 @@
+{
+  "active_samples": 30,
+  "assertions": {
+    "active_input_exact": true,
+    "candidate_blocked_by_authored_wall": true,
+    "canonical_player_descriptor": true,
+    "canonical_proxy_descriptor": true,
+    "f9_address_stable": true,
+    "movement_diverges_only_as_expected": true,
+    "parent_crosses_authored_wall_zone": true,
+    "player_semantics_equal_before": true,
+    "player_semantics_preserved_after": true,
+    "proxy_semantics_equal_before": true,
+    "proxy_semantics_preserved_after": true,
+    "same_spawn_position": true,
+    "scene0_both": true,
+    "shotgun_pickup_effect_candidate_only": true
+  },
+  "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+  "candidate_before": {
+    "f9": {
+      "0x10": 701,
+      "0x14": 558,
+      "0x1C": 1510,
+      "0x1E": 1510,
+      "0x20": 3438,
+      "0x22": 3438,
+      "0x24": 12446,
+      "0x2A": 139,
+      "0x2C": 10,
+      "0x2E": 0,
+      "0x50": 4,
+      "0x6C": 23,
+      "descriptor": 655360
+    },
+    "f9_address": 16762418,
+    "fb": {
+      "0x10": 701,
+      "0x14": 558,
+      "0x1C": 150,
+      "0x1E": 150,
+      "0x20": 518,
+      "0x22": 518,
+      "0x24": 12314,
+      "0x2A": 1,
+      "0x2C": 15,
+      "0x2E": 0,
+      "0x50": 4,
+      "0x6C": 1,
+      "descriptor": 983040
+    },
+    "fb_address": 16762988,
+    "scene": 0
+  },
+  "candidate_final": {
+    "active_count": 6,
+    "input": 0,
+    "ownership": 3,
+    "shotgun_ammo": 5,
+    "step": 32,
+    "x": 688,
+    "y": 558
+  },
+  "candidate_min_x": 688,
+  "candidate_sha1": "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027",
+  "ci": {
+    "actions_run": 38053439943,
+    "artifact_id": 11670751788,
+    "artifact_sha256": "177a35bfb755f2eea7985d8ff8a61c5c601e974e35f903bc1ec03c7a14d7c5cf",
+    "blastem_harness": "PASS",
+    "commit": "e88ffe045d339e43a95de60b8df32fd5ab553c74",
+    "static": "PASS"
+  },
+  "interpretation": {
+    "collision": "authored type-9 rectangle [668,540,676,580] blocks candidate player center at x=688 while direct parent crosses the authored wall zone and reaches x=652",
+    "pickup": "type 69 shotgun pickup at (690,558) grants ownership bit 0x02 and 5 shotgun rounds only in candidate before the movement probe",
+    "proxy_slot_shift": "FB6E moves from FFC7FA to FFC86C because the added pickup consumes an earlier entity slot; semantic proxy fields and descriptor remain exact, so address equality is deliberately not an invariant"
+  },
+  "normalized_active_input": "0x2044",
+  "parent_before": {
+    "f9": {
+      "0x10": 701,
+      "0x14": 558,
+      "0x1C": 1510,
+      "0x1E": 1510,
+      "0x20": 3438,
+      "0x22": 3438,
+      "0x24": 12446,
+      "0x2A": 139,
+      "0x2C": 10,
+      "0x2E": 0,
+      "0x50": 4,
+      "0x6C": 23,
+      "descriptor": 655360
+    },
+    "f9_address": 16762418,
+    "fb": {
+      "0x10": 701,
+      "0x14": 558,
+      "0x1C": 150,
+      "0x1E": 150,
+      "0x20": 518,
+      "0x22": 518,
+      "0x24": 12314,
+      "0x2A": 1,
+      "0x2C": 15,
+      "0x2E": 0,
+      "0x50": 4,
+      "0x6C": 1,
+      "descriptor": 983040
+    },
+    "fb_address": 16762874,
+    "scene": 0
+  },
+  "parent_final": {
+    "active_count": 8,
+    "input": 0,
+    "ownership": 1,
+    "shotgun_ammo": 0,
+    "step": 32,
+    "x": 652,
+    "y": 558
+  },
+  "parent_min_x": 652,
+  "parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "pass": true,
+  "runner": "tools/runtime/m100b_vertical_slice_runtime.py",
+  "schema": "truerecall.m100b.vertical_slice_runtime_evidence.v1",
+  "status": "CONFIRMED_RUNTIME"
+}
