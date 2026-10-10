@@ -1,0 +1,97 @@
+{
+  "schema": "truerecall.m09d.quaid_production_freeze.v1",
+  "milestone": "M0.9D",
+  "status": "COMPLETE",
+  "candidate": "v11",
+  "freeze_scope": "first production Quaid sprint/locomotion family and its source-to-ROM pipeline",
+  "source": {
+    "tool": "tools/build/m09d_quaid_sprint_source.py",
+    "frame_count": 30,
+    "authored_facings": ["N", "NE", "E", "SE", "S"],
+    "runtime_facings": 8,
+    "native_phase_deltas": [0, 2, 4, 6, 8, 10],
+    "source_art_fingerprint": "da0a060e77f9da835b388ffe94a8090d75cd51ea",
+    "art_status": "production_family_v1"
+  },
+  "visual_identity": {
+    "film_reference": "Douglas Quaid light-gray short-sleeve Henley, exposed muscular arms, khaki trousers, short dark/brown hair",
+    "retail_density_reference": "canonical True Lies group-7 player frames decoded from descriptor 0x000A0000",
+    "v11_refinements": [
+      "broad-shouldered, tapered-waist Quaid silhouette retained from v10",
+      "direction-correct head and jaw treatment",
+      "neck/collar separation",
+      "sleeve seams and hand/knuckle contrast",
+      "additional cloth folds without armor-panel read",
+      "trouser seam, knee break and boot/leg separation",
+      "six-position heavy sprint gait retained"
+    ],
+    "assessment": "meets the quality bar for the first production sprint family at the recovered retail geometry scale; later character families may refine style, but M09D no longer has an open art-quality gate"
+  },
+  "mapping_contract": {
+    "descriptor": "0x000A0000",
+    "unique_mapping_records": 10,
+    "resource_group": 7,
+    "reserved_chunk_slots_per_phase": 24,
+    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
+    "max_pieces_per_frame": 4,
+    "mapping_geometry_preserved": true,
+    "native_mirroring_preserved": true,
+    "palette_indices_within_0_15": true,
+    "transparent_index_zero": true
+  },
+  "phase_bank_sha1": [
+    "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+    "fce14e16bc2325ea603f7ad973a0033c56f68098",
+    "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+    "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+    "0cd1b90c15c55504e2e55e992197022a5856204f",
+    "416007b12132f06ff30fa009649e4b1c6379d5c1"
+  ],
+  "build": {
+    "parent_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+    "size_bytes": 4194304,
+    "sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "genesis_checksum": "0x266C",
+    "integration_policy": "canonical M09C parent plus replacement of only the six authored phase banks and header checksum"
+  },
+  "runtime_regression": {
+    "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+    "common_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
+    "active_samples": 42,
+    "runtime_state_mismatches": 0,
+    "first_visible_step": 3,
+    "observed_native_phases": [0, 2, 4, 6, 8, 10],
+    "max_gameplay_diff_bbox": [65, 64],
+    "assertions": {
+      "pre_trigger_gameplay_exact": true,
+      "post_release_gameplay_exact": true,
+      "normalized_y_left_held_all_active_frames": true,
+      "parent_candidate_runtime_state_exact_all_samples": true,
+      "canonical_f9f8_descriptor_preserved": true,
+      "six_native_phase_deltas_observed": true,
+      "activation_presentation_latency_at_most_2_frames": true,
+      "continuous_visible_authored_effect_after_activation": true,
+      "every_native_phase_has_visible_authored_evidence": true,
+      "all_gameplay_differences_fit_retail_actor_clip_envelope": true
+    },
+    "pass": true
+  },
+  "ci": {
+    "checkpoint_commit": "4e933f104292a88d6301d0c39855176253a077d1",
+    "actions_run": 38019250327,
+    "static": "success",
+    "blastem_harness": "success",
+    "static_tests": 58
+  },
+  "closed_gates": [
+    "native player phase integration",
+    "production sprite contract",
+    "mapping-constrained compiler",
+    "piece/chunk/palette budgets",
+    "reproducible original source family",
+    "deterministic ROM build",
+    "player-local runtime containment and exact fallback",
+    "first production Quaid sprint-family visual freeze"
+  ],
+  "next_milestone": "M1.0 — first Total Recall vertical-slice integration baseline"
+}
