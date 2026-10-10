@@ -1,0 +1,14 @@
+{
+  "schema": "truerecall.m120g.objective_placement.v1",
+  "id": "m120g_l3_native_objective_production",
+  "status": "PRODUCTION_OBJECTIVE_INTEGRATION_NOT_ART_FREEZE",
+  "base_overlay": "tools/build/examples/m120c_l3_three_zone_overlay.json",
+  "replace_base_objects": true,
+  "replace_base_world": true,
+  "objects": [
+    {"op": "add", "id": "m120g_type60_lever", "type_id": 60, "status_flags": "0x7800", "stride": 6, "x": 724, "y": 558, "param": null},
+    {"op": "add", "id": "m120g_type87_signal_box", "type_id": 87, "status_flags": "0x7800", "stride": 6, "x": 652, "y": 558, "param": null}
+  ],
+  "world": [],
+  "design_intent": "player leaves spawn to collect the lever at the right traversal limit, then crosses back left to the signal box; proof shotgun/wall are retired from this production objective candidate"
+}
