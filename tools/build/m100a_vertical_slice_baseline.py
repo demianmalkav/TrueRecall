@@ -16,6 +16,9 @@ BASE_SIZE = 0x200000
 OUTPUT_SIZE = 0x400000
 CHECKSUM_OFFSET = 0x018E
 FROZEN_M09D_SHA1 = "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021"
+FROZEN_SCENE18_PARENT_SHA1 = "ad84aaf45676d619c39eaa3ad8b711e40954db76"
+EXPECTED_M100A_SHA1 = "37c8549dd06e8b506f0e53ae8cf2be15a521a30f"
+EXPECTED_M100A_CHECKSUM = "0x14CC"
 SCENE_INDEX = 18
 
 
@@ -130,6 +133,10 @@ def build(
         raise ValueError("M09D frozen fingerprint gate is not green")
 
     scene_rom, scene_report = build_scene(canonical, scene_manifest)
+    scene_sha1 = hashlib.sha1(scene_rom).hexdigest()
+    if scene_sha1 != FROZEN_SCENE18_PARENT_SHA1:
+        raise ValueError(f"M1.0A scene parent fingerprint changed: {scene_sha1}")
+
     output, compose_report = compose(canonical, player_rom, scene_rom)
 
     player_bank_hashes = [
@@ -138,14 +145,21 @@ def build(
     ]
     frozen_bank_hashes = list(player_report["phase_bank_sha1"])
     bank_preserved = player_bank_hashes == frozen_bank_hashes
+    output_sha1 = hashlib.sha1(output).hexdigest()
+    output_checksum = f"0x{int.from_bytes(output[CHECKSUM_OFFSET:CHECKSUM_OFFSET+2], 'big'):04X}"
 
     assertions = {
         **compose_report["assertions"],
         "frozen_player_parent_exact": player_sha1 == FROZEN_M09D_SHA1,
+        "frozen_scene_parent_exact": scene_sha1 == FROZEN_SCENE18_PARENT_SHA1,
         "frozen_player_phase_banks_preserved": bank_preserved,
         "scene_index_is_18": scene_report["scene_index"] == SCENE_INDEX,
         "scene_build_is_nonempty": bool(
             scene_report.get("objects") or scene_report.get("world") or scene_report.get("maps")
+        ),
+        "deterministic_candidate_fingerprint": (
+            output_sha1 == EXPECTED_M100A_SHA1
+            and output_checksum == EXPECTED_M100A_CHECKSUM
         ),
     }
     if not all(assertions.values()):
@@ -163,9 +177,14 @@ def build(
         },
         "scene": scene_report,
         "compose": compose_report,
-        "output_sha1": hashlib.sha1(output).hexdigest(),
+        "output_sha1": output_sha1,
         "output_size": len(output),
-        "genesis_checksum": f"0x{int.from_bytes(output[CHECKSUM_OFFSET:CHECKSUM_OFFSET+2], 'big'):04X}",
+        "genesis_checksum": output_checksum,
+        "expected_candidate_fingerprint": {
+            "sha1": EXPECTED_M100A_SHA1,
+            "checksum": EXPECTED_M100A_CHECKSUM,
+            "matches": True,
+        },
         "assertions": assertions,
         "direct_runtime_parent_sha1": FROZEN_M09D_SHA1,
         "runtime_status": "NOT_YET_PROVEN",
