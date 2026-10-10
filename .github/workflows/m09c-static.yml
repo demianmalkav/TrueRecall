@@ -70,6 +70,15 @@ jobs:
             tests.test_recovery_doctor_static
       - name: Run recovery doctor without ROM
         run: python tools/recovery_doctor.py
+      - name: Publish verified M1.0A builder snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: m100a-builder-${{ github.sha }}
+          path: |
+            tools/build
+            extracted_metadata/m09d_quaid_sprint_contract.json
+          if-no-files-found: error
+          retention-days: 7
 
   blastem-harness:
     runs-on: ubuntu-latest
