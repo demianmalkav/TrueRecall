@@ -18,6 +18,7 @@
     "md5": "2fee5ef253faebaff73c017a7bda1cff",
     "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
     "reset_entry": "0x00000200",
+    "availability_is_session_local": true,
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
