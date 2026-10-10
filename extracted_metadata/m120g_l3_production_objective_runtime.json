@@ -1,0 +1,52 @@
+{
+  "schema": "truerecall.m120g.l3_production_objective_runtime.v1",
+  "status": "CONFIRMED_RUNTIME_NOT_ART_FREEZE",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "visual_parent_sha1": "7bd2144c22074bce5eebdf3e6e15f2f2c7db4ebe",
+  "scene_parent_sha1": "cd43a4b53371e4d8329eaa328582ffd64262bddf",
+  "candidate_sha1": "150373a312283f5c89e5fa00e99f19d7a83bff44",
+  "genesis_checksum": "0xB7B0",
+  "visual_base_overlay": "tools/build/examples/m120c_l3_three_zone_overlay.json",
+  "placement": "tools/build/examples/m120g_l3_objective_placement.json",
+  "builder": "tools/build/m120g_l3_objective_build.py",
+  "objective": {
+    "lever": {"type_id": 60, "status_flags": "0x7800", "stride": 6, "x": 724, "y": 558},
+    "signal_box": {"type_id": 87, "status_flags": "0x7800", "stride": 6, "x": 652, "y": 558},
+    "flag_ram": "0xFFFFFC54",
+    "message_ram": "0xFFFFFC06",
+    "lever_event": {"frame": 2210, "player_x": 716, "fc54": "0x4000", "fc06": "0x003C", "active_count": 8},
+    "signal_event": {"frame": 2960, "player_x": 665, "fc54": "0x4000", "fc06": "0x0036", "active_count": 7},
+    "debugger_fc54_injection": false,
+    "native_sequence_pass": true
+  },
+  "pre_objective_runtime": {
+    "scene0": true,
+    "spawn": [701, 558],
+    "f9_descriptor": "0x000A0000",
+    "proxy_descriptor": "0x000F0000",
+    "fc54": "0x0000",
+    "fc06": "0x0002",
+    "active_count": 8,
+    "authored_tiles_exact_in_vram": 15,
+    "authored_tiles_total": 15,
+    "cram_index_8": "0x0648",
+    "state_sha256": "3c48214f8d716867fd13ccee44f378771885dbe1f91e050919a63ba7c441138b"
+  },
+  "palette_regression": {
+    "m120c_vs_m120g_full_cram_equal": true,
+    "difference_indices": [],
+    "cram_sha256": "c3c6dd5ae3450caecb79cac0e7962a282e6058f356345de9cac5c295f076e8cd",
+    "player_line_32_47_equal": true
+  },
+  "assertions": {
+    "frozen_player_descriptor_preserved": true,
+    "proxy_descriptor_preserved": true,
+    "all_15_visual_tiles_exact_in_vram": true,
+    "full_cram_equal_to_m120c": true,
+    "native_type60_sets_0x4000_and_0x3c": true,
+    "mission_flag_persists_across_traversal": true,
+    "native_type87_reads_flag_and_selects_0x36": true,
+    "proof_shotgun_and_wall_retired": true
+  },
+  "pass": true
+}
