@@ -1,0 +1,30 @@
+{
+  "aux_pointer": 114554,
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "decoded_bytes": 24960,
+  "decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171",
+  "descriptor": 65450,
+  "exact_raw_noop": true,
+  "map_reference_stats": {
+    "C000": {"entry_count": 4815, "max_tile_index": 564, "min_tile_index": 0, "unique_tile_indices": 50},
+    "E000": {"entry_count": 4815, "max_tile_index": 519, "min_tile_index": 0, "unique_tile_indices": 520}
+  },
+  "primary_lz": 84120,
+  "relocated_noop": {
+    "allocation_base": 3162112,
+    "changed_tile_indices": [],
+    "checksum": "0xF6E0",
+    "decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171",
+    "descriptor": 3162112,
+    "encoded_bytes": 12084,
+    "encoded_sha256": "259f7cc90397ce25c5babd3ad8bab601dd13c87e1c86feeb02a6fc9ec880360b",
+    "output_sha1": "b61ae28d9ead8928f4dbe94f2ecd7eaa057e90d5",
+    "primary_lz": 3162128
+  },
+  "runtime_validation": "pending authored graphics gate",
+  "scene_index": 0,
+  "schema": "truerecall.m111b.scene_graphics_primary.v1",
+  "secondary_plane_descriptor": 0,
+  "secondary_pointer": 2147580122,
+  "tile_count": 780
+}
