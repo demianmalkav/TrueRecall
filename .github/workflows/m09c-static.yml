@@ -11,11 +11,13 @@ on:
       - 'tools/build/scene_palette.py'
       - 'tools/build/scene_source_v2.py'
       - 'tools/build/scene_compiler_v2.py'
+      - 'tools/build/scene_graphics.py'
       - 'tools/build/examples/m100a_*'
       - 'tools/rom_probe/m09c_*'
       - 'tools/rom_probe/m09d_*'
       - 'tools/rom_probe/scene_palette_probe.py'
       - 'tools/rom_probe/scene_source_v2_transaction_probe.py'
+      - 'tools/rom_probe/scene_graphics_probe.py'
       - 'tools/rom_probe/sprite_sequence_roundtrip_probe.py'
       - 'tools/runtime/m09c_*'
       - 'tools/runtime/m09d_*'
@@ -31,6 +33,7 @@ on:
       - 'tests/test_scene_palette_static.py'
       - 'tests/test_scene_source_v2_static.py'
       - 'tests/test_scene_compiler_v2_static.py'
+      - 'tests/test_scene_graphics_static.py'
       - 'tests/test_recovery_doctor_static.py'
       - 'docs/RECOVERY_MANIFEST.json'
       - 'docs/PROJECT_STATE.md'
@@ -47,7 +50,7 @@ jobs:
           python-version: '3.12'
       - name: Install probe dependency
         run: python -m pip install --disable-pip-version-check pillow
-      - name: Compile M09C/M09D/M1.0/M1.1A tools, probes, runtime tracers and recovery doctor
+      - name: Compile active TrueRecall tools and probes
         run: |
           python -m py_compile \
             tools/build/m09c_native_phase_pixel_sequence.py \
@@ -59,6 +62,7 @@ jobs:
             tools/build/scene_palette.py \
             tools/build/scene_source_v2.py \
             tools/build/scene_compiler_v2.py \
+            tools/build/scene_graphics.py \
             tools/rom_probe/m09c_native_sequence_seam_probe.py \
             tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py \
             tools/rom_probe/m09c_canonical_gate.py \
@@ -67,6 +71,7 @@ jobs:
             tools/rom_probe/m09d_quaid_sprint_contract_probe.py \
             tools/rom_probe/scene_palette_probe.py \
             tools/rom_probe/scene_source_v2_transaction_probe.py \
+            tools/rom_probe/scene_graphics_probe.py \
             tools/rom_probe/sprite_sequence_roundtrip_probe.py \
             tools/runtime/m09c_animation_state_trace.py \
             tools/runtime/m09c_animation_state_trace_v2.py \
@@ -74,7 +79,7 @@ jobs:
             tools/runtime/m100b_vertical_slice_runtime.py \
             tools/runtime/m110b_palette_runtime.py \
             tools/recovery_doctor.py
-      - name: Run M09C/M09D/M1.0/M1.1A static and recovery tests
+      - name: Run active static and recovery tests
         run: |
           python -m unittest -v \
             tests.test_m09c_native_sequence_seam_static \
@@ -95,13 +100,14 @@ jobs:
             tests.test_scene_palette_static \
             tests.test_scene_source_v2_static \
             tests.test_scene_compiler_v2_static \
+            tests.test_scene_graphics_static \
             tests.test_recovery_doctor_static
       - name: Run recovery doctor without ROM
         run: python tools/recovery_doctor.py
-      - name: Publish verified M1.1A builder/runtime snapshot
+      - name: Publish verified M1.1B builder/runtime snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: m11a-builder-${{ github.sha }}
+          name: m11b-builder-${{ github.sha }}
           path: |
             tools/build
             tools/rom_probe
