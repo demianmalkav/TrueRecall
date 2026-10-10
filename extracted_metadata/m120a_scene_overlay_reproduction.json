@@ -1,0 +1,22 @@
+{
+  "assertions": {
+    "closed_m112a_candidate_reproduced_exact": true,
+    "frozen_player_parent_exact": true,
+    "frozen_player_phase_banks_preserved": true,
+    "no_incompatible_overlap": true,
+    "overlay_scene_reproduces_m112a_parent": true,
+    "player_only_delta_preserved": true,
+    "scene_delta_preserved": true
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "builder": "tools/build/m120a_scene_overlay_vertical_slice.py",
+  "genesis_checksum": "0xFAD7",
+  "output_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+  "overlay_id": "m120a_scene0_closed_proof",
+  "overlay_manifest": "tools/build/examples/m120a_scene0_closed_proof_overlay.json",
+  "overlay_tool": "tools/build/scene_overlay.py",
+  "player_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "runtime_inheritance": "inherits closed M112B/M112C because output is byte-exact M112A",
+  "scene_parent_sha1": "4a169bec49ca6fd571c6ea621e525d7968cc79c5",
+  "schema": "truerecall.m120a.scene_overlay_reproduction_evidence.v1"
+}
