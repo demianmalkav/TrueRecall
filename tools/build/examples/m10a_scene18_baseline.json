@@ -1,0 +1,23 @@
+{
+  "schema": "truerecall.scene_patch.v1",
+  "scene_index": 18,
+  "map_operations": [],
+  "object_operations": [
+    {
+      "op": "add",
+      "type_id": 54,
+      "status_flags": "0x7800",
+      "stride": 6,
+      "x": 128,
+      "y": 120
+    }
+  ],
+  "world_operations": [
+    {
+      "op": "add",
+      "id": "m10a_wall_0000",
+      "type": 9,
+      "rect": [64, 64, 80, 256]
+    }
+  ]
+}
