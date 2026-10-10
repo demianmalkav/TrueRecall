@@ -16,10 +16,10 @@ BASE_SIZE = 0x200000
 OUTPUT_SIZE = 0x400000
 CHECKSUM_OFFSET = 0x018E
 FROZEN_M09D_SHA1 = "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021"
-FROZEN_SCENE18_PARENT_SHA1 = "ad84aaf45676d619c39eaa3ad8b711e40954db76"
-EXPECTED_M100A_SHA1 = "37c8549dd06e8b506f0e53ae8cf2be15a521a30f"
-EXPECTED_M100A_CHECKSUM = "0x14CC"
-SCENE_INDEX = 18
+FROZEN_SCENE_PARENT_SHA1 = "fe2d8f7bbffba42379aa72d697b91364f9734c96"
+EXPECTED_M100A_SHA1 = "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027"
+EXPECTED_M100A_CHECKSUM = "0x6E6A"
+SCENE_INDEX = 0
 
 
 def u16(buf: bytes | bytearray, off: int) -> int:
@@ -54,11 +54,7 @@ def ranges(indices: Iterable[int]) -> list[list[int]]:
     return out
 
 
-def compose(
-    canonical: bytes,
-    player_rom: bytes,
-    scene_rom: bytes,
-) -> tuple[bytes, dict[str, Any]]:
+def compose(canonical: bytes, player_rom: bytes, scene_rom: bytes) -> tuple[bytes, dict[str, Any]]:
     if len(canonical) != BASE_SIZE:
         raise ValueError("canonical ROM must be exactly 2 MiB")
     if hashlib.sha1(canonical).hexdigest() != BASE_SHA1:
@@ -79,19 +75,14 @@ def compose(
     merged = bytearray(player_rom)
     for index in scene_delta - checksum_bytes:
         merged[index] = scene_rom[index]
-
     merged[CHECKSUM_OFFSET : CHECKSUM_OFFSET + 2] = b"\x00\x00"
     checksum = genesis_checksum(merged)
     merged[CHECKSUM_OFFSET : CHECKSUM_OFFSET + 2] = checksum.to_bytes(2, "big")
     output = bytes(merged)
 
-    scene_preserved = all(
-        output[index] == scene_rom[index]
-        for index in scene_delta - checksum_bytes
-    )
+    scene_preserved = all(output[index] == scene_rom[index] for index in scene_delta - checksum_bytes)
     player_only = player_delta - scene_delta - checksum_bytes
     player_preserved = all(output[index] == player_rom[index] for index in player_only)
-
     report = {
         "schema": "truerecall.m100a.compose.v1",
         "base_sha1": BASE_SHA1,
@@ -115,15 +106,11 @@ def compose(
     return output, report
 
 
-def build(
-    canonical: bytes,
-    contract: dict[str, Any],
-    scene_manifest: dict[str, Any],
-) -> tuple[bytes, dict[str, Any]]:
+def build(canonical: bytes, contract: dict[str, Any], scene_manifest: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
     if scene_manifest.get("schema") != "truerecall.scene_patch.v1":
         raise ValueError("wrong scene manifest schema")
     if int(scene_manifest.get("scene_index", -1)) != SCENE_INDEX:
-        raise ValueError("M1.0A baseline is pinned to scene 18")
+        raise ValueError(f"M1.0A baseline is pinned to scene {SCENE_INDEX}")
 
     player_rom, player_report = build_player(canonical, contract)
     player_sha1 = hashlib.sha1(player_rom).hexdigest()
@@ -134,33 +121,23 @@ def build(
 
     scene_rom, scene_report = build_scene(canonical, scene_manifest)
     scene_sha1 = hashlib.sha1(scene_rom).hexdigest()
-    if scene_sha1 != FROZEN_SCENE18_PARENT_SHA1:
+    if scene_sha1 != FROZEN_SCENE_PARENT_SHA1:
         raise ValueError(f"M1.0A scene parent fingerprint changed: {scene_sha1}")
 
     output, compose_report = compose(canonical, player_rom, scene_rom)
-
-    player_bank_hashes = [
-        hashlib.sha1(output[address : address + 0x8000]).hexdigest()
-        for address in BANKS
-    ]
+    player_bank_hashes = [hashlib.sha1(output[address : address + 0x8000]).hexdigest() for address in BANKS]
     frozen_bank_hashes = list(player_report["phase_bank_sha1"])
-    bank_preserved = player_bank_hashes == frozen_bank_hashes
     output_sha1 = hashlib.sha1(output).hexdigest()
     output_checksum = f"0x{int.from_bytes(output[CHECKSUM_OFFSET:CHECKSUM_OFFSET+2], 'big'):04X}"
 
     assertions = {
         **compose_report["assertions"],
         "frozen_player_parent_exact": player_sha1 == FROZEN_M09D_SHA1,
-        "frozen_scene_parent_exact": scene_sha1 == FROZEN_SCENE18_PARENT_SHA1,
-        "frozen_player_phase_banks_preserved": bank_preserved,
-        "scene_index_is_18": scene_report["scene_index"] == SCENE_INDEX,
-        "scene_build_is_nonempty": bool(
-            scene_report.get("objects") or scene_report.get("world") or scene_report.get("maps")
-        ),
-        "deterministic_candidate_fingerprint": (
-            output_sha1 == EXPECTED_M100A_SHA1
-            and output_checksum == EXPECTED_M100A_CHECKSUM
-        ),
+        "frozen_scene_parent_exact": scene_sha1 == FROZEN_SCENE_PARENT_SHA1,
+        "frozen_player_phase_banks_preserved": player_bank_hashes == frozen_bank_hashes,
+        "scene_index_exact": scene_report["scene_index"] == SCENE_INDEX,
+        "scene_build_is_nonempty": bool(scene_report.get("objects") or scene_report.get("world") or scene_report.get("maps")),
+        "deterministic_candidate_fingerprint": output_sha1 == EXPECTED_M100A_SHA1 and output_checksum == EXPECTED_M100A_CHECKSUM,
     }
     if not all(assertions.values()):
         failed = [key for key, value in assertions.items() if not value]
@@ -200,7 +177,6 @@ def main() -> None:
     ap.add_argument("output", type=Path)
     ap.add_argument("--report", type=Path)
     args = ap.parse_args()
-
     canonical = args.rom.read_bytes()
     contract = json.loads(args.contract.read_text(encoding="utf-8"))
     scene_manifest = json.loads(args.scene_manifest.read_text(encoding="utf-8"))
