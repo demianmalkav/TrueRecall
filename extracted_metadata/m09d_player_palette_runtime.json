@@ -1,0 +1,63 @@
+{
+  "schema": "truerecall.m09d.player_palette_runtime.v1",
+  "evidence_class": "CONFIRMED_RUNTIME",
+  "canonical_player_descriptor": "0x000A0000",
+  "method": {
+    "emulator": "project-pinned BlastEm",
+    "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+    "runtime_state": "common native pre-Y state followed by held Y+Left sprint",
+    "sat_command": "vdpsprites",
+    "sat_identity_rule": "identify the F9F8 sprite cluster by exact relative geometry of the active canonical M09D mapping record; e.g. S record geometry (0,6),(16,0),(16,16)",
+    "cram_method": "BlastEm VDP CRAM debugger swatch grid; RGB levels inverted to Genesis even-nibble CRAM values",
+    "cram_control": "palette line 0 swatches decode to 000,000,002,022,244,466,888,AAA,464,686,AA8,CCA,EEE,064,2A8,000 exactly matching the debugger textual line, validating swatch-to-CRAM inversion"
+  },
+  "phase_samples": [
+    {"step": 1, "raw_phase_delta": 0, "palette_line": 2, "priority": 0},
+    {"step": 8, "raw_phase_delta": 2, "palette_line": 2, "priority": 0},
+    {"step": 13, "raw_phase_delta": 4, "palette_line": 2, "priority": 0},
+    {"step": 18, "raw_phase_delta": 6, "palette_line": 2, "priority": 0},
+    {"step": 24, "raw_phase_delta": 8, "palette_line": 2, "priority": 0},
+    {"step": 29, "raw_phase_delta": 10, "palette_line": 2, "priority": 0},
+    {"step": 34, "raw_phase_delta": 0, "palette_line": 2, "priority": 0}
+  ],
+  "player_sat_palette_line": 2,
+  "player_sat_priority": 0,
+  "cram_line_2_words": [
+    "0x000", "0x022", "0x044", "0x046",
+    "0x468", "0x08E", "0x4CC", "0x222",
+    "0x666", "0xAAA", "0xEEE", "0x00A",
+    "0x044", "0x066", "0x088", "0x000"
+  ],
+  "blastem_runtime_rgb": [
+    [0,0,0], [49,49,0], [87,87,0], [119,87,0],
+    [146,119,87], [255,146,0], [206,206,87], [49,49,49],
+    [119,119,119], [174,174,174], [255,255,255], [174,0,0],
+    [87,87,0], [119,119,0], [146,146,0], [0,0,0]
+  ],
+  "palette_index_semantics_for_authoring": {
+    "0": "transparent black by sprite convention",
+    "1": "dark olive",
+    "2": "olive",
+    "3": "brown/skin shadow",
+    "4": "tan/skin midtone",
+    "5": "orange/highlight",
+    "6": "pale yellow",
+    "7": "dark gray",
+    "8": "mid gray",
+    "9": "light gray",
+    "10": "white",
+    "11": "red",
+    "12": "olive duplicate",
+    "13": "medium olive",
+    "14": "light olive",
+    "15": "opaque black (index 15 is not transparent)"
+  },
+  "assertions": {
+    "same_palette_line_all_sampled_native_phases": true,
+    "same_priority_all_sampled_native_phases": true,
+    "palette_line_2_confirmed_for_tested_sprint_path": true,
+    "palette_preview_can_be_exact_for_current_retail_scene": true,
+    "palette_reauthoring_not_required_for_first_quaid_family": true
+  },
+  "scope_note": "This confirms the tested F9F8 sprint path in the current retail scene. It does not yet claim that palette line 2 is globally immutable across every scene or future Total Recall palette-authoring changes."
+}
