@@ -1,0 +1,42 @@
+{
+  "schema": "truerecall.m120d.type60_scene0_runtime.v1",
+  "status": "CONFIRMED_RUNTIME",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "control_sha1": "7bd2144c22074bce5eebdf3e6e15f2f2c7db4ebe",
+  "scene_parent_sha1": "4ea729e97d7c559cd75c22b68d70e6fe0ce61eb3",
+  "candidate_sha1": "14c4b37ffe96aba6d7095227600b2df7945a89cd",
+  "genesis_checksum": "0xC122",
+  "overlay": "tools/build/examples/m120d_scene0_type60_probe_overlay.json",
+  "object_contract": {
+    "type_id": 60,
+    "status_flags": "0x7800",
+    "stride": 6,
+    "x": 701,
+    "y": 558,
+    "param": null
+  },
+  "mission_state": {
+    "flag_ram": "0xFFFFFC54",
+    "message_offset_ram": "0xFFFFFC06",
+    "required_transition": "0x0000 -> 0x4000",
+    "observed_message_offset": "0x003C"
+  },
+  "observations": {
+    "control_fc54_remains_zero": true,
+    "candidate_fc54_before_object_activation": "0x0000",
+    "candidate_fc54_by_frame_1500": "0x4000",
+    "candidate_fc06_by_frame_1500": "0x003C",
+    "candidate_active_count_during_message": 7,
+    "candidate_active_count_after_message": 6,
+    "candidate_fc54_persists_after_object_consumed": "0x4000"
+  },
+  "interpretation": "scene0 runtime independently confirms that a retail-contract type60 object writes mission flag FC54 bit 0x4000, presents the lever-pickup message state 0x3C, and is then consumed while the mission flag persists",
+  "assertions": {
+    "control_does_not_set_flag": true,
+    "type60_sets_fc54_0x4000": true,
+    "lever_message_state_observed": true,
+    "object_consumed_after_message": true,
+    "mission_flag_persists": true
+  },
+  "pass": true
+}
