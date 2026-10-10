@@ -18,22 +18,12 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 ```text
 branch:     m09c-native-sequence-seam
 milestone:  M1.2A — L3 urban pursuit/subway production slice
-checkpoint: 965d1a54117b9aad69cdc9771e2f679059e91be2
+checkpoint: 0c5b3fa96e9f710ae150efd76e3c478fb60bdc54
 ```
 
-**M0.9C is COMPLETE.**
+M0.9C is COMPLETE. M0.9D is COMPLETE/FROZEN. M1.0A/B and M1.1A/B/C are COMPLETE. The active work is now **production content**, not further generic engine stabilization.
 
-**M0.9D is COMPLETE and FROZEN.**
-
-**M1.0A/B is COMPLETE.** Frozen Quaid, persistent object authoring and world collision coexist in one reproducible scene0 baseline and are runtime-confirmed.
-
-**M1.1A is COMPLETE.** Palette authoring is canonical, source-level, transactional and runtime-confirmed at actual VDP CRAM.
-
-**M1.1B is COMPLETE.** Primary scene0 environment graphics are source-authorable and runtime-confirmed at actual VDP VRAM/presentation.
-
-**M1.1C is COMPLETE for the production scene0 path.** `scene_source.v3` now owns map + objects + world collision + palette + confirmed primary environment graphics through one source-level transaction and reproduces the closed M1.1B candidate byte-for-byte.
-
-The active task returns to product work: build the first recognizably **Total Recall** production slice using scene0 as a technical chassis. The selected sequence is **L3 — urban pursuit / subway** from the Level Bible because it exercises normal combat, the proven sprint, objective flow, civilians/pursuit pressure and one film-specific scripted chase subsystem without forcing the still-unproven melee system as the first content blocker.
+The selected vertical-slice sequence is **L3 — urban pursuit / subway** from the Level Bible. It exercises the frozen Quaid player, normal combat, sprint, objective flow, civilian/pursuit pressure and one Total Recall-specific chase subsystem without making unproven melee the first blocker.
 
 ## Canonical ROM identity
 
@@ -45,171 +35,200 @@ MD5:   2fee5ef253faebaff73c017a7bda1cff
 SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 ```
 
-The original ROM is immutable and never committed. Generated builds remain reproducible from source/manifests plus this verified base.
+The original ROM is immutable and never committed.
 
-## Frozen player contract
+## Frozen contracts
+
+### Player — M0.9D
 
 ```text
-M0.9D source fingerprint: da0a060e77f9da835b388ffe94a8090d75cd51ea
-build SHA-1:              49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
-checksum:                 0x266C
-F9F8 descriptor:          0x000A0000
-native phases:            0,2,4,6,8,10
+source fingerprint: da0a060e77f9da835b388ffe94a8090d75cd51ea
+build SHA-1:       49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
+checksum:          0x266C
+F9F8 descriptor:   0x000A0000
+native phases:     0,2,4,6,8,10
 ```
 
-Do not edit v11 player pixels or mapping geometry during M1.2A unless a deliberate new player milestone is opened.
+Do not edit v11 player pixels or mapping geometry during M1.2A.
 
-## Closed scene0 integration contracts
-
-M1.0 gameplay baseline:
+### M1.0 gameplay proof
 
 ```text
-shotgun pickup: type 69, stride 6, x=690, y=558
-world wall:     type 9, rect=[668,540,676,580]
-SHA-1:          84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027
-checksum:       0x6E6A
-M100B runtime:  14/14 PASS
+shotgun pickup: type 69, x=690, y=558
+world wall:     type 9, [668,540,676,580]
+candidate:      84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027 / 0x6E6A
+runtime:        M100B 14/14 PASS
 ```
 
-M1.1A palette proof:
+The shotgun/wall remain proof content only and may be deliberately replaced by the production manifest once new runtime invariants supersede them.
+
+### M1.1A palette
 
 ```text
-palette index:       8
-retail/authored:     0x0464 -> 0x0648
-player line:         32..47 exact
-palette allocation:  0x303080
-M110A SHA-1:         270e1d633db7883c9170bb1e4eb367abdf97a2bd
-checksum:            0x6B9E
+palette index 8: 0x0464 -> 0x0648
+player line 32..47 exact
+M110A: 270e1d633db7883c9170bb1e4eb367abdf97a2bd / 0x6B9E
 ```
 
-Actual VDP CRAM proof: exactly index 8 differs; M100B remains green.
+Actual VDP CRAM runtime proof is closed.
 
-M1.1B graphics proof:
+### M1.1B/C scene graphics and unified source
+
+Scene0 confirmed primary graphics identity:
 
 ```text
-scene0 graphics descriptor: 0x00FFAA
-primary LZBeam:             0x014898
-decoded resource:           24,960 bytes / 780 tiles
-retail decoded SHA256:      0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171
-authored tile:              index 2
-integrated SHA-1:           b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
-checksum:                   0xFAD7
+retail descriptor: 0x00FFAA
+primary LZBeam:    0x014898
+decoded bytes:     24,960 / 780 tiles
+retail SHA256:     0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171
 ```
 
-Runtime proof: exactly VRAM `[0x0040,0x0060)` changes (32 bytes), CRAM is unchanged versus M110A, presentation delta is confined to the expected upper-environment region, M100B remains 14/14 and M110B remains green.
-
-## M1.1C scene-source-v3 transaction — COMPLETE / CONFIRMED
-
-Canonical additive tooling:
+`scene_source.v3` owns map + objects + world collision + palette + confirmed primary graphics in one transaction. v1/v2 remain unchanged anchors. Scene0 reproduces the closed M1.1B candidate byte-for-byte:
 
 ```text
-tools/build/scene_source_v3.py
-tools/build/scene_compiler_v3.py
-tools/build/m112a_scene_source_v3_vertical_slice.py
+scene parent: 4a169bec49ca6fd571c6ea621e525d7968cc79c5 / 0x3245
+integrated:   b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0 / 0xFAD7
 ```
 
-`scene_source.v1` and v2 remain unchanged regression anchors. v3 adds only the M1.1B-confirmed primary graphics payload/identity. Secondary and auxiliary graphics pointers are preserved as opaque immutable identity; their semantics are **not** inferred.
+Primary-only v3 is exact/no-op for 18/19 retail scenes. **Scene10 remains deliberately out of confirmed graphics scope** because C000 references tiles beyond the primary set; secondary/auxiliary graphics ownership is unresolved and must not be guessed.
 
-The v3 transaction builds the existing v2 scene/palette stage first, allocates primary graphics after the same ledger with a `0x304000` floor, verifies non-overlap and repairs the Genesis checksum once at the end.
+M1.1C CI checkpoint: commit `965d1a54117b9aad69cdc9771e2f679059e91be2`, run `38074354446`, artifact `11677847802`, digest `c26452066d123b81f4f63b02e2b07cf297c794a175b5f9843c9067ff99c8a2b3`, both jobs PASS.
 
-Canonical scene0 result:
+## M1.2A — production overlay — O1 COMPLETE / CONFIRMED
+
+Production content no longer requires committing a full exported retail scene source.
+
+Tooling:
 
 ```text
-scene parent SHA-1: 4a169bec49ca6fd571c6ea621e525d7968cc79c5
-scene checksum:     0x3245
-integrated SHA-1:   b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
-checksum:           0xFAD7
+tools/build/scene_overlay.py
+tools/build/m120a_scene_overlay_vertical_slice.py
+tools/build/examples/m120a_scene0_closed_proof_overlay.json
 ```
 
-The v3 path reproduces the closed M1.1B ROM **byte-for-byte**. Runtime reruns reproduce the exact M111D VRAM/presentation result and M111E closed-gate regression.
+`scene_overlay.v1` stores only authored deltas plus stable identity guards. It supports:
 
-Evidence:
+- palette replacement;
+- single map-tile replacement and hash-guarded rectangular map replacement;
+- object add/remove/replace by stable ID;
+- world-collision add/remove/replace by stable ID;
+- primary graphics tile replacement with exact retail-tile SHA guard.
 
-- `extracted_metadata/m112a_scene_source_v3_vertical_slice.json`
-- `extracted_metadata/m112b_v3_graphics_runtime.json`
-- `extracted_metadata/m112c_v3_regression.json`
-- `extracted_metadata/m112_scene_source_v3_scope_matrix.json`
+The overlay is exported into canonical `scene_source.v3` **in memory** and lowered only through `scene_compiler_v3`; it does not duplicate allocation logic.
 
-CI checkpoint:
+M120A reproduces the closed M112A candidate exactly:
 
 ```text
-commit:          965d1a54117b9aad69cdc9771e2f679059e91be2
-Actions run:     38074354446
-artifact id:     11677847802
-artifact SHA256: c26452066d123b81f4f63b02e2b07cf297c794a175b5f9843c9067ff99c8a2b3
+scene parent: 4a169bec49ca6fd571c6ea621e525d7968cc79c5
+integrated:   b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0
+checksum:     0xFAD7
+```
+
+Evidence: `extracted_metadata/m120a_scene_overlay_reproduction.json`.
+
+## M1.2A — L3 environment starter — O2 IN PROGRESS
+
+A first original station/subway vocabulary is runtime-visible through the overlay layer. It is a **prototype visual pass, not an art freeze**.
+
+Current starter:
+
+```text
+manifest:     tools/build/examples/m120b_l3_urban_subway_starter_overlay.json
+builder:      tools/build/m120b_l3_starter_build.py
+scene parent: 7c14d479413e0efb412027209de6b85d6c67821f
+candidate:    05fafc33f96a74d57765bacdba888d79e7eee860
+checksum:     0xB78C
+map rect:     E000 x=0,y=12,w=27,h=11
+retail rect:  SHA256 9c71e0899ec8c3e74189209e8976ad2aabfca2d65289bef96dfc824427e16967
+```
+
+The current vocabulary uses 15 explicitly verified resident primary slots `2..16`. Pinned BlastEm savestate inspection proves all **15/15 32-byte authored tile payloads are present byte-exactly in VDP VRAM** during scene0. The resulting image reads as an industrial/subway environment rather than the diagnostic X proof.
+
+Runtime regression remains green:
+
+```text
+M100B gameplay: 14/14 PASS
+M110B CRAM:     PASS; only index 8 changes 0x0464 -> 0x0648
+player line:    exact
+```
+
+Evidence: `extracted_metadata/m120b_l3_starter_runtime.json`.
+
+### FALSIFIED production assumption
+
+The earlier exploratory assumption that primary tile indices `565+` were safe merely because the retail scene0 tilemaps did not reference them is **FALSIFIED**. Runtime presentation showed those slots receiving dynamic/overwritten data and producing mosaic corruption. Behavioral tests staying green did not make those VRAM slots safe.
+
+Current rule: **unreferenced in a retail tilemap does not imply free at runtime.** Production graphics slots must have direct runtime residency evidence or a separately recovered ownership/allocation contract.
+
+### Viewport localization — HIGH CONFIDENCE / local scope only
+
+Deterministic diagnostic partitions show the dominant initial E000 viewport contribution in rows `12..22`, columns `0..26`. Rows `23..44` and columns `27..106` did not produce map-driven presentation change in that initial capture. This is a placement aid, not a universal camera/map formula.
+
+### Latest M1.2A CI
+
+```text
+commit:          0c5b3fa96e9f710ae150efd76e3c478fb60bdc54
+Actions run:     38076261154
+artifact id:     11678700540
+artifact SHA256: 5c7f24601ba4868ebc5de8b62eb33de49e3d6674878bf3b78a71b2fae6ef3c8f
 static:          PASS
 BlastEm harness: PASS
 ```
 
-### Scope boundary — important
+## Objective seam selected for O3 — CONFIRMED retail mechanism, not yet integrated
 
-The current primary-only v3 graphics model is exact/no-op for 18 of 19 retail scenes:
+The recovered objective system already contains a subway-specific pair:
 
-`0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18`.
+```text
+type 60 = subway lever      -> FC54 bit 0x4000
+ type87 = subway signal box -> requires FC54 bit 0x4000
+```
 
-**Scene 10 is deliberately out of confirmed graphics scope.** Its C000 map references tile indices beyond the decoded primary set. This is evidence that unresolved secondary/auxiliary graphics ownership matters there. Do not generalize or guess those semantics merely to obtain 19/19. Scene0 — the current production chassis — is fully inside the confirmed model.
+Retail placement identities are exact:
 
-## M1.2A product target — L3 urban pursuit/subway
+```text
+scene5 type60: status 0x7800, stride 6, x=672, y=1280
+scene6 type60: status 0x7800, stride 6, x=884, y=77
+scene6 type87: status 0x7800, stride 6, x=176, y=3072
+```
 
-Design-source rationale:
-
-- Level Bible L3: city/subway escalation, civilians and pursuit pressure with Total Recall-specific scripting.
-- Game Design Bible: preserve responsive top-down combat/objectives, make Quaid physically distinct, and use custom modules for film-specific spectacle.
-- Roadmap vertical-slice bar: converted/new environment, authored placements, enemies/props, objective flow, cutscene transition, audio path and at least one genuinely new mechanic/subsystem.
-
-M1.2A uses scene0 only as a proven technical chassis; it is **not** a claim that True Lies scene0 geography is final Total Recall level design.
-
-### Production-source rule
-
-Do not commit a full exported scene_source.v3 because it contains derived retail maps/placements/graphics. Production content must be stored as a declarative **authored-delta overlay** containing only new/original project data and stable references to retail identities. The build exports canonical v3 in memory, applies the overlay, validates identity and compiles the result.
+This is the preferred first L3 objective path because it is already mechanically and thematically aligned with the subway sequence. Do not implement the pursuit controller until the production scene skeleton is sufficiently readable and the lever/signal-box behavior is runtime-probed in scene0.
 
 ## OPEN — M1.2A
 
-### O1 — declarative authored-delta overlay
+### O2 — finish readable L3 scene skeleton
 
-Create a source-controlled overlay schema for scene0 supporting the already-confirmed production domains without copying retail payloads:
+The starter is technically valid but not final art. Establish three readable gameplay zones rather than one repeating texture field:
 
-- palette index replacements;
-- map tile-word replacements;
-- object add/remove/replace by stable source ID;
-- world-collision add/remove/replace by stable ID;
-- primary-graphics tile replacements by tile index + original 32-byte authored payload.
+1. pursuit-entry zone;
+2. combat/objective platform space;
+3. subway-transition/exit zone.
 
-The first overlay must be able to reproduce the closed M112A candidate exactly from canonical ROM + overlay + frozen player contract.
-
-### O2 — L3 production scene skeleton
-
-Replace diagnostic proof content with a first original urban/subway kit and layout pass. It must establish at least three readable zones: pursuit entry, combat/objective space, and subway-transition exit. Temporary proof pickup/wall may remain only where explicitly tagged temporary.
+Keep proof shotgun/wall explicitly temporary until production interactions supersede them.
 
 ### O3 — objective + pursuit subsystem
 
-Author one concrete objective/interact path and one scripted pursuit/chase trigger using recovered object/VM seams. Do not invent new universal AI systems if a scene-specific controller is sufficient.
+First prove the native type60/type87 subway objective path in scene0. Then add one scene-specific pursuit/chase trigger through recovered VM/object seams; do not invent a universal AI subsystem unless the scene-specific route proves insufficient.
 
 ### O4 — production runtime gate
 
-Run the slice under pinned BlastEm and require:
-
-- frozen Quaid presentation intact;
-- M100B/M110B closed contracts unaffected unless the production manifest deliberately replaces their proof content;
-- authored environment reaches VRAM/presentation;
-- objective/pursuit state transitions are deterministic;
-- no allocator overlap or scene-record containment violation.
+Require deterministic pinned-BlastEm evidence for environment presentation, objective state transitions and pursuit trigger while preserving frozen Quaid and all still-applicable closed contracts.
 
 ## NEXT
 
-1. Implement `scene_overlay.v1`, containing authored deltas only, and strict validation against exported canonical `scene_source.v3` identity.
-2. Add an overlay compiler that applies the manifest in memory and lowers through `scene_compiler_v3`; do not duplicate v3 allocation logic.
-3. Encode the current tile-2/palette/pickup/wall proof as the first overlay and require byte-exact reproduction of `b6c0303b... / 0xFAD7`.
-4. Once the overlay gate is green, replace proof-only visual data with a small original L3 urban/subway environment starter kit while preserving the closed engine contracts.
-5. Define the first objective and pursuit trigger only after the production scene skeleton is runtime-visible.
+1. Refine the M120B map composition into three visually distinct zones using only runtime-verified graphics slots or newly proven slots; keep status `NOT_ART_FREEZE`.
+2. Re-run VRAM residency, presentation, M100B player semantics and M110B CRAM after the composition change.
+3. Create an isolated scene0 type60 probe using the exact retail `status=0x7800, stride=6` contract and prove the `FC54 0x4000` transition at runtime.
+4. Create a type87 signal-box probe and distinguish its no-lever versus lever-present branch using `FC54`/message-state evidence.
+5. Only after those objective gates are green, place the pair deliberately in the L3 layout and design the scene-specific pursuit trigger.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
 - Closed M09C/M09D/M1.0/M1.1A/B/C gates reopen only on contradictory evidence.
 - Do not edit v11 player pixels during M1.2A.
-- Keep `scene_source.v1`, v2 and the closed v3 contract stable; production overlays sit above v3.
-- Do not resolve scene10 secondary/aux graphics unless the selected production content actually needs it.
+- Keep scene_source v1/v2/v3 closed contracts stable; production overlays sit above v3.
+- Never infer free VRAM merely from an unreferenced tilemap index.
 - Never commit exported retail scene sources or retail tile dumps.
 - Prefer scene-specific scripted modules over speculative universal systems.
 - Prefer small semantic Git commits.
@@ -217,8 +236,8 @@ Run the slice under pinned BlastEm and require:
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D frozen; M1.0A/B complete; M1.1A/B/C complete, including source-v3 unified scene graphics transaction and runtime regression.
-EVIDENCE m112a_scene_source_v3_vertical_slice.json + m112b_v3_graphics_runtime.json + m112c_v3_regression.json + m112_scene_source_v3_scope_matrix.json + Actions run 38074354446.
-OPEN     M1.2A L3 urban pursuit/subway production slice.
-NEXT     implement an authored-delta scene_overlay.v1 above scene_source.v3 and require it to reproduce the closed M112A candidate exactly before replacing proof content with original L3 production content.
+DONE     M1.1C closed; M1.2A authored-delta overlay closed; corrected L3 subway starter is runtime-visible with 15/15 authored tiles byte-exact in VRAM and gameplay/CRAM regression green.
+EVIDENCE m120a_scene_overlay_reproduction.json + m120b_l3_starter_runtime.json + Actions run 38076261154.
+OPEN     finish three-zone L3 composition, then prove type60/type87 subway objective behavior and add pursuit trigger.
+NEXT     refine three-zone M120B composition, rerun runtime gates, then isolate type60 FC54 0x4000 and type87 signal-box branch behavior in scene0.
 ```
