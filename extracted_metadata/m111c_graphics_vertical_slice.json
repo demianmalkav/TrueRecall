@@ -1,0 +1,59 @@
+{
+  "schema": "truerecall.m111c.graphics_vertical_slice.evidence.v1",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_index": 0,
+  "m110a_parent_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd",
+  "m110a_parent_checksum": "0x6B9E",
+  "graphics_edit": {
+    "tile_index": 2,
+    "retail_tile_sha256": "e0e77a507412b120f6ede61f62295b1a7b2ff19d3dcc8f7253e51663470c888e",
+    "authored_tile_hex": "e000000e0e0000e000e00e00000ee000000ee00000e00e000e0000e0e000000e",
+    "allocation_base": 3162112,
+    "new_descriptor": 3162112,
+    "new_primary_lz": 3162128,
+    "changed_tile_indices": [2]
+  },
+  "graphics_parent_sha1": "a26f74937233e155e025bcd45a220660c75e110f",
+  "graphics_parent_checksum": "0xED13",
+  "combined_allocations": [
+    {"address": 3145728, "name": "object_desc", "size": 132},
+    {"address": 3145872, "name": "object_lz", "size": 1217},
+    {"address": 3147264, "name": "world_resource", "size": 10880},
+    {"address": 3158144, "name": "scene_palette", "size": 128},
+    {"address": 3162112, "name": "primary_graphics_descriptor", "size": 12},
+    {"address": 3162128, "name": "primary_graphics_lz", "size": 12105}
+  ],
+  "output_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+  "output_size": 4194304,
+  "genesis_checksum": "0xFAD7",
+  "phase_bank_sha1": [
+    "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+    "fce14e16bc2325ea603f7ad973a0033c56f68098",
+    "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+    "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+    "0cd1b90c15c55504e2e55e992197022a5856204f",
+    "416007b12132f06ff30fa009649e4b1c6379d5c1"
+  ],
+  "assertions": {
+    "closed_m110a_parent_exact": true,
+    "single_authored_primary_tile": true,
+    "authored_tile_payload_exact": true,
+    "graphics_allocation_after_m110a_ledger": true,
+    "combined_allocation_ledger_nonoverlap": true,
+    "frozen_player_phase_banks_preserved": true,
+    "m110a_palette_bytes_preserved": true,
+    "deterministic_graphics_parent": true,
+    "deterministic_integrated_candidate": true,
+    "no_incompatible_overlap": true,
+    "scene_delta_preserved": true,
+    "player_only_delta_preserved": true
+  },
+  "ci_rebuild": {
+    "source_commit": "79c1e485441f92b536baa00d5401caa5c24076f8",
+    "actions_run": 38073075203,
+    "artifact_id": 11677736118,
+    "artifact_sha256": "be0b0a2cdc1016f33cb9828b7c970fc50f9898d7dea3e79d77564b38ff862c58",
+    "rebuilt_candidate_byte_matches_local_prototype": true
+  },
+  "runtime_validation": "confirmed_by_m111d_and_m111e"
+}
