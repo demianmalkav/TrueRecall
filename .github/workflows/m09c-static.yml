@@ -76,6 +76,7 @@ jobs:
           name: m100a-builder-${{ github.sha }}
           path: |
             tools/build
+            tools/rom_probe
             extracted_metadata/m09d_quaid_sprint_contract.json
           if-no-files-found: error
           retention-days: 7
