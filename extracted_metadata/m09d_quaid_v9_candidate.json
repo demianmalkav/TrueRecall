@@ -1,0 +1,63 @@
+{
+  "schema": "truerecall.m09d.quaid_art_candidate.v1",
+  "candidate": "v9",
+  "status": "PRODUCTION_CANDIDATE_NOT_YET_FROZEN",
+  "source_art_fingerprint": "94db7b28dca13720fd2656c37de4e57dc74d6dd4",
+  "source_frames": 30,
+  "authored_facings": ["N", "NE", "E", "SE", "S"],
+  "native_phase_deltas": [0, 2, 4, 6, 8, 10],
+  "art_direction_corrections": [
+    "N is rendered as rear view rather than reusing frontal facial cues",
+    "NE is rear three-quarter, E profile, SE front three-quarter and S front",
+    "grey work-shirt values replace the prototype's bright armor-like torso mass",
+    "white palette index is limited to tiny highlights rather than broad torso bands",
+    "olive trouser values and dark outline remain consistent across all authored facings"
+  ],
+  "mapping_contract": {
+    "descriptor": "0x000A0000",
+    "unique_mapping_records": 10,
+    "reserved_chunk_slots_per_phase": 24,
+    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
+    "max_pieces_per_frame": 4,
+    "geometry_preserved": true,
+    "native_mirroring_preserved": true,
+    "palette_indices_within_0_15": true
+  },
+  "phase_bank_sha1": [
+    "dd64c9fd36639fb81e83aaa734d0c2e09cd32c26",
+    "bbe43db7b7639157d19b5b4267c4e5f26dea8444",
+    "018c59af23e42825fabb50937dc6263be4840c05",
+    "7386aa54924b24c54e5c69b7aa7b079a84f36bb2",
+    "8209c9c428fcd8d45169f79caa51225b74d7ad38",
+    "241f1d4a95474b8b64f7f1b57727d31e2de1936b"
+  ],
+  "build": {
+    "size_bytes": 4194304,
+    "sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
+    "genesis_checksum": "0x7DCB",
+    "parent_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6"
+  },
+  "runtime_regression": {
+    "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+    "common_native_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
+    "active_frames": 42,
+    "visible_active_frames": 40,
+    "first_visible_step": 3,
+    "max_scene_bbox": [63, 64],
+    "state_mismatches": 0,
+    "assertions": {
+      "pre_scene_exact": true,
+      "post_scene_exact": true,
+      "active_y_left_normalized": true,
+      "runtime_state_equal": true,
+      "canonical_descriptor_preserved": true,
+      "all_six_phases_observed": true,
+      "activation_latency_at_most_2_frames": true,
+      "visible_after_warmup_every_frame": true,
+      "all_visible_diffs_within_scaled_retail_envelope": true,
+      "every_phase_has_visible_frame": true
+    },
+    "pass": true
+  },
+  "promotion_policy": "candidate may replace the earlier procedural prototype because only source pixels and their derived phase-bank/build fingerprints changed; M09C seam, mapping geometry, descriptor and control semantics remain closed"
+}
