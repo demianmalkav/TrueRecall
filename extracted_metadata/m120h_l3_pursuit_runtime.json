@@ -1,0 +1,103 @@
+{
+  "assertions": {
+    "frozen_player_descriptor": true,
+    "frozen_proxy_descriptor": true,
+    "lever_does_not_clear_fc56": true,
+    "lever_native_flag": true,
+    "one_type24_spawned": true,
+    "player_control_releases": true,
+    "signal_clears_private_latch": true,
+    "signal_preserves_fc54": true,
+    "signal_success_message": true,
+    "spawn_position_exact": true,
+    "type24_advances_toward_player": true,
+    "type24_survives_release": true
+  },
+  "base_m120g_sha1": "150373a312283f5c89e5fa00e99f19d7a83bff44",
+  "branch_control": {
+    "with_lever_flag": {
+      "fc54": "0x4000",
+      "fc56_after": 0,
+      "fc56_before": 1,
+      "message": "0x0036"
+    },
+    "without_lever_flag": {
+      "fc54": "0x0000",
+      "fc56_after": 1,
+      "fc56_before": 1,
+      "message": "0x0034"
+    }
+  },
+  "candidate_sha1": "acfecb2fdb5cc6c55a5c89ae172dd58d8444e1e3",
+  "claim": "CONFIRMED scene-specific chase pressure: successful signal-box completion spawns one type24 and, once control returns, that actor advances toward Quaid. Type24 is independently a retail ranged-capable family, but projectile firing was not observed in this trigger window.",
+  "fc56_static": {
+    "claim": "all recovered VM references to FC56 belong to type87; bit0 is used as its one-shot latch",
+    "literal_32bit_reference_count": 3,
+    "vm_references": [
+      {
+        "op": "LOAD_ABS_W_D2",
+        "pc": "0x17F2CE",
+        "type_id": 87
+      },
+      {
+        "op": "LOAD_ABS_W_D2",
+        "pc": "0x17F320",
+        "type_id": 87
+      },
+      {
+        "op": "STORE_ABS_W_D2",
+        "pc": "0x17F32C",
+        "type_id": 87
+      }
+    ],
+    "vm_type_ids": [87]
+  },
+  "frozen": {
+    "f9_address": 16762418,
+    "f9_descriptor": 655360,
+    "fb_address": 16763102,
+    "fb_descriptor": 983040
+  },
+  "genesis_checksum": "0xD0C0",
+  "projectile170_observed": false,
+  "rejected_prototypes": [
+    "direct FireStandardProjectile before ShowMessage: disturbed native 0x36 interaction sequence",
+    "direct FireStandardProjectile after SCHED_WAIT: preserved message but projectile had zero useful velocity and disappeared"
+  ],
+  "release_and_chase": [
+    {"frame": 2714, "player_x": 665, "type24_x": 651},
+    {"frame": 2834, "player_x": 665, "type24_x": 651},
+    {"frame": 2954, "player_x": 724, "type24_x": 658},
+    {"frame": 2959, "player_x": 724, "type24_x": 666},
+    {"frame": 2964, "player_x": 724, "type24_x": 673},
+    {"frame": 2969, "player_x": 724, "type24_x": 681},
+    {"frame": 2974, "player_x": 724, "type24_x": 688},
+    {"frame": 2979, "player_x": 724, "type24_x": 696},
+    {"frame": 2984, "player_x": 724, "type24_x": 703},
+    {"frame": 2989, "player_x": 724, "type24_x": 707}
+  ],
+  "schema": "truerecall.m120h.l3_pursuit_runtime.v1",
+  "spawn_at_signal": {
+    "active_count_after": 8,
+    "active_count_before": 7,
+    "new_object": {
+      "descriptor": "0x000CA38C",
+      "type": 24,
+      "x": 651,
+      "y": 558
+    }
+  },
+  "status": "PASS",
+  "trigger": {
+    "message_ram": "FFFFFC06",
+    "mission_flag": "0x4000",
+    "mission_flag_ram": "FFFFFC54",
+    "private_latch_ram": "FFFFFC56",
+    "private_latch_transition": "bit0 1->0 on successful type87 branch",
+    "signal_type": 87,
+    "spawn_child_type": 24,
+    "spawn_native": "SpawnLinkedObject",
+    "success_message": "0x0036"
+  },
+  "type87_relocation": "0x308000"
+}
