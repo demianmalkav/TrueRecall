@@ -1,0 +1,27 @@
+{
+  "schema": "truerecall.scene_overlay.v1",
+  "id": "m120f_scene0_native_objective_pair_probe",
+  "status": "RUNTIME_PROBE",
+  "design_target": "prove native type60 to type87 mission-flag sequencing in scene0",
+  "scene_index": 0,
+  "identity": {
+    "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+    "palette_retail_pointer": "0x09AC20",
+    "primary_graphics": {
+      "retail_descriptor": 65450,
+      "retail_primary_lz": 84120,
+      "secondary_pointer": 2147580122,
+      "aux_pointer": 114554,
+      "secondary_plane_descriptor": 0,
+      "retail_decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171"
+    }
+  },
+  "palette": [],
+  "maps": [],
+  "objects": [
+    {"op": "add", "id": "m120f_type60_0000", "type_id": 60, "status_flags": "0x7800", "stride": 6, "x": 701, "y": 558, "param": null},
+    {"op": "add", "id": "m120f_type87_0000", "type_id": 87, "status_flags": "0x7800", "stride": 6, "x": 724, "y": 558, "param": null}
+  ],
+  "world": [],
+  "primary_graphics": []
+}
