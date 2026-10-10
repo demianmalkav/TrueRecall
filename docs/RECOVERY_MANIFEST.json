@@ -95,6 +95,7 @@
   ],
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
+    "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
     "m09d_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
     "m100b": "extracted_metadata/m100b_vertical_slice_runtime.json",
     "m110b": "extracted_metadata/m110b_palette_runtime.json",
