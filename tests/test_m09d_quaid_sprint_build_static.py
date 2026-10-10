@@ -22,14 +22,14 @@ CONTRACT = json.loads(
         encoding="utf-8"
     )
 )
-EXPECTED_SOURCE_FINGERPRINT = "d7affbf3fd6474ae3aead55fecb098e29ef03528"
+EXPECTED_SOURCE_FINGERPRINT = "94db7b28dca13720fd2656c37de4e57dc74d6dd4"
 EXPECTED_BANK_SHA1 = [
-    "88ada0a6eb76fa2ab0baba006893a89bb54ac575",
-    "13643e0279731432d37d37317d757e43da2ff2a5",
-    "6ce94a1888d674085198fee8c34cbda280d7a81f",
-    "c6aa242cbdb8dcdd9e682dd1b62209590041acbe",
-    "64fc5176397d9e41fcba8769f40e78dffebf3046",
-    "6afd60a6918be92b1f47b0023e280513a72d3716",
+    "dd64c9fd36639fb81e83aaa734d0c2e09cd32c26",
+    "bbe43db7b7639157d19b5b4267c4e5f26dea8444",
+    "018c59af23e42825fabb50937dc6263be4840c05",
+    "7386aa54924b24c54e5c69b7aa7b079a84f36bb2",
+    "8209c9c428fcd8d45169f79caa51225b74d7ad38",
+    "241f1d4a95474b8b64f7f1b57727d31e2de1936b",
 ]
 
 
@@ -63,8 +63,6 @@ class M09DQuaidSprintBuildStaticTests(unittest.TestCase):
         for start, end in bank_ranges:
             self.assertEqual(out[start:end], banks[BANKS.index(start)])
 
-        # CHECKSUM_OFFSET is below the Genesis checksum summation region and is
-        # the only non-bank location intentionally modified by the overlay.
         for start, end in [(0, 0x18E), (0x190, BANKS[0])]:
             self.assertEqual(out[start:end], parent[start:end])
         self.assertEqual(out[0x18E:0x190], checksum.to_bytes(2, "big"))
