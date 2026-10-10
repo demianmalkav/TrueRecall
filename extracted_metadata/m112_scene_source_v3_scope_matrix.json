@@ -1,0 +1,21 @@
+{
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_count": 19,
+  "schema": "truerecall.m112.scene_source_v3_scope_matrix.v1",
+  "v3_noop_exact_scenes": [0,1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18],
+  "out_of_confirmed_scope": [
+    {
+      "scene": 10,
+      "descriptor": 196160,
+      "primary_lz": 319412,
+      "reason": "C000 references tile outside primary set; secondary/auxiliary graphics semantics remain unresolved"
+    }
+  ],
+  "scene0": {
+    "exact_noop": true,
+    "v2_roundtrip_exact": true,
+    "tile_count": 780,
+    "decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171"
+  },
+  "scope_statement": "M1.1C promotion is scene0-scoped. The generalized v3 exporter is exact for 18 retail scenes but scene10 is deliberately not promoted until secondary/auxiliary graphics ownership is recovered."
+}
