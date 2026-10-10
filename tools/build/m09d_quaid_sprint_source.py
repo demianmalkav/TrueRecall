@@ -12,9 +12,9 @@ from PIL import Image, ImageDraw
 AUTHORED_DIRECTIONS = ("N", "NE", "E", "SE", "S")
 PHASE_DELTAS = (0, 2, 4, 6, 8, 10)
 
-# Preview palette approximates the active runtime player CRAM observed in the
-# M09D validation scene. Source art is indexed; indices, not these RGB values,
-# are the ROM-facing contract. Index 0 remains transparent.
+# Preview palette is the confirmed runtime player CRAM line in the M09D
+# validation scene. Source art is indexed; indices, not RGB values, are the
+# ROM-facing contract. Index 0 remains transparent.
 PALETTE = [
     (0, 0, 0),
     (49, 49, 0),
@@ -89,8 +89,8 @@ def _draw_head(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, y:
     """Draw a directionally correct Quaid head.
 
     N is the back of the head, NE rear three-quarter, E right profile, SE front
-    three-quarter and S front. This avoids the earlier prototype's face-mask
-    effect where every facing reused frontal facial cues.
+    three-quarter and S front. This prevents mirrored/front-facing facial cues
+    from leaking into rear-facing families.
     """
     y += (0, 1, 1, 0, -1, -1)[phase]
     if direction == "N":
@@ -125,76 +125,85 @@ def _draw_head(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, y:
 
 
 def _draw_torso(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, y: int) -> tuple[int, int]:
+    """Broad-shouldered work-shirt silhouette with cloth folds, not armor panels."""
     lean = (-1, -1, 0, 1, 1, 0)[phase]
     x += lean
     if direction == "E":
-        pts = [(x-5,y),(x+4,y),(x+5,y+2),(x+4,y+11),(x+1,y+13),(x-4,y+11),(x-6,y+4)]
+        pts = [(x-5,y+1),(x-3,y),(x+4,y),(x+6,y+2),(x+4,y+11),(x+2,y+13),(x-3,y+12),(x-6,y+5)]
     elif direction in ("NE", "SE"):
-        pts = [(x-7,y+1),(x+6,y),(x+7,y+3),(x+5,y+11),(x+2,y+13),(x-4,y+12),(x-7,y+5)]
+        pts = [(x-7,y+2),(x-5,y),(x+5,y),(x+7,y+2),(x+5,y+11),(x+2,y+13),(x-3,y+13),(x-6,y+10),(x-8,y+4)]
     else:
-        pts = [(x-6,y+1),(x-5,y),(x+5,y),(x+6,y+1),(x+4,y+11),(x+2,y+13),(x-2,y+13),(x-4,y+11)]
+        pts = [(x-7,y+2),(x-5,y),(x+5,y),(x+7,y+2),(x+5,y+10),(x+3,y+13),(x-3,y+13),(x-5,y+10)]
     _poly(draw, pts, SHIRT_D, OUTLINE)
 
     if direction == "N":
-        draw.polygon([(x-4,y+2),(x,y+2),(x,y+11),(x-3,y+10)], fill=SHIRT_M)
-        draw.polygon([(x,y+2),(x+4,y+2),(x+3,y+10),(x,y+11)], fill=SHIRT_L)
-        draw.line((x-4,y+6,x+4,y+6), fill=SHIRT_D)
-        draw.line((x,y+2,x,y+11), fill=SHIRT_D)
-        draw.point((x+2,y+3), fill=SHIRT_L)
+        draw.polygon([(x-4,y+2),(x-1,y+1),(x-2,y+10),(x-4,y+9)], fill=SHIRT_M)
+        draw.polygon([(x+1,y+1),(x+4,y+2),(x+3,y+9),(x+1,y+10)], fill=SHIRT_M)
+        draw.line((x-3,y+5,x+3,y+5), fill=SHIRT_L)
+        draw.line((x,y+3,x,y+11), fill=SHIRT_D)
+        draw.point((x+3,y+3), fill=SHIRT_L)
     elif direction == "S":
-        draw.polygon([(x-4,y+2),(x,y+2),(x-1,y+11),(x-3,y+10)], fill=SHIRT_M)
-        draw.polygon([(x,y+2),(x+4,y+2),(x+3,y+10),(x-1,y+11)], fill=SHIRT_L)
-        draw.line((x,y+2,x-1,y+11), fill=SHIRT_D)
-        draw.line((x-4,y+6,x+4,y+6), fill=SHIRT_D)
-        draw.point((x+2,y+3), fill=SHIRT_HI)
-        draw.point((x-2,y+8), fill=SHIRT_L)
+        draw.polygon([(x-4,y+2),(x-1,y+1),(x-2,y+10),(x-4,y+9)], fill=SHIRT_M)
+        draw.polygon([(x,y+1),(x+4,y+2),(x+3,y+9),(x+1,y+10)], fill=SHIRT_M)
+        draw.line((x-2,y+4,x+2,y+4), fill=SHIRT_L)
+        draw.line((x-1,y+2,x-2,y+10), fill=SHIRT_D)
+        draw.point((x+2,y+2), fill=SHIRT_HI)
     else:
-        draw.polygon([(x-4,y+2),(x,y+2),(x-1,y+11),(x-3,y+10)], fill=SHIRT_M)
-        draw.polygon([(x,y+2),(x+4,y+1),(x+3,y+10),(x-1,y+11)], fill=SHIRT_L)
-        draw.line((x-3,y+6,x+3,y+6), fill=SHIRT_D)
-        draw.line((x-1,y+2,x-1,y+10), fill=SHIRT_D)
-        draw.point((x+2,y+3), fill=SHIRT_HI)
+        draw.polygon([(x-4,y+2),(x-1,y+1),(x-2,y+10),(x-4,y+9)], fill=SHIRT_M)
+        draw.polygon([(x,y+1),(x+4,y+2),(x+3,y+8),(x+1,y+10)], fill=SHIRT_L)
+        draw.line((x-2,y+5,x+2,y+5), fill=SHIRT_D)
+        draw.point((x+2,y+2), fill=SHIRT_HI)
 
-    draw.rectangle((x-4,y+12,x+4,y+13), fill=OUTLINE)
+    draw.line((x-4,y+12,x+4,y+12), fill=OUTLINE, width=1)
     draw.point((x,y+12), fill=ACCENT)
-    return x, y + 13
+    return x, y + 12
 
 
 def _draw_arms(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, shoulder_y: int) -> None:
-    swing = (-3, -2, 0, 3, 2, 0)[phase]
+    """Thick upper arms and tapered forearms give Quaid a heavier physical read."""
+    swing = (-4, -2, 0, 4, 2, 0)[phase]
     if direction == "E":
-        draw.line((x+4,shoulder_y+2,x+6,shoulder_y+6,x+5+swing//2,shoulder_y+11), fill=SKIN, width=2)
+        draw.line((x+4,shoulder_y+2,x+7,shoulder_y+6), fill=SKIN, width=3)
+        draw.line((x+7,shoulder_y+6,x+5+swing//2,shoulder_y+12), fill=SKIN, width=2)
         draw.point((x+5+swing//2,shoulder_y+12), fill=SKIN_HI)
-        draw.line((x-4,shoulder_y+3,x-5,shoulder_y+7,x-3-swing//3,shoulder_y+10), fill=SKIN, width=2)
+        draw.line((x-4,shoulder_y+3,x-6,shoulder_y+7), fill=SKIN, width=2)
+        draw.line((x-6,shoulder_y+7,x-3-swing//3,shoulder_y+11), fill=SKIN, width=2)
     elif direction in ("NE", "SE"):
-        draw.line((x-6,shoulder_y+3,x-7,shoulder_y+7-swing//3,x-5-swing//3,shoulder_y+11), fill=SKIN, width=2)
-        draw.line((x+6,shoulder_y+3,x+7,shoulder_y+7+swing//3,x+5+swing//3,shoulder_y+11), fill=SKIN, width=2)
-        draw.point((x+5+swing//3,shoulder_y+12), fill=SKIN_HI)
+        draw.line((x-6,shoulder_y+3,x-8,shoulder_y+7-swing//4), fill=SKIN, width=3)
+        draw.line((x-8,shoulder_y+7-swing//4,x-5-swing//2,shoulder_y+12), fill=SKIN, width=2)
+        draw.line((x+6,shoulder_y+3,x+8,shoulder_y+7+swing//4), fill=SKIN, width=3)
+        draw.line((x+8,shoulder_y+7+swing//4,x+5+swing//2,shoulder_y+12), fill=SKIN, width=2)
+        draw.point((x+5+swing//2,shoulder_y+12), fill=SKIN_HI)
     else:
-        draw.line((x-6,shoulder_y+3,x-8,shoulder_y+7-swing//3,x-6-swing//2,shoulder_y+11), fill=SKIN, width=2)
-        draw.line((x+6,shoulder_y+3,x+8,shoulder_y+7+swing//3,x+6+swing//2,shoulder_y+11), fill=SKIN, width=2)
+        draw.line((x-6,shoulder_y+3,x-8,shoulder_y+7-swing//4), fill=SKIN, width=3)
+        draw.line((x-8,shoulder_y+7-swing//4,x-6-swing//2,shoulder_y+12), fill=SKIN, width=2)
+        draw.line((x+6,shoulder_y+3,x+8,shoulder_y+7+swing//4), fill=SKIN, width=3)
+        draw.line((x+8,shoulder_y+7+swing//4,x+6+swing//2,shoulder_y+12), fill=SKIN, width=2)
         if direction == "S":
             draw.point((x+6+swing//2,shoulder_y+12), fill=SKIN_HI)
 
 
 def _draw_legs(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, hip_y: int, usable_bottom: int) -> None:
-    stride = (-3, -2, 0, 3, 2, 0)[phase]
-    bend = (0, 1, 1, 0, 1, 1)[phase]
-    knee_y = min(usable_bottom, hip_y + 5 - bend)
-    foot_y = min(usable_bottom, hip_y + 9)
+    """Wider sprint stance with heavier thighs and a clearer six-position gait."""
+    stride = (-4, -2, 0, 4, 2, 0)[phase]
+    rise = (0, 1, 2, 0, 1, 2)[phase]
+    knee_y = min(usable_bottom, hip_y + 5 - rise//2)
+    foot_y = min(usable_bottom, hip_y + 10)
     if direction == "E":
-        near_k=(x+1+stride//2,knee_y); far_k=(x-2-stride//3,knee_y-1)
-        near_f=(x+4+stride,foot_y); far_f=(x-3-stride,foot_y-1)
+        near_k=(x+2+stride//3,knee_y); far_k=(x-2-stride//4,knee_y-1)
+        near_f=(x+5+stride,foot_y); far_f=(x-4-stride,foot_y-1)
     elif direction in ("NE", "SE"):
         near_k=(x+2+stride//3,knee_y); far_k=(x-2-stride//3,knee_y-1)
-        near_f=(x+3+stride,foot_y); far_f=(x-3-stride,foot_y-1)
+        near_f=(x+4+stride,foot_y); far_f=(x-4-stride,foot_y-1)
     else:
         near_k=(x+2+stride//3,knee_y); far_k=(x-2-stride//3,knee_y)
-        near_f=(x+3+stride,foot_y); far_f=(x-3-stride,foot_y)
-    draw.line(((x+2,hip_y),near_k,near_f), fill=PANTS_M, width=3)
-    draw.line(((x-2,hip_y),far_k,far_f), fill=PANTS_D, width=3)
-    draw.line((near_f[0]-1,near_f[1],near_f[0]+2,near_f[1]), fill=OUTLINE, width=1)
-    draw.line((far_f[0]-2,far_f[1],far_f[0]+1,far_f[1]), fill=OUTLINE, width=1)
+        near_f=(x+4+stride,foot_y); far_f=(x-4-stride,foot_y)
+    draw.line(((x-2,hip_y),far_k), fill=PANTS_D, width=4)
+    draw.line((far_k,far_f), fill=PANTS_D, width=3)
+    draw.line(((x+2,hip_y),near_k), fill=PANTS_M, width=4)
+    draw.line((near_k,near_f), fill=PANTS_M, width=3)
+    draw.line((near_f[0]-2,near_f[1],near_f[0]+2,near_f[1]), fill=OUTLINE, width=2)
+    draw.line((far_f[0]-2,far_f[1],far_f[0]+2,far_f[1]), fill=OUTLINE, width=2)
 
 
 def render_frame(contract: dict[str, Any], direction: str, phase_index: int) -> Image.Image:
@@ -247,7 +256,7 @@ def generate(contract: dict[str, Any], out_dir: Path) -> dict[str, Any]:
         directions[direction]=rows
     manifest={
         "schema":"truerecall.m09d.quaid_sprint_source.v1",
-        "art_status":"production_candidate_v9",
+        "art_status":"production_candidate_v10",
         "generated_by":"tools/build/m09d_quaid_sprint_source.py",
         "palette":PALETTE,
         "directions":directions,
