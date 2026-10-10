@@ -10,6 +10,7 @@ on:
       - 'tools/rom_probe/m09d_*'
       - 'tools/rom_probe/sprite_sequence_roundtrip_probe.py'
       - 'tools/runtime/m09c_*'
+      - 'tools/runtime/m09d_*'
       - 'tools/recovery_doctor.py'
       - 'tests/test_m09c_*'
       - 'tests/test_m09d_*'
@@ -45,6 +46,7 @@ jobs:
             tools/rom_probe/sprite_sequence_roundtrip_probe.py \
             tools/runtime/m09c_animation_state_trace.py \
             tools/runtime/m09c_animation_state_trace_v2.py \
+            tools/runtime/m09d_quaid_runtime_regression.py \
             tools/recovery_doctor.py
       - name: Run M09C/M09D static and recovery tests
         run: |
