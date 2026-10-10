@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "0942f0d9ef58a37c37c19d9da9a5e8caa37d92d0",
+  "generated_from_technical_checkpoint": "9db2910e30007ad49ab58b27785055e7753c3f8a",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -22,10 +22,10 @@
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
-    "milestone": "M1.1A",
-    "name": "canonical palette + scene-source-v2 promotion",
+    "milestone": "M1.1B",
+    "name": "gameplay tile-graphics authoring and runtime proof",
     "status": "OPEN",
-    "objective": "port the minimal preserved M11F/G/H palette/v2 transaction layer onto the active branch, execute canonical-ROM gates, then integrate and runtime-regress it against the closed M1.0 scene0 baseline"
+    "objective": "recover scene0 gameplay graphics-resource semantics, establish an exact no-op graphics round-trip, author one environment graphics unit transactionally, then runtime-confirm presentation without regressing M110B/M100B"
   },
   "completed": {
     "m09c": {
@@ -45,23 +45,10 @@
     "m1_0": {
       "status": "COMPLETE",
       "scene_index": 0,
-      "scene18_retired_reason": "runtime showed a scripted/non-normal control path, so scene0 replaced it as the gameplay sandbox",
       "manifest": "tools/build/examples/m100a_scene0_baseline.json",
       "candidate_sha1": "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027",
       "checksum": "0x6E6A",
       "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
-      "authored_pickup": {
-        "type_id": 69,
-        "semantic_identity": "shotgun_weapon_pickup",
-        "x": 690,
-        "y": 558,
-        "runtime_result": "candidate ownership 0x03 and shotgun ammo 5; direct parent ownership 0x01 and ammo 0"
-      },
-      "authored_world_collision": {
-        "type": 9,
-        "rect": [668, 540, 676, 580],
-        "runtime_result": "candidate blocks at x=688; direct parent crosses zone and reaches x=652"
-      },
       "runtime_assertions": 14,
       "runtime_pass": true,
       "ci": {
@@ -72,31 +59,60 @@
         "static": "PASS",
         "blastem_harness": "PASS"
       }
+    },
+    "m1_1a": {
+      "status": "COMPLETE",
+      "scene_index": 0,
+      "tools": [
+        "tools/build/scene_palette.py",
+        "tools/build/scene_source_v2.py",
+        "tools/build/scene_compiler_v2.py",
+        "tools/build/m110a_palette_vertical_slice.py",
+        "tools/runtime/m110b_palette_runtime.py"
+      ],
+      "canonical_palette_matrix": {
+        "scene_count": 19,
+        "valid_palettes": 19,
+        "exact_noop_compiles": 19,
+        "invalid_cram_rejected": true
+      },
+      "palette_edit": {
+        "index": 8,
+        "before": "0x0464",
+        "after": "0x0648",
+        "new_pointer": "0x303080",
+        "player_line": [32, 47]
+      },
+      "scene_v2_parent_sha1": "427b842188b29e4fa040802c94b7d60fe44976cc",
+      "scene_v2_parent_checksum": "0xA30C",
+      "candidate_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd",
+      "checksum": "0x6B9E",
+      "runtime": {
+        "actual_vdp_cram": true,
+        "cram_difference_count": 1,
+        "cram_index": 8,
+        "parent": "0x0464",
+        "candidate": "0x0648",
+        "player_line_exact": true,
+        "m100b_assertions": 14,
+        "m100b_pass": true,
+        "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2"
+      },
+      "ci": {
+        "commit": "9db2910e30007ad49ab58b27785055e7753c3f8a",
+        "actions_run": 38068084778,
+        "artifact_id": 11675387267,
+        "artifact_sha256": "2cc4c0c2394f03745e5d362c95e9ce56e475d0fbabc72ee99a765e16c36c6ba6",
+        "static": "PASS",
+        "blastem_harness": "PASS"
+      }
     }
   },
   "stable_scene_authoring": {
-    "baseline": "M0.11D",
-    "tool": "tools/build/scene_source.py",
-    "evidence": "extracted_metadata/m11d_scene_source.json",
-    "limitation_for_m1_1": "palette remains immutable metadata in scene_source.v1, so production palette authoring requires the preserved M11F/G/H layer"
-  },
-  "m1_1a": {
-    "status": "OPEN",
-    "recorded_promotion_reason": "raw canonical ROM access is now available and a real Total Recall world needs source-level palette authoring; M11F/G/H previously stopped at static/synthetic status only because canonical bytes were unavailable",
-    "preserved_sources": {
-      "m11f": "m11f-palette-authoring",
-      "m11g": "m11g-scene-source-v2",
-      "m11h": "m11h-scene-transaction-v2"
-    },
-    "completion": [
-      "port only scene_palette.py, scene_source_v2.py, scene_compiler_v2.py plus required probes/tests",
-      "run imported static suites on active branch",
-      "validate 19/19 canonical gameplay palettes and 19/19 exact no-op compiles",
-      "execute canonical scene-source-v2 no-op",
-      "execute one deterministic scene0 palette edit in the unified transaction arena",
-      "integrate palette edit with closed M1.0 candidate without allocation overlap or v11 player-bank changes",
-      "runtime-confirm authored CRAM/palette and rerun all closed M1.0B behavioral invariants"
-    ]
+    "v1_anchor": "tools/build/scene_source.py",
+    "v2_palette_source": "tools/build/scene_source_v2.py",
+    "v2_transaction": "tools/build/scene_compiler_v2.py",
+    "policy": "scene_source.v1 remains unchanged; extend source schema only after graphics-resource semantics are recovered"
   },
   "authoritative_tools": [
     "tools/runtime/m09c_animation_state_trace_v2.py",
@@ -107,9 +123,13 @@
     "tools/build/m09d_quaid_sprint_build.py",
     "tools/runtime/m09d_quaid_runtime_regression.py",
     "tools/build/scene_source.py",
-    "tools/build/scene_compiler.py",
+    "tools/build/scene_palette.py",
+    "tools/build/scene_source_v2.py",
+    "tools/build/scene_compiler_v2.py",
     "tools/build/m100a_vertical_slice_baseline.py",
-    "tools/runtime/m100b_vertical_slice_runtime.py"
+    "tools/runtime/m100b_vertical_slice_runtime.py",
+    "tools/build/m110a_palette_vertical_slice.py",
+    "tools/runtime/m110b_palette_runtime.py"
   ],
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
@@ -119,23 +139,25 @@
     "m09d_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
     "m11d_scene_source": "extracted_metadata/m11d_scene_source.json",
     "m100a": "extracted_metadata/m100a_vertical_slice_baseline.json",
-    "m100b": "extracted_metadata/m100b_vertical_slice_runtime.json"
+    "m100b": "extracted_metadata/m100b_vertical_slice_runtime.json",
+    "m11f_palette_canonical": "extracted_metadata/m11f_scene_palette_canonical.json",
+    "m11h_v2_transaction": "extracted_metadata/m11h_scene_source_v2_transaction_canonical.json",
+    "m110a": "extracted_metadata/m110a_palette_vertical_slice.json",
+    "m110b": "extracted_metadata/m110b_palette_runtime.json"
   },
   "open": [
-    {"id": "O1", "blocking": true, "name": "port minimal M11F/G/H palette/v2 layer"},
-    {"id": "O2", "blocking": true, "name": "canonical 19-scene palette + v2 transaction execution"},
-    {"id": "O3", "blocking": true, "name": "integrate palette transaction with M1.0 scene0 baseline"},
-    {"id": "O4", "blocking": true, "name": "runtime CRAM confirmation plus M1.0B regression"}
+    {"id": "O1", "blocking": true, "name": "recover scene0 C000/E000 graphics-resource descriptors and ROM-to-VRAM load path"},
+    {"id": "O2", "blocking": true, "name": "exact graphics-resource no-op round-trip"},
+    {"id": "O3", "blocking": true, "name": "one authored scene0 environment graphics unit in transaction ledger"},
+    {"id": "O4", "blocking": true, "name": "runtime VRAM/presentation proof plus M110B/M100B regression"}
   ],
   "next": [
-    "port minimal M11F scene_palette.py + tests/probe",
-    "port M11G scene_source_v2.py + static tests",
-    "port M11H scene_compiler_v2.py + transaction probe/tests",
-    "run static suites on active branch",
-    "execute canonical 19-scene palette probe against d39174bed46ede85531b86df7ba49123ce2f8411",
-    "execute a scene0 v2 palette transaction and integrate it with M1.0",
-    "runtime-confirm palette loading and rerun M1.0B invariants",
-    "if green, close M1.1A and open tile-graphics authoring"
+    "audit scene0 C000/E000 graphics_descriptor structures and trace their load/decompression path",
+    "cross-check existing asset/graphics format documentation and probes before writing a decoder",
+    "identify the smallest independently rebuildable scene0 environment graphics resource",
+    "implement an exact no-op graphics probe and pin decoded/resource fingerprints",
+    "author one environment tile or chunk only after the no-op gate is green",
+    "integrate with M110A and runtime-confirm VRAM/presentation while rerunning M110B and M100B"
   ],
   "parallel_preserved_branches": [
     "m11e-scene-source-matrix",
@@ -149,10 +171,10 @@
     "m09c_closed": true,
     "m09d_frozen": true,
     "m1_0_closed": true,
+    "m1_1a_closed": true,
     "do_not_modify_v11_player_pixels": true,
     "keep_scene_source_v1_immutable": true,
-    "port_minimal_files_not_whole_branches": true,
-    "do_not_start_tile_graphics_before_m1_1a_green": true
+    "do_not_guess_graphics_descriptor_semantics": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
