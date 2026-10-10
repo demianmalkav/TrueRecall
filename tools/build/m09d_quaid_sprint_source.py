@@ -206,6 +206,68 @@ def _draw_legs(draw: ImageDraw.ImageDraw, direction: str, phase: int, x: int, hi
     draw.line((far_f[0]-2,far_f[1],far_f[0]+2,far_f[1]), fill=OUTLINE, width=2)
 
 
+def _draw_microdetail(
+    draw: ImageDraw.ImageDraw,
+    direction: str,
+    phase: int,
+    head_x: int,
+    head_y: int,
+    body_x: int,
+    shoulder_y: int,
+    hip_y: int,
+) -> None:
+    """v11: local contrast only; never changes the closed mapping geometry."""
+    # Neck/collar separation and jaw shadow.
+    if direction == "N":
+        draw.line((head_x-2, head_y+8, head_x+2, head_y+8), fill=SKIN, width=1)
+        draw.line((body_x-2, shoulder_y+1, body_x+2, shoulder_y+1), fill=OUTLINE, width=1)
+    elif direction == "E":
+        draw.point((head_x+1, head_y+7), fill=HAIR)
+        draw.line((body_x-1, shoulder_y+1, body_x+2, shoulder_y+2), fill=OUTLINE, width=1)
+    elif direction in ("NE", "SE"):
+        draw.point((head_x+1, head_y+7), fill=HAIR)
+        draw.line((body_x-2, shoulder_y+1, body_x+1, shoulder_y+2), fill=OUTLINE, width=1)
+    else:
+        draw.line((head_x-2, head_y+8, head_x+2, head_y+8), fill=SKIN, width=1)
+        draw.line((body_x-2, shoulder_y+1, body_x+2, shoulder_y+1), fill=OUTLINE, width=1)
+        draw.point((head_x-1, head_y+6), fill=HAIR)
+
+    # Shirt collar, sleeve seam and a few directional cloth folds.
+    if direction == "S":
+        draw.line((body_x-2, shoulder_y+2, body_x, shoulder_y+4), fill=SHIRT_D)
+        draw.line((body_x+2, shoulder_y+2, body_x, shoulder_y+4), fill=SHIRT_D)
+    elif direction == "N":
+        draw.line((body_x-2, shoulder_y+2, body_x+2, shoulder_y+2), fill=SHIRT_L)
+    else:
+        draw.line((body_x-1, shoulder_y+2, body_x+1, shoulder_y+4), fill=SHIRT_D)
+    draw.point((body_x-5, shoulder_y+4), fill=SHIRT_L)
+    draw.point((body_x+5, shoulder_y+4), fill=SHIRT_D)
+    fold_x = body_x + (-2, -1, 0, 1, 2, 0)[phase]
+    draw.line((fold_x, shoulder_y+6, fold_x-1, shoulder_y+9), fill=SHIRT_D)
+
+    # Fist/hand contrast: small dark knuckle edge plus one warm highlight.
+    swing = (-4, -2, 0, 4, 2, 0)[phase]
+    if direction == "E":
+        hx = body_x + 5 + swing//2
+        hy = shoulder_y + 12
+        draw.point((hx, hy), fill=SKIN_HI)
+        draw.point((hx-1, hy), fill=OUTLINE)
+    else:
+        left_x = body_x - 6 - swing//2
+        right_x = body_x + 6 + swing//2
+        hy = shoulder_y + 12
+        draw.point((left_x, hy), fill=OUTLINE)
+        draw.point((right_x, hy), fill=SKIN_HI if direction != "N" else OUTLINE)
+
+    # Trouser center seam/knee break and boot cuff separation.
+    draw.point((body_x, hip_y+2), fill=PANTS_D)
+    draw.line((body_x-1, hip_y+4, body_x-1, hip_y+6), fill=PANTS_D)
+    draw.line((body_x+1, hip_y+4, body_x+1, hip_y+6), fill=PANTS_D)
+    if phase in (0, 3):
+        draw.point((body_x-3, hip_y+7), fill=PANTS_M)
+        draw.point((body_x+3, hip_y+7), fill=PANTS_D)
+
+
 def render_frame(contract: dict[str, Any], direction: str, phase_index: int) -> Image.Image:
     if direction not in AUTHORED_DIRECTIONS:
         raise ValueError(f"direction {direction!r} is not an authored family")
@@ -228,6 +290,7 @@ def render_frame(contract: dict[str, Any], direction: str, phase_index: int) -> 
     body_x, hip_y = _draw_torso(draw, direction, phase_index, body_x, shoulder_y)
     _draw_arms(draw, direction, phase_index, body_x, shoulder_y)
     _draw_legs(draw, direction, phase_index, body_x, hip_y + 1, usable_bottom)
+    _draw_microdetail(draw, direction, phase_index, head_x, head_y, body_x, shoulder_y, hip_y + 1)
     _clip_to_piece_mask(img, pieces)
     return img
 
@@ -256,7 +319,7 @@ def generate(contract: dict[str, Any], out_dir: Path) -> dict[str, Any]:
         directions[direction]=rows
     manifest={
         "schema":"truerecall.m09d.quaid_sprint_source.v1",
-        "art_status":"production_candidate_v10",
+        "art_status":"production_candidate_v11",
         "generated_by":"tools/build/m09d_quaid_sprint_source.py",
         "palette":PALETTE,
         "directions":directions,
