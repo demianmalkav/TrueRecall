@@ -1,0 +1,71 @@
+{
+  "schema": "truerecall.m09d.quaid_sprint_contract.v1",
+  "canonical_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "descriptor": "0x000A0000",
+  "direction_table": "0x013F32",
+  "source_row": "0x00F2",
+  "phase_deltas": [0, 2, 4, 6, 8, 10],
+  "direction_bases": {
+    "N": "0x0C2A",
+    "NE": "0x0C36",
+    "E": "0x0C4E",
+    "SE": "0x0C66",
+    "S": "0x0C7E",
+    "SW": "0x0C72",
+    "W": "0x0C5A",
+    "NW": "0x0C42"
+  },
+  "authored_direction_families": ["N", "NE", "E", "SE", "S"],
+  "mirrored_direction_families": {"SW": "SE", "W": "E", "NW": "NE"},
+  "mirror_evidence": "for SW/W/NW every phase resolves to the same mapping record as SE/E/NE respectively while encoded bit 14 is set only on the mirrored facing",
+  "unique_mapping_records": 10,
+  "resource_group": 7,
+  "chunk_index_range": ["0x68", "0x7F"],
+  "unique_retail_chunk_indices": 24,
+  "families": {
+    "N": {
+      "record_A": {"offset": "0x59D8", "origin": [10, 44], "clip": [32, 64], "pieces": [[6, 0, "0x68"], [0, 16, "0x69"], [16, 16, "0x6A"]]},
+      "record_B": {"offset": "0x59F4", "origin": [10, 44], "clip": [32, 64], "pieces": [[6, 0, "0x6B"], [0, 16, "0x69"], [16, 16, "0x6A"]]},
+      "phase_record_pattern": ["A", "B", "A", "B", "A", "B"]
+    },
+    "NE": {
+      "record_A": {"offset": "0x5A10", "origin": [6, 49], "clip": [32, 64], "pieces": [[7, 0, "0x6C"], [0, 16, "0x6D"], [16, 16, "0x6E"], [1, 32, "0x6F"]]},
+      "record_B": {"offset": "0x5A30", "origin": [6, 49], "clip": [32, 64], "pieces": [[7, 0, "0x70"], [0, 16, "0x6D"], [16, 16, "0x71"], [1, 32, "0x6F"]]},
+      "phase_record_pattern": ["A", "B", "A", "B", "A", "B"]
+    },
+    "E": {
+      "record_A": {"offset": "0x5A50", "origin": [6, 45], "clip": [34, 64], "pieces": [[3, 0, "0x72"], [0, 16, "0x73"], [16, 16, "0x74"]]},
+      "record_B": {"offset": "0x5A6C", "origin": [6, 45], "clip": [34, 64], "pieces": [[3, 0, "0x72"], [0, 16, "0x73"], [16, 16, "0x75"]]},
+      "phase_record_pattern": ["A", "B", "A", "B", "A", "B"]
+    },
+    "SE": {
+      "record_A": {"offset": "0x5A88", "origin": [8, 44], "clip": [32, 64], "pieces": [[5, 0, "0x76"], [0, 16, "0x77"], [16, 16, "0x78"], [10, 32, "0x79"]]},
+      "record_B": {"offset": "0x5AA8", "origin": [8, 44], "clip": [32, 64], "pieces": [[5, 0, "0x76"], [0, 16, "0x77"], [16, 16, "0x7A"], [10, 32, "0x7B"]]},
+      "phase_record_pattern": ["A", "B", "A", "B", "A", "B"]
+    },
+    "S": {
+      "record_A": {"offset": "0x5AC8", "origin": [22, 33], "clip": [48, 39], "pieces": [[0, 6, "0x7C"], [16, 0, "0x7D"], [16, 16, "0x7E"]]},
+      "record_B": {"offset": "0x5AE4", "origin": [22, 33], "clip": [48, 39], "pieces": [[0, 6, "0x7C"], [16, 0, "0x7D"], [16, 16, "0x7F"]]},
+      "phase_record_pattern": ["A", "B", "A", "B", "A", "B"]
+    }
+  },
+  "production_budget_v1": {
+    "native_phases_per_direction": 6,
+    "authored_direction_families": 5,
+    "runtime_facings": 8,
+    "max_retail_piece_count_per_frame": 4,
+    "max_retail_clip_width": 48,
+    "max_retail_clip_height": 64,
+    "reserved_chunk_slots_per_phase": 24,
+    "reserved_chunk_bytes_per_phase": 3072,
+    "six_phase_reserved_chunk_bytes": 18432,
+    "transparent_palette_index": 0,
+    "palette_index_range": [0, 15],
+    "first_production_policy": "preserve the ten proven retail mapping records and the 24 proven group-7 chunk-slot identities; compile Quaid pixels into those slots before considering authored mapping geometry"
+  },
+  "compiler_audit": {
+    "current_grid_sequence_compiler_is_not_sufficient_for_this_contract": true,
+    "reason": "retail piece positions include non-grid offsets such as (6,0), (7,0), (1,32), (10,32) and (0,6), while sprite_sequence_compiler currently decomposes only from a 16-pixel grid rooted at (0,0)",
+    "required_extension": "mapping-constrained source compiler that extracts 16x16 chunks at the canonical record piece coordinates and writes them into specified existing chunk slots"
+  }
+}
