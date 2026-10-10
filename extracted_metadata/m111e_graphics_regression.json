@@ -1,0 +1,49 @@
+{
+  "assertions": {
+    "m100b_behavioral_regression": true,
+    "m110b_cram_regression": true
+  },
+  "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+  "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+  "candidate_state_sha256": "91886eab54f8e13952cbd3f13f60260e839109a42a20b0b3ba943a6d8e8d8929",
+  "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "m100b": {
+    "assertions": {
+      "active_input_exact": true,
+      "candidate_blocked_by_authored_wall": true,
+      "canonical_player_descriptor": true,
+      "canonical_proxy_descriptor": true,
+      "f9_address_stable": true,
+      "movement_diverges_only_as_expected": true,
+      "parent_crosses_authored_wall_zone": true,
+      "player_semantics_equal_before": true,
+      "player_semantics_preserved_after": true,
+      "proxy_semantics_equal_before": true,
+      "proxy_semantics_preserved_after": true,
+      "same_spawn_position": true,
+      "scene0_both": true,
+      "shotgun_pickup_effect_candidate_only": true
+    },
+    "pass": true
+  },
+  "m110b_cram": {
+    "assertions": {
+      "authored_cram_index_exact": true,
+      "exactly_one_cram_word_changed": true,
+      "player_palette_line_exact": true
+    },
+    "differences": [
+      {"candidate": 1608, "index": 8, "parent": 1124}
+    ],
+    "pass": true
+  },
+  "parent_state_sha256": "a7f43d9a7e28aad33de1973a76e5242c73d5dc9d03a9815592fcb5f816e9c155",
+  "pass": true,
+  "schema": "truerecall.m111e.graphics_regression.v1",
+  "execution": {
+    "source_commit": "79c1e485441f92b536baa00d5401caa5c24076f8",
+    "actions_run": 38073075203,
+    "artifact_id": 11677736118,
+    "artifact_sha256": "be0b0a2cdc1016f33cb9828b7c970fc50f9898d7dea3e79d77564b38ff862c58"
+  }
+}
