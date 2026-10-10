@@ -18,8 +18,8 @@ from m09d_quaid_sprint_source import AUTHORED_DIRECTIONS, PHASE_DELTAS, render_f
 
 EXPECTED_CANONICAL_SHA1 = "d39174bed46ede85531b86df7ba49123ce2f8411"
 EXPECTED_M09C_PARENT_SHA1 = "3256f9dcbc6376624716e3508f41c0439e17cef6"
-EXPECTED_M09D_CANDIDATE_SHA1 = "eccbd54596c932ba3d7d2361af2437e59087b853"
-EXPECTED_M09D_CANDIDATE_CHECKSUM = "0x7DCB"
+EXPECTED_M09D_CANDIDATE_SHA1 = "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87"
+EXPECTED_M09D_CANDIDATE_CHECKSUM = "0xD3EF"
 
 
 def source_frames(contract: dict[str, Any]):
@@ -97,7 +97,7 @@ def build(raw: bytes, contract: dict[str, Any]) -> tuple[bytes, dict[str, Any]]:
         "output_sha1": output_sha1,
         "output_size": len(out),
         "genesis_checksum": f"0x{checksum:04X}",
-        "source_art_status": "production_candidate_v9",
+        "source_art_status": "production_candidate_v10",
         "source_art_fingerprint": art_sha1,
         "source_frames": frame_rows,
         "phase_bank_addresses": [f"0x{x:06X}" for x in BANKS],
