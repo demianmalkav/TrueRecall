@@ -1,9 +1,9 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2",
+  "generated_from_technical_checkpoint": "00d9a0e9db501e7f8763515ce34fbe7476dd6c67",
   "authority": {
-    "active_branch": "m09c-native-sequence-seam",
+    "active_branch": "m10-vertical-slice-baseline",
     "human_state": "docs/PROJECT_STATE.md",
     "machine_state": "docs/RECOVERY_MANIFEST.json",
     "technical_compendium": "docs/TECHNICAL_STATE.md",
@@ -22,14 +22,13 @@
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
-    "milestone": "M0.9D",
-    "name": "production Quaid source-frame authoring and budget validation",
-    "status": "V10_PRODUCTION_CANDIDATE_GREEN_FINAL_ART_FREEZE_OPEN",
-    "objective": "close the remaining pixel-art micro-detail gap against the retail-quality baseline without reopening the closed native-seam/mapping contract"
+    "milestone": "M1.0A",
+    "name": "first Total Recall vertical-slice integration baseline",
+    "status": "DONOR_SELECTION_OPEN",
+    "objective": "select a retail donor scene for the Post-Rekall apartment/escape slice, then prove frozen Quaid v11 and M11D scene authoring coexist in one deterministic build"
   },
   "completed_m09c": {
     "status": "COMPLETE",
-    "completion_checkpoint": "6b0556aac44b960b43fcf7e19e0abe94f64e4305",
     "F9F8_descriptor": "0x000A0000",
     "native_phase_bridge": "0x009D5E",
     "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
@@ -37,89 +36,59 @@
     "proof_build_checksum": "0x843C",
     "visual_regression": "PASS"
   },
-  "m09d_contract": {
-    "evidence": "extracted_metadata/m09d_quaid_sprint_contract.json",
-    "descriptor": "0x000A0000",
-    "native_phases": 6,
-    "runtime_facings": 8,
-    "authored_facings": ["N", "NE", "E", "SE", "S"],
-    "native_mirrors": {"SW": "SE", "W": "E", "NW": "NE"},
-    "unique_mapping_records": 10,
-    "resource_group": 7,
-    "chunk_slot_range": ["0x68", "0x7F"],
-    "reserved_chunk_slots_per_phase": 24,
-    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
-    "reserved_chunk_bytes_per_phase": 3072,
-    "six_phase_reserved_bytes": 18432,
-    "max_pieces_per_frame": 4,
-    "max_retail_clip": [48, 64],
-    "transparent_palette_index": 0,
-    "palette_indices": [0, 15],
-    "status": "CLOSED"
-  },
-  "m09d_mapping_compiler": {
-    "tool": "tools/build/m09d_mapping_constrained_sprite_compiler.py",
-    "status": "CLOSED",
-    "source_frames": 30,
-    "mapping_geometry_preserved": true,
-    "chunk_slot_identity_preserved": true,
-    "native_mirroring_preserved": true
-  },
-  "m09d_active_candidate": {
-    "candidate": "v10",
-    "status": "PRODUCTION_CANDIDATE_NOT_YET_FROZEN",
-    "tool": "tools/build/m09d_quaid_sprint_source.py",
-    "evidence": "extracted_metadata/m09d_quaid_v10_candidate.json",
+  "completed_m09d": {
+    "status": "COMPLETE",
+    "freeze_evidence": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
+    "source_tool": "tools/build/m09d_quaid_sprint_source.py",
+    "build_tool": "tools/build/m09d_quaid_sprint_build.py",
+    "runtime_tool": "tools/runtime/m09d_quaid_runtime_regression.py",
+    "source_art_fingerprint": "da0a060e77f9da835b388ffe94a8090d75cd51ea",
     "frame_count": 30,
-    "source_art_fingerprint": "16df51a3063eaec999b88ad7d35dd8ba7d4fdb04",
+    "authored_facings": ["N", "NE", "E", "SE", "S"],
+    "runtime_facings": 8,
+    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
+    "max_pieces_per_frame": 4,
     "phase_bank_sha1": [
-      "713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7",
-      "5270f74e4550626ea36275d11da57cbf70512fc0",
-      "3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0",
-      "a1f88979ba18ef4957ab8efedf253339b5de489b",
-      "e31bafa3d922343a8b29f0bf406d22d8c0f7b4da",
-      "ed27b3d7630ae71b8e9dc518a36f1647630edfdb"
+      "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+      "fce14e16bc2325ea603f7ad973a0033c56f68098",
+      "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+      "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+      "0cd1b90c15c55504e2e55e992197022a5856204f",
+      "416007b12132f06ff30fa009649e4b1c6379d5c1"
     ],
-    "art_review": "v10 improves silhouette/body mass/gait over v9 but still trails retail player micro-detail at neck, sleeves/hands, cloth folds and boot/leg separation",
-    "freeze_ready": false
+    "build_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "build_checksum": "0x266C",
+    "runtime_regression": "PASS",
+    "ci_checkpoint": "4e933f104292a88d6301d0c39855176253a077d1",
+    "ci_run": 38019250327,
+    "static_tests": 58
   },
-  "m09d_candidate_build": {
-    "tool": "tools/build/m09d_quaid_sprint_build.py",
-    "size_bytes": 4194304,
-    "sha1": "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87",
-    "genesis_checksum": "0xD3EF",
-    "parent_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
-    "integration_policy": "rebuild canonical M09C parent then replace only the six phase banks and checksum",
-    "status": "CONFIRMED"
+  "scene_authoring_baseline": {
+    "status": "M11D_CANONICAL_FOUNDATION",
+    "builder": "tools/build/scene_source.py",
+    "probe": "tools/rom_probe/scene_source_probe.py",
+    "evidence": "extracted_metadata/m11d_scene_source.json",
+    "documentation": "docs/M11D_CANONICAL_SCENE_SOURCE.md",
+    "representative_exact_noop_scenes": [0, 5, 6, 18],
+    "scene18_structural_edit_proven": true,
+    "parallel_extensions_not_active": [
+      "m11e-scene-source-matrix",
+      "m11f-palette-authoring",
+      "m11g-scene-source-v2",
+      "m11h-scene-transaction-v2"
+    ]
   },
-  "m09d_runtime_regression": {
-    "tool": "tools/runtime/m09d_quaid_runtime_regression.py",
-    "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
-    "candidate_m09d_sha1": "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87",
-    "common_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
-    "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
-    "active_samples": 42,
-    "runtime_state_mismatches": 0,
-    "pre_trigger_scene_exact": true,
-    "post_release_scene_exact": true,
-    "descriptor_preserved": true,
-    "all_six_phases_visible": true,
-    "first_visible_step": 3,
-    "max_diff_bbox": [65, 64],
-    "pass": true
-  },
-  "runtime_palette": {
-    "evidence": "extracted_metadata/m09d_player_palette_runtime.json",
-    "player_palette_line": 2,
-    "priority": 0,
-    "palette_indices_within_0_15": true,
-    "status": "CONFIRMED_FOR_TESTED_SPRINT_PATH"
+  "slice_target": {
+    "sequence": "Post-Rekall / apartment and escape",
+    "purpose": "prove first production integration of Quaid presentation, normal combat, declarative scene authoring, an objective/interactable and one Total Recall-specific physical/melee behavior",
+    "donor_scene": null,
+    "donor_selection_policy": "rank all 19 retail scenes by dimensions, object pressure, collision complexity, indoor-layout suitability and transformation cost; prefer existing exact-proven M11D scenes when otherwise comparable"
   },
   "falsified_models": [
     {
       "claim": "F9F8 world/render avatar descriptor is 0x0F0000",
       "status": "FALSIFIED_BY_CANONICAL_RUNTIME",
-      "replacement": "F9F8 descriptor is 0x000A0000 in the tested sprint path; 0x0F0000 remains M0.8 player-local visual-component evidence"
+      "replacement": "F9F8 descriptor is 0x000A0000 in the tested sprint path"
     },
     {
       "claim": "F9F8/FB6E globals are 32-bit pointers reconstructed from adjacent words",
@@ -133,22 +102,14 @@
     }
   ],
   "authoritative_tools": [
-    "tools/runtime/m09c_animation_state_trace_v2.py",
-    "tools/rom_probe/m09c_phase_bridge_analysis.py",
-    "tools/build/m09c_native_phase_pixel_sequence.py",
-    "tools/rom_probe/m09d_quaid_sprint_contract_probe.py",
-    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
     "tools/build/m09d_quaid_sprint_source.py",
+    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
     "tools/build/m09d_quaid_sprint_build.py",
     "tools/runtime/m09d_quaid_runtime_regression.py",
+    "tools/build/scene_source.py",
+    "tools/rom_probe/scene_source_probe.py",
+    "tools/build/world_collision_manifest.py",
     "tools/build/sprite_asset_compiler.py"
-  ],
-  "historical_not_promotion_gates": [
-    "tools/runtime/m09c_animation_state_trace.py",
-    "tools/rom_probe/m09c_canonical_gate.py",
-    "tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py",
-    "tools/rom_probe/m09c_animation_progression_analysis.py",
-    "extracted_metadata/m09d_quaid_v9_candidate.json"
   ],
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
@@ -156,64 +117,64 @@
     "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
     "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
     "m09d_palette": "extracted_metadata/m09d_player_palette_runtime.json",
-    "m09d_v10_candidate": "extracted_metadata/m09d_quaid_v10_candidate.json",
-    "m09c_result": "COMPLETE",
-    "m09d_engineering_result": "PASS"
+    "m09d_production_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
+    "m11d_scene_source": "extracted_metadata/m11d_scene_source.json"
   },
   "recovery_validation": {
-    "checkpoint_commit": "4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2",
-    "actions_run": 38018819486,
-    "static_and_recovery_tests": 58,
-    "tests_result": "PASS",
-    "blastem_harness_result": "PASS"
+    "previous_completed_checkpoint": "4e933f104292a88d6301d0c39855176253a077d1",
+    "previous_actions_run": 38019250327,
+    "previous_static_tests": 58,
+    "previous_tests_result": "PASS",
+    "previous_blastem_harness_result": "PASS",
+    "current_branch_validation": "PENDING_AFTER_M1_MANIFEST_UPDATE"
   },
-  "closed_m09d_engineering_gates": [
-    "production sprite contract",
-    "mapping-constrained compiler",
-    "machine-checkable piece/chunk/palette budgets",
-    "reproducible 30-frame indexed source pipeline",
-    "deterministic ROM integration",
-    "player-local runtime integration and exact inactive fallback",
-    "v10 candidate source/bank/build identity"
-  ],
   "open": [
     {
       "id": "O1",
       "blocking": true,
-      "name": "final Quaid micro-detail/art-quality refinement and production freeze",
+      "name": "select and freeze the retail donor scene",
       "completion": [
-        "coherent Quaid identity across five authored and eight runtime facings",
-        "neck/face, sleeve/hand, cloth-fold and boot/leg separation reaches production pixel-art density",
-        "broad/heavy Quaid silhouette and six native phases remain readable",
-        "source remains original and reproducible",
-        "compile and budget assertions remain green",
-        "runtime regression remains player-local with exact inactive fallback",
-        "audit final source/bank/ROM fingerprints and freeze the production player-art pipeline"
+        "inventory all 19 retail scenes",
+        "rank donor candidates by dimensions, object pressure, collision complexity, indoor suitability and transformation cost",
+        "record why selected donor wins and why close alternatives are rejected"
+      ]
+    },
+    {
+      "id": "O2",
+      "blocking": true,
+      "name": "unified M09D-v11 plus M11D no-op integration baseline",
+      "completion": [
+        "audit ROM allocation overlap",
+        "build frozen player plus no-op selected scene in one 4 MiB output",
+        "prove player path and donor scene remain regression-clean"
+      ]
+    },
+    {
+      "id": "O3",
+      "blocking": true,
+      "name": "first authored Total Recall scene delta",
+      "completion": [
+        "apply declarative environment/placement/collision changes to selected donor",
+        "rebuild and reparse exactly",
+        "runtime-prove the first apartment-slice integration delta"
       ]
     }
   ],
   "next": [
-    "use v10 as the fixed baseline and make one focused micro-detail pass inside the existing mapping masks",
-    "review all five authored facings and six phases against the decoded canonical retail player visual-density baseline",
-    "recompile and require the closed mapping/chunk/palette budgets to remain green",
-    "update fingerprints only for legitimate pixel changes and rebuild from the canonical ROM",
-    "rerun the M09D runtime regression against M07C and require the same containment/fallback/control invariants",
-    "if visual quality and all gates are green, mark M0.9D COMPLETE and freeze the production player-art pipeline"
-  ],
-  "parallel_preserved_branches": [
-    "m11e-scene-source-matrix",
-    "m11f-palette-authoring",
-    "m11g-scene-source-v2",
-    "m11h-scene-transaction-v2"
+    "verify canonical ROM locally before ROM-dependent work",
+    "inventory and rank all 19 retail scenes for the Post-Rekall apartment/escape slice",
+    "freeze one donor scene and persist the selection rationale/evidence",
+    "build a combined frozen M09D-v11 plus M11D no-op integration candidate and audit ROM allocation overlap",
+    "run deterministic BlastEm regression proving player presentation remains intact and donor scene is retail-equivalent under no-op authoring",
+    "if green, create the first controlled declarative Total Recall apartment-scene delta"
   ],
   "anti_loop": {
     "same_hypothesis_retry_limit": 2,
     "closed_gate_reopen_requires_new_evidence": true,
-    "runtime_identity_evidence_outranks_static_naming": true,
-    "m09c_visual_gate_closed": true,
-    "m09d_engineering_gates_closed": true,
-    "do_not_expand_mapping_geometry_without_measured_need": true,
-    "do_not_return_to_v9": true
+    "do_not_reopen_m09c_or_m09d_without_contradictory_runtime_evidence": true,
+    "donor_scene_must_be_selected_from_recovered_metadata_not_aesthetics_alone": true,
+    "do_not_expand_scene_or_player_contract_without_measured_need": true,
+    "runtime_compare_correct_logical_parent": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
