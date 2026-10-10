@@ -1,27 +1,29 @@
 # TrueRecall — Authoritative Project State
 
-This is the **single authoritative human-readable continuation state** for TrueRecall. In a fresh context, read this file before interpreting milestone documents, old handoffs or chat transcripts.
+This is the **single authoritative human-readable continuation state** for TrueRecall. In a fresh context, read this file before milestone documents, old handoffs or chat transcripts.
 
 Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 
 ## Authority rules
 
-1. `docs/PROJECT_STATE.md` defines **where work resumes now**.
-2. `docs/RECOVERY_MANIFEST.json` exposes the same continuation state in a machine-readable form.
-3. `docs/TECHNICAL_STATE.md` is the cumulative technical compendium; it does not override this file when choosing `NEXT`.
-4. Milestone documents record subsystem knowledge. A document marked HISTORICAL/FALSIFIED must never be used as a promotion gate.
-5. Drive controls project/design continuity, but Drive copies of dynamic state must defer to this file rather than independently redefining the active branch or next task.
-6. Always refresh the live branch HEAD before writing. The checkpoint below identifies the technical proof state; later documentation-only commits may advance HEAD.
+1. `docs/PROJECT_STATE.md` decides where work resumes.
+2. `docs/RECOVERY_MANIFEST.json` exposes the same continuation state in machine-readable form.
+3. `docs/TECHNICAL_STATE.md` is cumulative background and never overrides `NEXT` here.
+4. HISTORICAL/FALSIFIED milestone material is provenance, not a promotion gate.
+5. Drive is the recovery/design mirror; duplicated dynamic technical state defers to GitHub.
+6. Refresh the live branch before writes. The checkpoint below is the material technical proof checkpoint, not a promise that live HEAD never advances.
 
 ## Active continuation
 
 ```text
 branch:     m09c-native-sequence-seam
-milestone:  M0.9C — native player sequence integration seam
-checkpoint: e77565bd0a56bc807806f9a91d2e87af70ed89e6
+milestone:  M0.9D — production Quaid source-frame authoring and budget validation
+checkpoint: 6b0556aac44b960b43fcf7e19e0abe94f64e4305
 ```
 
-Current objective: finish the deterministic full-game visual regression for the six-phase native F9F8 authored-pixel build. Do not switch to the parallel M11 scene-authoring track merely because capture is operationally inconvenient.
+**M0.9C is COMPLETE.** The native six-phase player-presentation seam is now runtime-proven end-to-end. The active task is no longer reverse-engineering the F9F8 animation identity; it is to replace diagnostic proof glyphs with reproducible original Quaid source frames while preserving the proven native phase/cache path.
+
+The first Total Recall production vertical slice has not begun.
 
 ## Canonical ROM identity
 
@@ -33,53 +35,20 @@ MD5:   2fee5ef253faebaff73c017a7bda1cff
 SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 ```
 
-The original ROM is immutable and never committed.
+The original ROM is immutable and never committed. ROM availability is session-local; verify size + SHA-1 before ROM-dependent work.
 
-**Recovery rule:** ROM availability is session-local. Never infer that a fresh context already has raw bytes merely because an earlier session did. Before any ROM-dependent action, locate/provide the base ROM and verify size + SHA-1.
+## Stable engine foundation
 
-## Stable foundation
+Retained foundation includes M0.1–M0.6 reconstruction/authoring, M0.7 deterministic held-Y sprint, M0.8 runtime-authored player-local graphics, M0.10 world-collision authoring and M0.11A–D canonical scene-source authoring. Parallel M11E–H branches remain preserved but are not the active track.
 
-Completed and retained as technical foundation:
+## M0.9C canonical runtime model — CONFIRMED
 
-- M0.1 canonical ROM validation.
-- M0.2 static landmarks / RAM / cheat-correlated seams.
-- M0.3 entity architecture.
-- M0.4 asset/cutscene extraction pipeline.
-- M0.5 gameplay map format.
-- M0.6A–M: player architecture, persistent object stream, VM, archetypes, maps, scene placement and scripted-type authoring.
-- M0.7 deterministic BlastEm harness + held-Y sprint runtime proof.
-- M0.8 4 MiB expansion + runtime-visible authored player-local graphics path.
-- M0.10A/B runtime-confirmed world-resource relocation/material behavior.
-- M0.10C–F exact broadphase/world-manifest authoring foundation.
-- M0.11A–D unified canonical scene-source foundation on the stable scene track.
-
-The first Total Recall production vertical slice has not begun.
-
-## M0.9C canonical correction — CONFIRMED
-
-Earlier M09C work made a useful but incorrect identity assumption:
-
-```text
-F9F8 world/render avatar descriptor == 0x0F0000
-JLLBFR family 0x00F2 must resolve through 0x0F0000
-```
-
-Canonical runtime execution falsified that model.
-
-### Linked player globals are word pointers
-
-Retail code loads these globals with `MOVEA.W`; they contain signed 16-bit RAM pointers, not adjacent halves of 32-bit pointers.
-
-Observed gameplay values:
+Retail loads `FFFFF9F8` and `FFFFFB6E` with `MOVEA.W`; each global stores a signed 16-bit RAM pointer.
 
 ```text
 FFFFF9F8 -> FFFFC632  world/render avatar
 FFFFFB6E -> FFFFC7FA  control/collision proxy
 ```
-
-The old v1 tracer reconstructions such as `0xC6320000` / `0xC7FA000F` were tooling artifacts.
-
-### Canonical F9F8 identity
 
 During held-Y sprint:
 
@@ -88,207 +57,108 @@ F9F8 object+0x2A = 139
 F9F8 object+0x2C = 0x000A0000
 ```
 
-`object+0x2C` remains stable through the observed native cycle.
+The descriptor remains stable through the observed native cycle. The older `0x0F0000 == F9F8 descriptor` interpretation is FALSIFIED; `0x0F0000` remains only M0.8 player-local visual-component evidence.
 
-M0.8's `0x0F0000` result remains valid only as **player-local visual-component evidence**. It is not the canonical F9F8 world/render-avatar descriptor.
-
-Primary refinement document: `docs/M08_RUNTIME_AUTHORED_GRAPHICS.md`.
-
-## Native phase bridge — CONFIRMED
-
-The linked-object bridge at `0x009D5E` transfers animation **phase** from the proxy to the F9F8 avatar.
-
-Effective behavior:
+The linked-object bridge at `0x009D5E` advances the avatar phase through the canonical writer transaction:
 
 ```text
-phase_delta = proxy(+0x1E) - proxy(+0x1C)
-current     = avatar(+0x1C) + phase_delta
-avatar(+0x1E) = current
-avatar(+0x24) = encoded_entry(avatar_descriptor, current)
-avatar(+0x20) = mapping_record(avatar_descriptor, current)
+0x009D72  F9F8 +0x1E
+0x009D7E  F9F8 +0x24
+0x009D88  F9F8 +0x20
 ```
 
-Canonical writer cluster:
-
-```text
-0x009D72  F9F8 +0x1E current phase
-0x009D7E  F9F8 +0x24 encoded entry
-0x009D88  F9F8 +0x20 resolved mapping record
-0x011284  F9F8 +0x22 mirror of resolved record in observed trace
-```
-
-This ordered `+0x1E -> +0x24 -> +0x20` cluster is one native progression transaction. A `+0x24` write inside it is **not** automatically a new external selection event.
-
-Primary evidence: `extracted_metadata/m09c_canonical_phase_bridge.json`.
-
-## Observed six-position sprint cycle — CONFIRMED
-
-F9F8 base phase:
-
-```text
-object+0x1C = 0x08B6
-```
-
-Current phase cycle:
-
-```text
-0x08B6 -> 0x08B8 -> 0x08BA -> 0x08BC -> 0x08BE -> 0x08C0 -> 0x08B6
-```
-
-Canonical raw deltas:
+Native raw phase deltas are:
 
 ```text
 0, 2, 4, 6, 8, 10
 ```
 
-Mapping records:
+Primary structural evidence: `extracted_metadata/m09c_canonical_phase_bridge.json`.
+
+## Native six-bank proof build — CONFIRMED
+
+`tools/build/m09c_native_phase_pixel_sequence.py` derives authored resource selection from:
 
 ```text
-0x2C08 0x2C24 0x2C44 0x2C64 0x2C80 0x2CA0
+(object+0x1E) - (object+0x1C)
 ```
 
-Encoded entries:
+while Y is held and only when `object+0x2C == 0x000A0000`.
 
 ```text
-0x02AC 0x02AE 0x02B0 0x02B2 0x02B4 0x32B6
+phase 0 -> bank 0x210000 / cache 0x3A00
+phase 1 -> bank 0x218000 / cache 0x3B00
+phase 2 -> bank 0x220000 / cache 0x3C00
+phase 3 -> bank 0x228000 / cache 0x3D00
+phase 4 -> bank 0x230000 / cache 0x3E00
+phase 5 -> bank 0x238000 / cache 0x3F00
 ```
 
-No `+0x2C` descriptor write occurred during the trace.
-
-## Corrected M09C tooling
-
-Authoritative current tools:
+Audited build fingerprint:
 
 ```text
-tools/runtime/m09c_animation_state_trace_v2.py
-tools/rom_probe/m09c_phase_bridge_analysis.py
-tools/build/m09c_native_phase_pixel_sequence.py
-```
-
-Historical tools retained for provenance, not promotion:
-
-```text
-tools/runtime/m09c_animation_state_trace.py
-tools/rom_probe/m09c_canonical_gate.py
-tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py   # old JLLBFR@0x0F0000 interpretation
-tools/rom_probe/m09c_animation_progression_analysis.py  # old +0x24/reselection rule
-```
-
-Do not modify historical tools merely to force their old hypothesis to pass.
-
-## Native-phase six-bank proof build — IMPLEMENTED
-
-`tools/build/m09c_native_phase_pixel_sequence.py` preserves the M07 sprint seam and M09B2 renderer/cache override architecture, but replaces the VBlank-driven source:
-
-```text
-(F712 >> 2) & 3
-```
-
-with native F9F8 phase:
-
-```text
-raw_delta = (object+0x1E) - (object+0x1C)
-```
-
-for deltas `0,2,4,6,8,10` and only while:
-
-```text
-object+0x2C == 0x000A0000
-```
-
-Phase resources:
-
-```text
-0 -> bank 0x210000 / cache namespace 0x3A00
-1 -> bank 0x218000 / cache namespace 0x3B00
-2 -> bank 0x220000 / cache namespace 0x3C00
-3 -> bank 0x228000 / cache namespace 0x3D00
-4 -> bank 0x230000 / cache namespace 0x3E00
-5 -> bank 0x238000 / cache namespace 0x3F00
-```
-
-Audited proof-build fingerprint:
-
-```text
-ROM size: 4,194,304
+size:     4,194,304 bytes
 SHA-1:    3256f9dcbc6376624716e3508f41c0439e17cef6
 checksum: 0x843C
-key tramp: 146 bytes
-render:    140 bytes
 ```
 
-## 68000 trampoline runtime proof — CONFIRMED
+The exact 68000 trampolines already passed 12/12 native-core dispatch tests. Evidence: `extracted_metadata/m09c_native_phase_trampoline_runtime.json`.
 
-The exact candidate trampolines executed under the project-pinned BlastEm 68000 core:
+## M0.9C final visual containment/fallback — CONFIRMED
 
-```text
-6 render-source dispatches
-6 cache-key dispatches
-12/12 PASS
-```
+Final runtime evidence: `extracted_metadata/m09c_native_visual_regression.json`.
 
-Render D1 results:
+The comparison starts parent M07C and candidate M09C from the same native pre-Y gameplay state after fresh six-button peripheral initialization. It uses physical `W=Y` + Left input, BlastEm software rendering and external X11 capture; the problematic internal `shot + -g` combination is not used.
 
-```text
-0 -> 0x210000
-2 -> 0x218000
-4 -> 0x220000
-6 -> 0x228000
-8 -> 0x230000
-10 -> 0x238000
-```
+Confirmed results:
 
-Cache results for retail chunk index `0x17`:
+- parent M07C SHA-1 `55e02728cb0b7f3627f410202c889197c0e3d0d2`;
+- candidate M09C SHA-1 `3256f9dcbc6376624716e3508f41c0439e17cef6`;
+- normalized active input `F6EC = 0x2044` on all 42 active samples;
+- 44 parent/candidate state samples compared with **zero RAM/control mismatches**;
+- F9F8 descriptor remains `0x000A0000`;
+- all six native phase deltas appear and every phase has visible authored-pixel evidence;
+- two-frame presentation/cache activation latency, followed by continuous visible authored effect through the remaining active window;
+- retail active records `0x5AC8/0x5AE4` have `clip_width=48`, `clip_height=39`, yielding a 2x visual envelope of `96×78`;
+- observed maximum active gameplay-difference bbox is `78×64`, entirely inside that retail avatar envelope;
+- pre-trigger gameplay region is pixel-exact to M07C;
+- post-release gameplay region is pixel-exact to M07C;
+- small host/raster differences were confined below the established 224-source-line gameplay comparison region and are not game-state divergence.
 
-```text
-0 -> 0x3A17
-2 -> 0x3B17
-4 -> 0x3C17
-6 -> 0x3D17
-8 -> 0x3E17
-10 -> 0x3F17
-```
+Therefore the M09C completion gate is closed: native phase -> authored bank/cache namespace -> renderer/cache/VRAM/SAT -> player-local visible output is runtime-proven without movement/control/link regression.
 
-Evidence: `extracted_metadata/m09c_native_phase_trampoline_runtime.json`.
+## Closed/falsified M09C models
 
-VERIFY also caught and fixed an invalid zero-displacement short `BRA`; the assembler now rejects that encoding and CI protects the case.
+Do not reopen without contradictory runtime evidence:
 
-## CI state
+- F9F8 descriptor is `0x0F0000` — FALSIFIED.
+- F9F8/FB6E are adjacent-word reconstructed 32-bit pointers — FALSIFIED.
+- every `+0x24` write is an external reselection — FALSIFIED.
+- M09C still needs a native visual containment gate — CLOSED by `m09c_native_visual_regression.json`.
 
-Latest technical checkpoint recorded before this documentation reconciliation:
+## Active milestone: M0.9D
 
-```text
-workflow: m09c-static
-run:      37997040444
-head:     373b3d33636c12f6c30c206165ad171168694e6c
-result:   success
-unittest: 42 tests / 0 failures / 0 errors
-BlastEm harness integration: success
-```
+Goal: turn the proven presentation seam into a production player-art pipeline for Quaid.
 
-Documentation-only commits after the technical checkpoint do not invalidate those proofs.
+Completion criteria:
+
+1. Define the production Quaid sprite contract: canvas/anchor/clip geometry, palette policy, allowed piece count, cache/VRAM budget and directional coverage.
+2. Produce an original source-art sequence for at least one coherent locomotion/sprint family; diagnostic proof glyphs are not production art.
+3. Compile the source sequence through the existing 16×16 decomposition/global-dedup pipeline with deterministic metadata.
+4. Prove the compiled sequence fits the established cache/VRAM/sprite pressure budget.
+5. Integrate it through the already-proven native M09C phase path without changing F9F8/FB6E control semantics.
+6. Run deterministic runtime comparison showing player-local authored output and exact inactive fallback.
+7. Only after those gates are green freeze the production player-art pipeline and advance toward the first Total Recall vertical slice.
 
 ## OPEN
 
-### O1 — full-game visual containment/fallback regression
+### O1 — production Quaid source-frame contract
 
-This is the only material M09C completion gate.
+Define the exact art/technical constraints from the now-confirmed runtime mapping geometry and compiler limits.
 
-Required proof:
+### O2 — first production Quaid locomotion/sprint family
 
-- before Y: exact convergence to the correct M07 sprint parent;
-- held Y: differences remain player-local;
-- the six authored states correlate one-to-one with native F9F8 deltas `0,2,4,6,8,10`, not `F712`;
-- cache namespaces do not contaminate unrelated actors;
-- Y release: exact convergence to parent;
-- M07 movement/control behavior remains intact;
-- F9F8/FB6E link semantics and F9F8 descriptor `0x0A0000` remain intact.
-
-Operational constraint: BlastEm `shot` hangs when combined with `-g` software rendering in the current environment. The debugger/control harness itself is healthy. Use the normal renderer or an external X capture path; do not classify the `-g` screenshot hang as a game failure.
-
-### O2 — production Quaid source frames
-
-Blocked on O1. Do not integrate final artwork before the native six-phase containment/fallback gate is green.
+Blocked on O1. Source art must be original/reproducible and designed for Genesis constraints rather than downscaled after the fact.
 
 ## Parallel scene-authoring branches — PRESERVED, NOT ACTIVE NEXT
 
@@ -299,33 +169,31 @@ m11g-scene-source-v2
 m11h-scene-transaction-v2
 ```
 
-These branches preserve real work. They do not override the active M09C continuation state.
+Do not switch tracks merely because player-art production requires creative iteration. A deliberate track switch must first be recorded here.
 
 ## NEXT
 
-1. Ensure the canonical ROM is available locally and verify size + SHA-1.
-2. Build `m09c_native_phase_pixel_sequence.py`; require SHA-1 `3256f9dc...` and checksum `0x843C` for the current proof build.
-3. Run the deterministic gameplay window against the correct M07 sprint parent using a capture path that avoids BlastEm `shot` + `-g`.
-4. Prove pre/post exact convergence and player-local active differences.
-5. Correlate the six visual states with raw F9F8 deltas `0,2,4,6,8,10`.
-6. If cache contamination occurs, change only the namespace strategy; maximum two retries without new evidence.
-7. If green, mark M09C COMPLETE and begin production Quaid-frame authoring.
+1. Derive the production Quaid sprite specification from the confirmed F9F8 mapping geometry and current sprite compiler.
+2. Audit current sequence compiler limits against that specification: piece count, chunk count, global dedup, palette index 0, cache working set and eight-direction requirements.
+3. Add machine-readable production budgets/assertions before final art is introduced.
+4. Build a reproducible original Quaid source-frame template/first locomotion-sprint sequence against those budgets.
+5. Compile it and run static round-trip/budget checks.
+6. Integrate the first production frames through the closed M09C native phase seam and runtime-regress against M07 semantics.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
-- Never reopen JLLBFR@`0x0F0000` as the F9F8 identity hypothesis; canonical runtime evidence falsified it.
-- Never treat v1 combined-word pointer reconstruction as evidence.
-- A closed gate reopens only if later evidence contradicts it.
+- Closed gates reopen only on contradictory evidence.
 - Runtime identity evidence outranks static naming assumptions.
-- Do not promote M09C on static/disassembly proof alone.
-- Prefer small semantic Git commits for material proof/correction.
+- Preserve M09C diagnostic proof assets as tests; do not mistake them for production art.
+- Do not rewrite the native seam merely to make art authoring easier unless a measured production constraint requires it.
+- Prefer small semantic Git commits.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     canonical F9F8 identity + native six-phase bridge recovered; six-bank builder implemented; 12/12 trampoline executions; 42/42 CI tests.
-EVIDENCE extracted_metadata/m09c_canonical_phase_bridge.json + extracted_metadata/m09c_native_phase_trampoline_runtime.json + Actions run 37997040444.
-OPEN     full-game visual containment/fallback regression only.
-NEXT     deterministic M07-parent vs M09C-six-phase visual regression using a non--g screenshot path.
+DONE     M0.9C COMPLETE: canonical F9F8 identity, native six-phase bridge, 12/12 trampoline dispatch and full visual containment/fallback runtime proof.
+EVIDENCE extracted_metadata/m09c_canonical_phase_bridge.json + extracted_metadata/m09c_native_phase_trampoline_runtime.json + extracted_metadata/m09c_native_visual_regression.json.
+OPEN     M0.9D production Quaid sprite contract, then first original locomotion/sprint family.
+NEXT     derive and codify production sprite budgets from confirmed runtime geometry + compiler constraints.
 ```
