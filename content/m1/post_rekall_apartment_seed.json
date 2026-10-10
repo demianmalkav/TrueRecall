@@ -1,0 +1,36 @@
+{
+  "schema": "truerecall.scene_patch.v1",
+  "scene_index": 15,
+  "map_operations": [
+    {
+      "op": "set_tile",
+      "plane": "C000",
+      "x": 0,
+      "y": 0,
+      "value": 1
+    }
+  ],
+  "object_operations": [
+    {
+      "op": "replace",
+      "base_index": 5,
+      "type_id": 54
+    }
+  ],
+  "world_operations": [
+    {
+      "op": "replace",
+      "id": "retail_000",
+      "type": 10
+    }
+  ],
+  "intent": {
+    "status": "engineering_seed_not_final_content",
+    "slice": "Post-Rekall / apartment and escape",
+    "purpose": "exercise map, persistent-placement and world-material authoring simultaneously on the frozen scene-15 donor before room-scale content conversion",
+    "map_edit": "one controlled C000 tile-word change",
+    "placement_edit": "convert one existing pickup placement to confirmed health pickup type 54 without changing stream count or coordinates",
+    "world_edit": "change one existing type-9 world rectangle to type 10, retaining player blocking while using the previously runtime-proven projectile-pass material behavior",
+    "production_note": "these three edits are integration sentinels, not final apartment art/layout/objective design"
+  }
+}
