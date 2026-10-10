@@ -1,0 +1,80 @@
+{
+  "schema": "truerecall.m10a.apartment_seed_build.v1",
+  "status": "STRUCTURAL_PASS_RUNTIME_PENDING",
+  "canonical_rom_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_index": 15,
+  "patch_manifest": "content/m1/post_rekall_apartment_seed.json",
+  "intent": "first controlled M1.0 integration delta across map, placement and world-material authoring; not final apartment content",
+  "operations": {
+    "map": [
+      {
+        "plane": "C000",
+        "x": 0,
+        "y": 0,
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "objects": [
+      {
+        "base_index": 5,
+        "before_type": 53,
+        "after_type": 54,
+        "x": 872,
+        "y": 122,
+        "semantic": "confirmed health pickup"
+      }
+    ],
+    "world": [
+      {
+        "id": "retail_000",
+        "before_type": 9,
+        "after_type": 10,
+        "rect": [0, 1328, 808, 1344],
+        "semantic": "retain player blocking while using previously runtime-proven projectile-pass material behavior"
+      }
+    ]
+  },
+  "scene_only_build": {
+    "size_bytes": 4194304,
+    "sha1": "12794f0adeb6b328adac37613c58ac5d97de4e08",
+    "genesis_checksum": "0xDCA0",
+    "allocations": [
+      {"name": "C000_map_desc", "address": "0x300000", "size": 8},
+      {"name": "C000_map_lz", "address": "0x300010", "size": 597},
+      {"name": "object_desc", "address": "0x300270", "size": 100},
+      {"name": "object_lz", "address": "0x3002E0", "size": 663},
+      {"name": "world_resource", "address": "0x300600", "size": 6720}
+    ],
+    "allocation_end_exclusive": "0x302040"
+  },
+  "integration_merge": {
+    "frozen_player_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "player_changed_bytes_vs_canonical_4m": 204678,
+    "scene_changed_bytes_vs_canonical_4m": 8065,
+    "overlap_changed_bytes": 0,
+    "conflict_bytes": 0,
+    "output_size": 4194304,
+    "output_sha1": "24f60fc28db4da0bcd5975f8ab316157ab2cd960",
+    "genesis_checksum": "0xA532"
+  },
+  "reparse_validation": {
+    "c000_tile_0_0": 1,
+    "placement_index_5_type": 54,
+    "placement_index_5_xy": [872, 122],
+    "world_record_retail_000_type": 10,
+    "world_memberships_match_compiled_manifest": true,
+    "all_world_list_refs_resolve_to_compiled_records": true,
+    "all_six_player_phase_banks_byte_identical_to_frozen_v11": true,
+    "note": "authored world resources deliberately use the M10D remote-list-pool layout. Validation therefore uses the build-reported grid_bytes/pool_start/sentinel rather than the retail-only discover_scene_layout heuristic."
+  },
+  "closed_structural_assertions": {
+    "map_edit_redecoded_exactly": true,
+    "object_stream_reparsed_exactly": true,
+    "world_broadphase_memberships_exact": true,
+    "player_scene_transform_overlap_zero": true,
+    "player_art_banks_preserved": true
+  },
+  "runtime_validation": "PENDING",
+  "next": "boot the Office/scene-15 path in BlastEm, compare the integrated seed against the correct frozen-v11 scene-15 parent, and prove the authored tile/health/material delta does not disturb the player-control/presentation invariants"
+}
