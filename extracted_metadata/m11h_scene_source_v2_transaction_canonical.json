@@ -1,0 +1,20 @@
+{
+  "authored": {
+    "allocation_count": 3,
+    "allocations": [
+      {"address": 3145728, "name": "C000_map_desc", "size": 8},
+      {"address": 3145744, "name": "C000_map_lz", "size": 266},
+      {"address": 3146016, "name": "scene_palette", "size": 128}
+    ],
+    "checksum": "0x1D08",
+    "output_sha1": "bf6c875b04f813eb4682687b0ebbe2f4eced6a49",
+    "palette": {"after": 3822, "before": 546, "index": 1, "new_pointer": 3146016},
+    "scene_record_changed_offsets": [3, 4, 7, 8, 27, 28, 29],
+    "tile": {"after": 1, "before": 205, "index": 0}
+  },
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "no_op_exact": true,
+  "runtime_validation": "canonical_static_transaction_pass; scene0 runtime covered by m110b",
+  "scene_index": 18,
+  "schema": "truerecall.m11h.scene_source_v2_transaction.v1"
+}
