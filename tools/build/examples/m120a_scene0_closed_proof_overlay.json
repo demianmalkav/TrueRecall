@@ -1,0 +1,48 @@
+{
+  "schema": "truerecall.scene_overlay.v1",
+  "id": "m120a_scene0_closed_proof",
+  "scene_index": 0,
+  "identity": {
+    "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+    "palette_retail_pointer": "0x09AC20",
+    "primary_graphics": {
+      "retail_descriptor": "0x00FFAA",
+      "retail_primary_lz": "0x014898",
+      "secondary_pointer": "0x800178DA",
+      "aux_pointer": "0x01BF7A",
+      "secondary_plane_descriptor": "0x00000000",
+      "retail_decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171"
+    }
+  },
+  "palette": [
+    {"index": 8, "expect": "0x0464", "value": "0x0648"}
+  ],
+  "maps": [],
+  "objects": [
+    {
+      "op": "add",
+      "id": "m110a_shotgun_0000",
+      "type_id": 69,
+      "status_flags": "0x7800",
+      "stride": 6,
+      "x": 690,
+      "y": 558,
+      "param": null
+    }
+  ],
+  "world": [
+    {
+      "op": "add",
+      "id": "m100a_wall_0000",
+      "type": 9,
+      "rect": [668, 540, 676, 580]
+    }
+  ],
+  "primary_graphics": [
+    {
+      "tile_index": 2,
+      "expect_sha256": "e0e77a507412b120f6ede61f62295b1a7b2ff19d3dcc8f7253e51663470c888e",
+      "tile_hex": "e000000e0e0000e000e00e00000ee000000ee00000e00e000e0000e0e000000e"
+    }
+  ]
+}
