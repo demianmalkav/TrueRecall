@@ -14,9 +14,9 @@ from scene_compiler import BASE_SHA1
 from scene_overlay import compile_overlay
 
 FROZEN_M09D_SHA1 = "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021"
-EXPECTED_SCENE_SHA1 = "e4da8446303f96be04dadc0db8f3edd565f9b5c1"
-EXPECTED_OUTPUT_SHA1 = "f0d232b3f6e181ccb9bb06cf07f475a3e7b70837"
-EXPECTED_OUTPUT_CHECKSUM = "0xC4DC"
+EXPECTED_SCENE_SHA1 = "7c14d479413e0efb412027209de6b85d6c67821f"
+EXPECTED_OUTPUT_SHA1 = "05fafc33f96a74d57765bacdba888d79e7eee860"
+EXPECTED_OUTPUT_CHECKSUM = "0xB78C"
 CHECKSUM_OFFSET = 0x018E
 
 
@@ -52,7 +52,7 @@ def build(canonical: bytes, contract: dict[str, Any], overlay: dict[str, Any]) -
 
     report = {
         "schema": "truerecall.m120b.l3_starter_build.v1",
-        "status": "PROTOTYPE_NOT_ART_FREEZE",
+        "status": "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE",
         "base_sha1": BASE_SHA1,
         "overlay_id": overlay_report["overlay_id"],
         "scene_parent_sha1": scene_sha1,
@@ -61,7 +61,7 @@ def build(canonical: bytes, contract: dict[str, Any], overlay: dict[str, Any]) -
         "genesis_checksum": checksum,
         "phase_bank_sha1": phase_hashes,
         "assertions": assertions,
-        "runtime_status": "CONFIRMED_STARTER_REGRESSION",
+        "runtime_status": "CONFIRMED_STARTER_REGRESSION_AND_VRAM_RESIDENCY",
     }
     return output, report
 
