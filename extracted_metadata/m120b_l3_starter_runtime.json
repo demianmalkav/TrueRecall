@@ -1,16 +1,25 @@
 {
-  "schema": "truerecall.m120b.l3_starter_runtime_evidence.v1",
-  "status": "PROTOTYPE_NOT_ART_FREEZE",
+  "schema": "truerecall.m120b.l3_starter_runtime_evidence.v2",
+  "status": "PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE",
   "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
   "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
-  "scene_parent_sha1": "e4da8446303f96be04dadc0db8f3edd565f9b5c1",
-  "candidate_sha1": "f0d232b3f6e181ccb9bb06cf07f475a3e7b70837",
-  "genesis_checksum": "0xC4DC",
+  "scene_parent_sha1": "7c14d479413e0efb412027209de6b85d6c67821f",
+  "candidate_sha1": "05fafc33f96a74d57765bacdba888d79e7eee860",
+  "genesis_checksum": "0xB78C",
   "overlay": "tools/build/examples/m120b_l3_urban_subway_starter_overlay.json",
-  "authored_primary_tiles": [565, 566, 567, 568, 569, 570],
-  "retail_reference_boundary": {
-    "scene0_union_max_referenced_tile": 564,
-    "authored_tiles_were_unreferenced_before_overlay": true
+  "authored_primary_tiles": [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+  "vram_residency": {
+    "status": "CONFIRMED",
+    "authored_slots_checked": 15,
+    "authored_slots_exact": 15,
+    "range": [2,16],
+    "method": "pinned BlastEm native savestate VDP VRAM extraction at deterministic scene0 capture; each 32-byte slot compared byte-for-byte with overlay payload"
+  },
+  "falsified_exploration": {
+    "claim": "retail-unreferenced primary tile indices 565+ are safe production VRAM slots",
+    "status": "FALSIFIED",
+    "evidence": "runtime presentation showed dynamic/overwritten mosaic data despite behavioral regression remaining green",
+    "replacement_rule": "production starter currently uses only VRAM slots whose authored bytes are directly observed resident at runtime"
   },
   "authored_map_rect": {
     "plane": "E000",
@@ -22,17 +31,17 @@
   },
   "presentation": {
     "comparison_parent": "closed M120A/M112A presentation",
-    "size": [256, 240],
-    "changed_pixels": 37948,
-    "bbox": [0, 9, 256, 185],
+    "size": [256,240],
+    "changed_pixels": 39251,
+    "bbox": [0,9,256,185],
     "parent_png_sha256": "c4e7eb5a49ae102759da87ec4b11bff4d12e0a36475718e815295b1752a1093e",
-    "candidate_png_sha256": "f9bfe07c00d72b73f1b40580ac663985ebedb409c742e2f0e907c7dc666c9e3e",
-    "interpretation": "original starter tiles are runtime-visible across the intended initial environment region; visual quality is not frozen"
+    "candidate_png_sha256": "f89ae6aa7c57b239c71ab70fa4309a05faccd35f25a3d3d1a7ac234d60a8c511",
+    "interpretation": "authored station/subway vocabulary is visibly coherent and no longer shows the dynamic-slot corruption of the superseded 565+ probe; composition remains prototype quality, not art freeze"
   },
   "viewport_localization": {
     "status": "HIGH_CONFIDENCE",
-    "dominant_visible_e000_rows_tested": [12, 22],
-    "dominant_visible_e000_columns_tested": [0, 26],
+    "dominant_visible_e000_rows_tested": [12,22],
+    "dominant_visible_e000_columns_tested": [0,26],
     "complementary_partition_result": "no map-driven presentation change in rows 23..44 or columns 27..106 during the deterministic initial capture",
     "note": "localization is a production placement aid, not a recovered universal camera/map formula"
   },
@@ -45,6 +54,10 @@
     "difference_count": 1,
     "difference": {"index": 8, "parent": "0x0464", "candidate": "0x0648"},
     "player_palette_line_exact": true
+  },
+  "runtime_state_sha256": {
+    "parent": "a7f43d9a7e28aad33de1973a76e5242c73d5dc9d03a9815592fcb5f816e9c155",
+    "candidate": "6b04e7b6062aae26de3ab5b9a5a7e867e857c33dc4f89663d5a65842c16b649b"
   },
   "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
   "pass": true
