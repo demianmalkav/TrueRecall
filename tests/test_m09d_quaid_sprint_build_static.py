@@ -22,14 +22,14 @@ CONTRACT = json.loads(
         encoding="utf-8"
     )
 )
-EXPECTED_SOURCE_FINGERPRINT = "94db7b28dca13720fd2656c37de4e57dc74d6dd4"
+EXPECTED_SOURCE_FINGERPRINT = "16df51a3063eaec999b88ad7d35dd8ba7d4fdb04"
 EXPECTED_BANK_SHA1 = [
-    "dd64c9fd36639fb81e83aaa734d0c2e09cd32c26",
-    "bbe43db7b7639157d19b5b4267c4e5f26dea8444",
-    "018c59af23e42825fabb50937dc6263be4840c05",
-    "7386aa54924b24c54e5c69b7aa7b079a84f36bb2",
-    "8209c9c428fcd8d45169f79caa51225b74d7ad38",
-    "241f1d4a95474b8b64f7f1b57727d31e2de1936b",
+    "713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7",
+    "5270f74e4550626ea36275d11da57cbf70512fc0",
+    "3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0",
+    "a1f88979ba18ef4957ab8efedf253339b5de489b",
+    "e31bafa3d922343a8b29f0bf406d22d8c0f7b4da",
+    "ed27b3d7630ae71b8e9dc518a36f1647630edfdb",
 ]
 
 
