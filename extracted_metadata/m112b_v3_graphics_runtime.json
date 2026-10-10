@@ -1,0 +1,35 @@
+{
+  "assertions": {
+    "authored_tile2_reaches_vram_exact": true,
+    "m110a_cram_exact": true,
+    "parent_tile2_fingerprint_exact": true,
+    "presentation_changed": true,
+    "presentation_diff_confined_to_upper_environment": true,
+    "presentation_dimensions_exact": true,
+    "vram_changed_byte_count_exact": true,
+    "vram_diff_exactly_tile2": true
+  },
+  "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+  "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+  "candidate_tile_hex": "e000000e0e0000e000e00e00000ee000000ee00000e00e000e0000e0e000000e",
+  "m110a_parent_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd",
+  "parent_tile_sha256": "e0e77a507412b120f6ede61f62295b1a7b2ff19d3dcc8f7253e51663470c888e",
+  "pass": true,
+  "presentation": {
+    "bbox": [15, 9, 199, 45],
+    "candidate_sha256": "c4e7eb5a49ae102759da87ec4b11bff4d12e0a36475718e815295b1752a1093e",
+    "changed_pixels": 1440,
+    "parent_sha256": "f30174c40a9cc6e0c43f247f12339029797105873424c8772d283f4be959513f",
+    "size": [256, 240]
+  },
+  "schema": "truerecall.m112b.v3_graphics_runtime.v1",
+  "source_runner_schema": "truerecall.m111d.graphics_runtime.v1",
+  "state_sha256": {
+    "candidate": "77e53b17db89d3498128776283a72fee55ae5a62b1b0aca3e89e7fb6498ac519",
+    "m110a_parent": "6594c8e2f900b32b316bece33876f7b7df8cb6e03e59af74291ce06fc32d7cc5"
+  },
+  "tile_index": 2,
+  "vram_changed_bytes": 32,
+  "vram_diff_ranges": [[64, 96]],
+  "vram_range": [64, 96]
+}
