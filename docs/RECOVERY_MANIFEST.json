@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "0ba0fa1fb1b5935c288b7e663af40ad28b125022",
+  "generated_from_technical_checkpoint": "fa676491696d8253e48c55472e4c8ad05a33f9a4",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -25,7 +25,7 @@
     "milestone": "M1.2A",
     "name": "L3 urban pursuit/subway production slice",
     "status": "OPEN",
-    "objective": "integrate the runtime-proven native subway objective pair into the three-zone L3 production layout, then add one scene-specific pursuit-pressure trigger"
+    "objective": "add one scene-specific pursuit-pressure trigger to the M120G production objective baseline, prove it in isolation, then integrate and rerun the production runtime gate"
   },
   "completed": {
     "m09c": {"status": "COMPLETE", "proof_build_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6", "F9F8_descriptor": "0x000A0000", "native_phase_bridge": "0x009D5E", "raw_phase_deltas": [0,2,4,6,8,10]},
@@ -46,17 +46,26 @@
       "authored_vram_slots_exact": 15,
       "zones": ["pursuit_entry", "objective_platform", "subway_transition"]
     },
-    "m120d_type60": {"status": "CONFIRMED_RUNTIME", "type_id": 60, "status_flags": "0x7800", "stride": 6, "fc54_transition": "0x0000->0x4000", "message": "0x003C"},
-    "m120e_type87": {"status": "CONFIRMED_RUNTIME", "type_id": 87, "status_flags": "0x7800", "stride": 6, "without_flag_message": "0x0034", "with_flag_message": "0x0036"},
     "m120f_objective_pair": {
       "status": "CONFIRMED_RUNTIME_END_TO_END",
-      "scene_parent_sha1": "c5f572ee339ca9194d497c523feffd0366cd1862",
       "candidate_sha1": "ed3f52765d1cb76ad90df1a5bc74c5283c5115dc",
-      "checksum": "0xF642",
-      "lever": {"type_id": 60, "x": 701, "y": 558},
-      "signal_box": {"type_id": 87, "x": 724, "y": 558},
       "native_sequence": ["FC06=0x003C", "FC54=0x4000 persists", "FC06=0x0036"],
       "debugger_flag_injection": false
+    },
+    "m120g_production_objective": {
+      "status": "COMPLETE_CONFIRMED_RUNTIME",
+      "visual_base": "tools/build/examples/m120c_l3_three_zone_overlay.json",
+      "placement": "tools/build/examples/m120g_l3_objective_placement.json",
+      "builder": "tools/build/m120g_l3_objective_build.py",
+      "scene_parent_sha1": "cd43a4b53371e4d8329eaa328582ffd64262bddf",
+      "candidate_sha1": "150373a312283f5c89e5fa00e99f19d7a83bff44",
+      "checksum": "0xB7B0",
+      "lever": {"type_id": 60, "x": 724, "y": 558, "status_flags": "0x7800", "stride": 6},
+      "signal_box": {"type_id": 87, "x": 652, "y": 558, "status_flags": "0x7800", "stride": 6},
+      "native_sequence": ["FC54=0x0000/FC06=0x0002", "FC54=0x4000/FC06=0x003C", "FC54=0x4000/FC06=0x0036"],
+      "authored_vram_slots_exact": 15,
+      "full_cram_equal_to_m120c": true,
+      "ci": {"commit": "fa676491696d8253e48c55472e4c8ad05a33f9a4", "actions_run": 38079266697, "static": "PASS", "blastem_harness": "PASS"}
     }
   },
   "stable_scene_authoring": {
@@ -82,6 +91,7 @@
     "tools/build/scene_compiler_v3.py",
     "tools/build/scene_overlay.py",
     "tools/build/m120c_l3_three_zone_build.py",
+    "tools/build/m120g_l3_objective_build.py",
     "tools/runtime/m100b_vertical_slice_runtime.py",
     "tools/runtime/m110b_palette_runtime.py",
     "tools/runtime/m111d_graphics_runtime.py",
@@ -95,32 +105,37 @@
     "m110b": "extracted_metadata/m110b_palette_runtime.json",
     "m112_scope": "extracted_metadata/m112_scene_source_v3_scope_matrix.json",
     "m120c": "extracted_metadata/m120c_l3_three_zone_runtime.json",
-    "m120d_type60": "extracted_metadata/m120d_type60_scene0_runtime.json",
-    "m120e_type87": "extracted_metadata/m120e_type87_scene0_runtime.json",
-    "m120f_pair": "extracted_metadata/m120f_native_objective_pair_runtime.json"
+    "m120f_pair": "extracted_metadata/m120f_native_objective_pair_runtime.json",
+    "m120g": "extracted_metadata/m120g_l3_production_objective_runtime.json"
   },
   "selected_objective_seam": {
-    "status": "CONFIRMED_RUNTIME_END_TO_END_NOT_YET_PRODUCTION_PLACED",
+    "status": "CONFIRMED_RUNTIME_PRODUCTION_PLACED",
     "lever_type": 60,
     "signal_box_type": 87,
     "mission_flag": "0x4000",
     "retail_status_flags": "0x7800",
     "retail_stride": 6
   },
+  "pursuit_research": {
+    "status": "OPEN",
+    "preferred_first_hostile": 24,
+    "reason": "type24 is already a retail scene0 ranged actor and belongs to the confirmed standard ranged family using projectile type170",
+    "proven_spawn_native": "SpawnLinkedObject / 0x0020D8",
+    "policy": "build one scene-specific relocated-VM trigger before considering any universal chase AI"
+  },
   "falsified": [
     {"claim": "retail-unreferenced primary tile indices 565+ are safe production VRAM slots", "reason": "runtime presentation showed dynamically overwritten/mosaic content", "replacement_rule": "use direct runtime residency evidence or a recovered allocation contract"}
   ],
   "open": [
-    {"id": "O3", "blocking": true, "name": "integrate proven type60/type87 objective pair into traversable M120C production zones"},
-    {"id": "O4", "blocking": true, "name": "add one scene-specific pursuit-pressure trigger through a recovered VM/object seam"},
-    {"id": "O5", "blocking": true, "name": "pinned BlastEm production runtime regression"}
+    {"id": "O4", "blocking": true, "name": "first scene-specific pursuit-pressure trigger through a recovered VM/object seam"},
+    {"id": "O5", "blocking": true, "name": "pinned BlastEm production runtime regression with pursuit event"}
   ],
   "next": [
-    "build M120G production overlay from M120C with spatially separated type60 and type87 placements that are actually traversable",
-    "runtime-prove native 0x3C -> persistent FC54 0x4000 -> 0x36 progression without debugger state injection",
-    "rerun 15-slot VRAM residency, CRAM player-line, frozen player descriptors and applicable M100B invariants",
-    "inspect recovered VM/object controller seams and implement one scene-specific pursuit-pressure trigger only after M120G is green",
-    "persist evidence and synchronize Drive after the new production checkpoint is green"
+    "export and inspect a retail VM parent using SpawnLinkedObject or another proven spawn wrapper and pin its argument/stack ABI",
+    "runtime-trace M120G mission state around the signal-box event to select a discriminable trigger condition rather than guessing",
+    "build one isolated relocated-VM controller that spawns or activates a confirmed scene0-compatible hostile, initially type24 unless runtime evidence rejects it",
+    "prove trigger-off versus trigger-on behavior and hostile/projectile activity before integrating into M120G",
+    "integrate only after the isolated controller is green, then rerun M120G objective, VRAM, CRAM and frozen-player regressions"
   ],
   "anti_loop": {
     "same_hypothesis_retry_limit": 2,
@@ -132,13 +147,15 @@
     "m1_1b_closed": true,
     "m1_1c_closed_scene0_scope": true,
     "m1_2a_overlay_closed": true,
+    "m120g_closed": true,
     "do_not_modify_v11_player_pixels": true,
     "keep_scene_source_v1_immutable": true,
     "keep_scene_source_v2_immutable": true,
     "keep_scene_source_v3_contract_stable": true,
     "do_not_guess_secondary_or_aux_graphics_semantics": true,
     "do_not_assume_unreferenced_vram_is_free": true,
-    "do_not_commit_exported_retail_scene_sources": true
+    "do_not_commit_exported_retail_scene_sources": true,
+    "do_not_assume_type1_is_unused": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
