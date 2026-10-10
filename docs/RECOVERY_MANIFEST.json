@@ -75,13 +75,20 @@
     "tools/build/m1a_integration_baseline.py",
     "tools/build/scene_source.py",
     "tools/build/scene_compiler.py",
+    "tools/build/scene_palette.py",
+    "tools/build/scene_source_v2.py",
+    "tools/build/scene_compiler_v2.py",
     "tools/build/world_collision_manifest.py"
   ],
   "evidence": {
+    "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
+    "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
     "m09d": "extracted_metadata/m09d_quaid_v9_candidate.json",
     "m1a": "extracted_metadata/m1a_integration_baseline.json",
+    "m1b_scene_v2": "extracted_metadata/m1b_scene_source_v2_canonical.json",
     "m1a_ci_run": 38016506348,
-    "m1a_ci_result": "PASS"
+    "m1a_ci_result": "PASS",
+    "m1b_canonical_validation": "PASS"
   },
   "open": [
     {
