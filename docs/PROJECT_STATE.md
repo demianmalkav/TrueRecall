@@ -7,10 +7,10 @@ This is the **single authoritative human-readable continuation state** for TrueR
 ```text
 branch:     m09c-native-sequence-seam
 milestone:  M1.2A — L3 urban pursuit/subway production slice
-checkpoint: fa676491696d8253e48c55472e4c8ad05a33f9a4
+checkpoint: c62773ade80792fe575e9f4980ab8f9fd25db665
 ```
 
-M0.9C is COMPLETE. M0.9D is COMPLETE/FROZEN. M1.0A/B and M1.1A/B/C are COMPLETE. M1.2A production authoring is active.
+M0.9C is COMPLETE. M0.9D is COMPLETE/FROZEN. M1.0A/B and M1.1A/B/C are COMPLETE. M1.2A remains active until the Level Bible's normal-combat requirement is explicitly proven in the production L3 sequence.
 
 ## Canonical ROM
 
@@ -36,164 +36,192 @@ F9F8 descriptor    0x000A0000
 native phases      0,2,4,6,8,10
 ```
 
-Closed integration invariants remain available through M100B/M110B/M111/M112 evidence. Do not edit v11 player pixels, reopen scene-source v1/v2/v3 contracts, infer free VRAM from unused map indices, or guess secondary/aux graphics semantics.
+M09D supplies the vertical slice's **new Quaid behavior** through the proven sprint path. Do not edit v11 player pixels during M1.2A.
 
-## M1.2A production overlay — CLOSED / CONFIRMED
-
-`scene_overlay.v1` is the production authored-delta layer above the closed `scene_source.v3` compiler. Production manifests carry guarded authored deltas only.
-
-Core tooling:
-
-```text
-tools/build/scene_overlay.py
-tools/build/m120a_scene_overlay_vertical_slice.py
-```
+Closed scene-authoring contracts remain stable: scene-source v1/v2/v3, `scene_overlay.v1`, confirmed scene0 primary graphics, collision/object authoring and the M120C safe VRAM-slot contract.
 
 ## M120C — three-zone L3 skeleton — CONFIRMED RUNTIME / NOT ART FREEZE
 
 ```text
 manifest:     tools/build/examples/m120c_l3_three_zone_overlay.json
 builder:      tools/build/m120c_l3_three_zone_build.py
-scene parent: be091e8e76af5d685d1ba2760ad821149141fcff
 candidate:    7bd2144c22074bce5eebdf3e6e15f2f2c7db4ebe
 checksum:     0x029E
 map rect:     E000 x=0,y=12,w=27,h=11
 ```
 
-Three readable bands use only runtime-confirmed primary graphics slots `2..16`: pursuit entry, objective platform and subway transition. 15/15 authored tiles are byte-exact in VDP VRAM; F9F8 remains `0x000A0000`; proxy remains `0x000F0000`; CRAM[8] remains `0x0648`.
+The three readable bands are pursuit entry, objective platform and subway transition. They use only runtime-confirmed primary graphics slots `2..16`; 15/15 payloads are byte-exact in VDP VRAM. Status remains `NOT_ART_FREEZE`.
 
 Evidence: `extracted_metadata/m120c_l3_three_zone_runtime.json`.
 
-Status remains `PROTOTYPE_VISUAL_PASS_NOT_ART_FREEZE`.
+## M120G — native subway objective in production layout — COMPLETE / CONFIRMED
 
-## Subway objective mechanism — CONFIRMED
-
-```text
-type60 subway lever      status 0x7800 stride 6 -> FC54 |= 0x4000
-type87 subway signal box status 0x7800 stride 6 -> branches on FC54 & 0x4000
-mission flag RAM         0xFFFFFC54
-message offset RAM       0xFFFFFC06
-```
-
-Isolated evidence is retained in:
-
-- `extracted_metadata/m120d_type60_scene0_runtime.json` — type60: `0x0000 -> 0x4000`, message `0x3C`, consumed with flag persistent;
-- `extracted_metadata/m120e_type87_scene0_runtime.json` — type87: message `0x34` without flag, `0x36` with flag;
-- `extracted_metadata/m120f_native_objective_pair_runtime.json` — native end-to-end type60→type87 sequence without debugger FC54 injection.
-
-## M120G — production L3 objective integration — COMPLETE / CONFIRMED
-
-M120G preserves the M120C visual skeleton and replaces temporary proof shotgun/wall content with the native subway objective pair.
-
-Source truth is deliberately split to avoid duplicating the visual overlay:
-
-```text
-visual base: tools/build/examples/m120c_l3_three_zone_overlay.json
-placement:   tools/build/examples/m120g_l3_objective_placement.json
-builder:     tools/build/m120g_l3_objective_build.py
-```
-
-Production placements:
+M120G preserves the M120C visual skeleton and replaces temporary proof shotgun/wall content with the retail subway objective pair:
 
 ```text
 type60 lever      x=724 y=558 status=0x7800 stride=6
 type87 signal box x=652 y=558 status=0x7800 stride=6
 ```
 
-The spawn is `x=701`. Runtime traversal confirms both ends are reachable and no object triggers prematurely. The native sequence is:
+Native runtime progression:
 
 ```text
-frame 2200 x=701 FC54=0x0000 FC06=0x0002  ready
-frame 2210 x=716 FC54=0x4000 FC06=0x003C  lever acquired
-frame 2960 x=665 FC54=0x4000 FC06=0x0036  signal-box lever branch
+ready       FC54=0x0000 FC06=0x0002
+lever       FC54=0x4000 FC06=0x003C
+signal box  FC54=0x4000 FC06=0x0036
 ```
 
 No debugger write to FC54 is used.
 
-Build identity:
-
 ```text
-scene parent: cd43a4b53371e4d8329eaa328582ffd64262bddf
-candidate:    150373a312283f5c89e5fa00e99f19d7a83bff44
-checksum:     0xB7B0
+builder:   tools/build/m120g_l3_objective_build.py
+candidate: 150373a312283f5c89e5fa00e99f19d7a83bff44
+checksum:  0xB7B0
 ```
 
-Regression:
-
-- 15/15 M120C authored tiles remain byte-exact in VDP VRAM;
-- F9F8 descriptor remains `0x000A0000`;
-- proxy descriptor remains `0x000F0000`;
-- full CRAM is byte-exact M120C == M120G; CRAM SHA256 `c3c6dd5ae3450caecb79cac0e7962a282e6058f356345de9cac5c295f076e8cd`;
-- player CRAM line 32..47 remains exact;
-- proof shotgun and proof wall are deliberately retired from the production candidate;
-- native type60→type87 mission progression is green.
+M120G keeps all 15 authored VRAM slots, frozen player/proxy descriptors and full M120C CRAM byte-exact.
 
 Evidence: `extracted_metadata/m120g_l3_production_objective_runtime.json`.
 
-CI checkpoint:
+## M120H — scene-specific pursuit pressure — COMPLETE / CONFIRMED
+
+### Trigger seam
+
+Runtime and VM analysis closed a private one-shot latch in type87:
 
 ```text
-commit:          fa676491696d8253e48c55472e4c8ad05a33f9a4
-Actions run:     38079266697
-static:          PASS
-BlastEm harness: PASS
+FC54 = mission/objective word
+FC56 bit0 = type87 one-shot latch
+FC06 = message offset/state
 ```
+
+All three recovered VM references to `FFFFFC56` are in type87. The successful lever-present branch keeps `FC54=0x4000`, produces message `0x36` and clears `FC56 bit0` from `1 -> 0`; the no-lever branch produces `0x34` and leaves FC56 at `1`.
+
+M120H reuses that exact successful branch rather than adding a global AI subsystem. The retail type87 VM script is relocated from `0x17F2A6` to `0x308000`; immediately after its unique FC56 clear it calls the already-proven `SpawnLinkedObject` native with child type24.
+
+```text
+builder:             tools/build/m120h_l3_pursuit_trigger.py
+runtime regression:  tools/runtime/m120h_l3_pursuit_runtime.py
+M120G parent:        150373a312283f5c89e5fa00e99f19d7a83bff44
+M120H candidate:     acfecb2fdb5cc6c55a5c89ae172dd58d8444e1e3
+checksum:            0xD0C0
+relocated type87 VM: 0x308000
+script bytes:        334
+reachable VM insns:  89
+```
+
+The build differs from M120G only inside the allowed VM relocation window, the type87 pointer-table entry and the Genesis checksum. Frozen player phase banks are unchanged.
+
+### Runtime causal proof
+
+At successful signal-box completion:
+
+```text
+active objects: 7 -> 8
+new object:     exactly one type24
+spawn position: x=651 y=558
+descriptor:     0x000CA38C
+FC54:           0x4000
+FC56:           0
+FC06:           0x0036
+```
+
+The signal-box interaction temporarily owns control. After the native interaction releases, Quaid reaches x=724 while the spawned type24 advances toward him:
+
+```text
+frame 2714  Quaid x=665  type24 x=651
+frame 2834  Quaid x=665  type24 x=651
+frame 2954  Quaid x=724  type24 x=658
+frame 2959  Quaid x=724  type24 x=666
+frame 2964  Quaid x=724  type24 x=673
+frame 2969  Quaid x=724  type24 x=681
+frame 2974  Quaid x=724  type24 x=688
+frame 2979  Quaid x=724  type24 x=696
+frame 2984  Quaid x=724  type24 x=703
+frame 2989  Quaid x=724  type24 x=707
+```
+
+This closes **scene-specific pursuit pressure**. Type24 is independently part of the retail standard ranged-fire family, but projectile type170 was not observed in this M120H trigger window; do not overclaim firing here.
+
+Rejected prototypes remain rejected: direct `FireStandardProjectile` before the type87 message disturbed the native interaction; direct firing after its scheduler wait created a zero-useful-velocity projectile that disappeared.
+
+Evidence: `extracted_metadata/m120h_l3_pursuit_runtime.json`.
+
+### M120H CI
+
+```text
+technical commit: c62773ade80792fe575e9f4980ab8f9fd25db665
+Actions run:      38082267677
+static:           PASS
+BlastEm harness:  PASS
+artifact id:      11681215754
+artifact SHA256:  0aba626206fb2070c0a3efd7b67dca559e1f81ea3b5eb822636d2887d15e58bc
+```
+
+## Vertical-slice closure audit
+
+The Level Bible requires the first vertical slice to exercise:
+
+```text
+normal combat
+objectives
+new Quaid behavior
+at least one custom film-specific subsystem
+```
+
+Current evidence matrix:
+
+```text
+objectives                    CLOSED — M120G native lever/signal-box progression
+new Quaid behavior            CLOSED — frozen M09D sprint
+custom film-specific pressure CLOSED — M120H post-objective chase-pressure trigger
+normal combat                 OPEN — hostile chase exists, but no production combat exchange has yet been runtime-proven
+```
+
+Therefore M1.2A is not declared complete yet. The remaining functional gate is deliberately narrow: prove one normal combat encounter in the same production L3 build without destabilizing M120H.
 
 ## FALSIFIED / boundaries
 
-- **FALSIFIED:** retail-unreferenced primary tile indices `565+` are safe production VRAM slots. Runtime proved dynamic overwrite/mosaic. Use only direct residency evidence or a recovered allocation contract.
+- **FALSIFIED:** retail-unreferenced primary tile indices `565+` are safe production VRAM slots. Use only direct residency evidence or a recovered allocation contract.
 - Scene10 remains outside confirmed primary-only v3 graphics scope.
-- M120C/M120G visuals are production skeletons, not final-art freeze.
-- Do not revive proof shotgun/wall as mandatory production content.
-
-## Pursuit-pressure seam — investigation opened
-
-The first pursuit event should reuse retail behavior rather than create a universal AI system.
-
-Confirmed useful facts:
-
-- generic VM object-spawn wrappers exist and are structurally recovered;
-- VM sources are exportable, assemblable and relocatable;
-- type24 is already a retail scene0 ranged actor (`status=0x7800`, stride 6, retail scene0 placement `(1708,250)`);
-- type24 belongs to the confirmed standard ranged family that creates runtime projectile type170;
-- type87 is exportable as symbolic VM source and provides a proven `FC54 & 0x4000` conditional template;
-- historical M06F tooling demonstrates source-level injection of `SpawnLinkedObject` calls into relocated VM scripts.
-
-This is enough to justify a **scene-specific VM controller prototype** as the next route, but not enough yet to claim a production pursuit controller.
+- M120C/G/H environment art is a production skeleton, not final art freeze.
+- Type24 pursuit movement is confirmed in M120H; projectile firing in that trigger window is not.
+- Do not revive the rejected direct-projectile trigger prototypes.
 
 ## OPEN
 
-### O4 — first scene-specific pursuit trigger
+### O6 — M120I normal combat encounter
 
-Build the smallest controller that uses a proven condition/activation seam and materializes or activates one existing scene0-compatible hostile actor. Prefer type24 or another mechanically confirmed scene0 hostile; do not introduce a new AI model.
+Add the smallest production combat encounter that satisfies the Level Bible's normal-combat requirement. Prefer a mechanically confirmed retail hostile/ranged family and prove actual combat activity at runtime — ideally projectile type170 creation or an equally direct damage/combat event. Keep the M120H chase trigger intact.
 
-### O5 — production runtime gate
+### O7 — vertical-slice functional freeze
 
-Prove that the pursuit event happens only after its intended trigger, does not corrupt the objective progression, and preserves M120G visual/player/palette contracts.
+After M120I is green, rerun the integrated objective + pursuit + combat sequence and mechanically preserve the M120C visual resources, M09D Quaid, palette and scene-source contracts. Only then mark the L3 vertical slice functionally complete; art polish can remain a separate non-blocking pass.
 
 ## NEXT
 
-1. Export/inspect one retail VM parent that calls `SpawnLinkedObject` or another proven spawn wrapper and pin its argument/stack ABI.
-2. Decide whether the M120H controller should trigger on `FC54 & 0x4000`, on proximity/contact, or on a post-signal state. Do not guess: choose the condition that can be discriminated in runtime.
-3. Build one isolated relocated-VM controller that spawns/activates a confirmed scene0-compatible hostile class, initially type24 unless runtime evidence rejects it.
-4. Runtime-prove trigger-off vs trigger-on behavior, child creation and projectile/hostile activity before integrating it into M120G.
-5. Only after the isolated controller is green, place it in the production L3 layout and rerun M120G objective, VRAM, CRAM and frozen-player regressions.
+1. Inventory scene0-compatible mechanically confirmed hostile families and choose the smallest actor/placement that can demonstrate normal combat without a new AI system.
+2. Build an isolated placement/probe on the M120H parent and require actual combat activity rather than visual inference; projectile type170 creation is the preferred discriminator for the standard ranged family.
+3. If a candidate fails to engage, reject it after the anti-loop limit and test another already-confirmed retail family rather than altering global AI.
+4. Integrate the first green encounter as M120I while preserving the M120G objective and M120H type87-triggered pursuit.
+5. Run the final functional closure regression and update this state/manifest; synchronize Drive only after the new checkpoint is green.
 
 ## Retry / anti-loop rules
 
 - Maximum two retries for the same failing hypothesis without new evidence.
-- Closed M09C/M09D/M1.0/M1.1/M120G gates reopen only on contradictory evidence.
+- Closed M09C/M09D/M1.0/M1.1/M120G/M120H gates reopen only on contradictory evidence.
 - Do not edit v11 player pixels during M1.2A.
 - Keep scene_source v1/v2/v3 contracts stable; production overlays sit above v3.
 - Never infer free VRAM from an unreferenced tilemap index.
 - Never commit exported retail scene sources or retail tile dumps.
-- Prefer small semantic commits and correct logical-parent comparisons.
+- Do not assume type1 is unused; runtime disproved that earlier assumption.
+- Prefer recovered retail combat primitives over speculative universal AI systems.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M120G production L3 objective integration closed: three-zone environment + native type60 lever + native type87 signal-box traversal; visual/player/CRAM contracts green; CI green.
-EVIDENCE m120g_l3_production_objective_runtime.json + Actions run 38079266697.
-OPEN     first scene-specific pursuit-pressure trigger and final production runtime integration.
-NEXT     recover the smallest proven spawn-controller ABI, prototype one isolated relocated-VM trigger using an existing scene0-compatible hostile (type24 preferred candidate), prove trigger-off/on at runtime, then integrate into M120G.
+DONE     M120H closed: type87's private FC56 latch now triggers a single type24 pursuit actor; causal spawn and post-interaction chase movement are runtime-proven; builder/runtime probe/CI are pinned.
+EVIDENCE m120h_l3_pursuit_runtime.json + Actions run 38082267677 + artifact 11681215754.
+OPEN     one normal-combat encounter remains before the L3 vertical slice can be functionally frozen.
+NEXT     build M120I from M120H using a mechanically confirmed retail hostile; prove actual combat activity (preferably projectile170), integrate it without disturbing objective/pursuit/player/visual contracts, then run the functional closure regression.
 ```
