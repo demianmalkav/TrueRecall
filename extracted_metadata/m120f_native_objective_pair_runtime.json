@@ -1,0 +1,34 @@
+{
+  "schema": "truerecall.m120f.native_objective_pair_runtime.v1",
+  "status": "CONFIRMED_RUNTIME",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "scene_parent_sha1": "c5f572ee339ca9194d497c523feffd0366cd1862",
+  "candidate_sha1": "ed3f52765d1cb76ad90df1a5bc74c5283c5115dc",
+  "genesis_checksum": "0xF642",
+  "overlay": "tools/build/examples/m120f_scene0_native_objective_pair_probe_overlay.json",
+  "objects": [
+    {"type_id": 60, "status_flags": "0x7800", "stride": 6, "x": 701, "y": 558},
+    {"type_id": 87, "status_flags": "0x7800", "stride": 6, "x": 724, "y": 558}
+  ],
+  "mission_state": {
+    "flag_ram": "0xFFFFFC54",
+    "message_offset_ram": "0xFFFFFC06",
+    "lever_flag": "0x4000"
+  },
+  "timeline": [
+    {"frame": 1500, "x": 701, "fc54": "0x4000", "fc06": "0x003C", "active_count": 8, "event": "type60 pickup branch active"},
+    {"frame": 1860, "x": 701, "fc54": "0x4000", "fc06": "0x0002", "active_count": 7, "event": "type60 consumed; flag persists"},
+    {"frame": 2200, "x": 701, "fc54": "0x4000", "fc06": "0x0002", "active_count": 7, "event": "gameplay resumed before signal box"},
+    {"frame": 2270, "x": 710, "fc54": "0x4000", "fc06": "0x0036", "active_count": 7, "event": "type87 lever-present branch active"}
+  ],
+  "interpretation": "scene0 runtime confirms native end-to-end sequencing: type60 creates FC54 bit 0x4000 and is consumed; without debugger modification of FC54, approaching type87 afterward selects message branch 0x36",
+  "assertions": {
+    "type60_sets_flag_natively": true,
+    "type60_message_0x3c_observed": true,
+    "type60_consumed_before_type87": true,
+    "fc54_persists_between_objects": true,
+    "type87_message_0x36_observed_after_native_type60": true,
+    "no_debugger_fc54_injection": true
+  },
+  "pass": true
+}
