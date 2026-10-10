@@ -89,6 +89,26 @@
     "trampoline_executions": 12,
     "trampoline_passes": 12
   },
+  "recovery_validation": {
+    "checkpoint_commit": "1f2b572722b4696913816af1fda9fd873f6abdfd",
+    "actions_run": 38007003551,
+    "static_and_recovery_tests": 45,
+    "tests_result": "PASS",
+    "blastem_harness_result": "PASS",
+    "recovery_doctor_result": "PASS",
+    "validated_contract": [
+      "manifest schema",
+      "authority files",
+      "active branch agreement",
+      "active milestone agreement",
+      "technical checkpoint agreement",
+      "authoritative tool presence",
+      "primary evidence presence",
+      "OPEN gate presence",
+      "ordered NEXT sequence"
+    ],
+    "note": "this is a recorded validation checkpoint, not a self-referential live workflow-run pointer"
+  },
   "open": [
     {
       "id": "O1",
