@@ -1,8 +1,8 @@
 # RAM Map
 
-Known and working RAM locations for True Lies (World).
+Known and working RAM locations for True Lies (World). Live continuation state is defined by `docs/PROJECT_STATE.md`.
 
-## Normalized controller buffer — M0.6
+## Normalized controller buffer — CONFIRMED / HIGH CONFIDENCE
 
 | RAM | Meaning | Status |
 |---|---|---|
@@ -11,21 +11,21 @@ Known and working RAM locations for True Lies (World).
 | `FFFFF6EE` | newly pressed input edges | CONFIRMED |
 | `FFFFF6F0` | inputs held across consecutive samples (`current & previous`) | CONFIRMED |
 
-The input routine around `0x012B62` copies `F6EC→F6EA`, decodes the new controller state into `F6EC`, then derives:
+Input routine around `0x012B62` derives:
 
 ```text
-F6EE = current & (current XOR previous)   ; newly pressed
-F6F0 = current & previous                 ; continuously held
+F6EE = current & (current XOR previous)
+F6F0 = current & previous
 ```
 
-Known normalized bits:
+Known bits:
 
-- low nibble `F6EC & 0x000F`: D-pad direction mask
-- `F6EC bit 6`: Lock held — HIGH CONFIDENCE
-- `F6EE bit 4`: Fire edge — CONFIRMED
-- `F6EE bit 5`: Roll edge — CONFIRMED
-- `F6EE bit 12`: cycle to next owned weapon (`FB8C += 2`, wrap `0x000C→0`) — CONFIRMED
-- `F6EE bit 14`: cycle to previous owned weapon (`FB8C -= 2`, wrap below zero→`0x000C`) — CONFIRMED
+- low nibble `F6EC & 0x000F`: D-pad mask;
+- `F6EC bit 6`: Lock held — HIGH CONFIDENCE;
+- `F6EE bit 4`: Fire edge — CONFIRMED;
+- `F6EE bit 5`: Roll edge — CONFIRMED;
+- `F6EE bit 12`: next owned weapon — CONFIRMED;
+- `F6EE bit 14`: previous owned weapon — CONFIRMED.
 
 ## Entity allocator globals
 
@@ -33,17 +33,19 @@ Known normalized bits:
 |---|---|---|
 | `FFFFF9F2` | active generic-entity count | CONFIRMED |
 | `FFFFF9F4` | fixed active-list sentinel | CONFIRMED |
-| `FFFFF9F8` | linked world/render avatar entity pointer | HIGH CONFIDENCE |
-| `FFFFF9FC` | free-list-head **pointer variable** | CONFIRMED |
-| `FFFFF9FE` | generic pool-base **pointer variable**; stores heap allocation result | CONFIRMED |
+| `FFFFF9F8` | signed 16-bit RAM pointer to linked world/render avatar | CONFIRMED in canonical tested path |
+| `FFFFF9FC` | free-list-head pointer variable | CONFIRMED |
+| `FFFFF9FE` | generic pool-base pointer variable; stores heap allocation result | CONFIRMED |
 
-`F9FE` is not the physical beginning of the entity pool. Pool initialization requests `0x0F96` bytes from heap allocator `0x12A2A` and stores the returned low-RAM pointer in `F9FE` and initially in `F9FC`.
+`F9FE` is not the physical beginning of the pool. Initialization requests `0x0F96` bytes from heap allocator `0x12A2A` and stores the returned low-RAM pointer in `F9FE` and initially `F9FC`.
+
+Generic entity pool design: 35 records × `0x72` bytes.
 
 ## Player / inventory globals
 
 | RAM | Meaning | Status |
 |---|---|---|
-| `FFFFFB6E` | player control/collision proxy/companion entity | HIGH CONFIDENCE |
+| `FFFFFB6E` | signed 16-bit RAM pointer to control/collision proxy | CONFIRMED in canonical tested path |
 | `FFFFFB70` | pistol ammo | CONFIRMED |
 | `FFFFFB72` | shotgun ammo | CONFIRMED |
 | `FFFFFB74` | Uzi ammo | CONFIRMED |
@@ -51,95 +53,148 @@ Known normalized bits:
 | `FFFFFB78` | mines | CONFIRMED |
 | `FFFFFB7A` | flamethrower ammo | CONFIRMED |
 | `FFFFFB7C` | 16-bit player action/state bitfield | CONFIRMED structure |
-| `FFFFFB7D` | low byte of `FB7C`; **not a separate variable** | CONFIRMED |
+| `FFFFFB7D` | low byte of `FB7C`; not separate | CONFIRMED |
 | `FFFFFB7E` | 16-bit player overlay/context flags | CONFIRMED structure |
-| `FFFFFB7F` | low byte of `FB7E`; **not a separate variable** | CONFIRMED |
+| `FFFFFB7F` | low byte of `FB7E`; not separate | CONFIRMED |
 | `FFFFFB8A` | lives | HIGH CONFIDENCE |
 | `FFFFFB8C` | weapon selector as even offset `0,2,4,6,8,10` | CONFIRMED |
 | `FFFFFB8E` | weapon ownership bitmask | CONFIRMED |
-| `FFFFFB90` | temporary invulnerability/blink duration counter | HIGH CONFIDENCE |
-| `FFFFFB92` | invulnerability/blink cadence counter | HIGH CONFIDENCE |
+| `FFFFFB90` | temporary invulnerability/blink duration | HIGH CONFIDENCE |
+| `FFFFFB92` | invulnerability/blink cadence | HIGH CONFIDENCE |
 | `FFFFFC4A` | difficulty: `0=Normal`, `1=Hard` | CONFIRMED |
-| `FFFFFC4E` | civilian-related counter/state; exact cause semantics still being reconstructed | HIGH CONFIDENCE relation, exact label UNRESOLVED |
+| `FFFFFC4E` | civilian-related counter/state; exact cause semantics unresolved | HIGH CONFIDENCE relation |
 
-### Difficulty — `FC4A`
+## Canonical linked-player pointer semantics — CONFIRMED
 
-Options code around `0x0053F0–0x005530` reads and toggles `FC4A` between zero and one while selecting the `Normal` / `Hard` option text.
+M0.9C canonical runtime evidence corrected a v1 tooling error.
 
-Entity stat initializer `0x001EEC` multiplies `FC4A` by four and uses it to choose between Normal and Hard HP/damage table pointers before indexing them with `object+0x2A`.
+Retail uses `MOVEA.W` when loading `F9F8` / `FB6E`; each variable stores a **signed 16-bit RAM pointer**, not half of a 32-bit pointer.
 
-Therefore `FC4A` is the gameplay difficulty selector, not a mission-state word.
-
-### Player health
-
-The architectural player-health location is the word at:
+Observed values in the tested gameplay path:
 
 ```text
-*(F9F8) + 0x6C
+FFFFF9F8 = 0xC632 -> sign-extended FFFFC632
+FFFFFB6E = 0xC7FA -> sign-extended FFFFC7FA
 ```
 
-This is CONFIRMED by the scripted health pickup, which resolves the avatar pointer from `F9F8`, computes `+0x6C`, reads/writes that word and uses `0x17` as the full-health threshold.
+Do not combine adjacent RAM words when reconstructing these pointers.
 
-The historically observed absolute address `FFC69E` is compatible with a particular retail runtime allocation, but it is not the stable architectural symbol and should not be hard-coded into new engine tooling.
+These object addresses are runtime allocations, not stable hard-coded entity locations.
 
-### `FC4E` caution
+During held-Y sprint, the object reached through F9F8 has:
 
-Community cheat documentation associated `FC4E` with civilians killed. Static script reachability confirms that several object types manipulate the word in civilian-related logic, but reachable scripts include increments, decrements and special-case comparisons. Until those paths are fully correlated with gameplay, the project uses the deliberately broader label `civilian-related counter/state` rather than freezing a one-way kill-counter interpretation.
+```text
+object+0x2A = 139
+object+0x2C = 0x000A0000
+```
 
-## Linked player-object model — M0.6B
+and the descriptor remains stable through the observed native phase cycle.
 
-The player uses two synchronized entities rather than one monolithic object.
+The earlier M0.8 `0x0F0000` result remains player-local visual-component evidence only; it is not the canonical F9F8 descriptor in this path.
+
+## Player health — CONFIRMED architectural location
+
+Stable architectural health word:
+
+```text
+*(sign_extend_word(F9F8)) + 0x6C
+```
+
+Scripted health pickup resolves F9F8, computes `+0x6C`, reads/writes that word and uses `0x17` as full-health threshold.
+
+Historically observed absolute `FFC69E` matches a specific retail allocation but must not be hard-coded into new tooling.
+
+## Difficulty — `FC4A` — CONFIRMED
+
+Options code around `0x0053F0–0x005530` toggles `FC4A` between zero/one for Normal/Hard.
+
+Entity stat initializer `0x001EEC` multiplies `FC4A` by four to select Normal/Hard HP/damage table pointers before indexing with `object+0x2A`.
+
+## `FC4E` caution
+
+Community cheat documentation associated `FC4E` with civilians killed. Static script reachability confirms civilian-related manipulation, but reachable scripts increment, decrement and special-case compare it. Keep the broader label `civilian-related counter/state` until cause-level semantics are runtime-correlated.
+
+## Linked player synchronization — CONFIRMED / HIGH CONFIDENCE
 
 Evidence:
 
-- stage/world initialization stores an entity in `F9F8` at `0x0109D0`
-- the player-control constructor allocates another entity and stores it in `FB6E` at `0x008284`
-- allocator helper `0x00F8E8` promotes the newly allocated object into `A5`, after which the player callbacks/state are installed on it
-- player entity-interaction callback `0x00356C` explicitly ignores `F9F8`, suppressing collision with its own linked avatar
-- `0x009B60` loads `F9F8→A1` and `FB6E→A5`
-- `0x009BE8` copies motion fields `+0x18/+0x1A/+0x56` from `FB6E` to `F9F8`
-- `0x009C7A` copies geometry/position fields back from `F9F8` to `FB6E` when synchronization is allowed
+- stage/world initialization stores F9F8 at `0x0109D0`;
+- player-control constructor stores FB6E at `0x008284`;
+- callback `0x00356C` explicitly ignores F9F8;
+- `0x009B60` loads the linked pair;
+- `0x009BE8` copies motion fields `+0x18/+0x1A/+0x56` proxy→avatar;
+- `0x009C7A` copies geometry/position fields avatar→proxy when permitted.
 
-Working interpretation: `FB6E` is the control/collision proxy and `F9F8` the linked world/render avatar representation. The exact original Beam terminology is unknown, so these names remain HIGH CONFIDENCE rather than CONFIRMED source names.
+M0.9C additionally confirms native phase transfer through bridge `0x009D5E` with writer cluster:
+
+```text
+0x009D72  F9F8 +0x1E
+0x009D7E  F9F8 +0x24
+0x009D88  F9F8 +0x20
+```
 
 ## `FB7C` action word
 
-Confirmed direct values in player code:
+Known values:
 
-- `0x0000`: idle / neutral
-- `0x0002`: walking
-- `0x0004`: ordinary weapon-fire class
-- `0x0008`: special-action base bit — HIGH CONFIDENCE
-- `0x000C`: special-action + fire bits
-- `0x0028`: Uzi/flamethrower special phase combination
-- `0x0048`: grenade special phase combination
-- `0x0001`: auxiliary/transition bit — UNRESOLVED
+- `0x0000`: idle / neutral — CONFIRMED;
+- `0x0002`: walking — CONFIRMED;
+- `0x0004`: ordinary weapon-fire class — CONFIRMED;
+- `0x0008`: special-action base bit — HIGH CONFIDENCE;
+- `0x000C`: special-action + fire bits — structural fact, exact phase unresolved;
+- `0x0028`: Uzi/flamethrower special phase combination — HIGH CONFIDENCE;
+- `0x0048`: grenade special phase combination — HIGH CONFIDENCE;
+- `0x0001`: auxiliary/transition bit — UNRESOLVED.
 
-This word is composable and must not be treated as an enum.
+Treat as a composable word, not an enum.
 
 ## `FB7E` overlay/context word
 
 Current low-bit map:
 
-- `0x0001`: roll active phase — HIGH CONFIDENCE
-- `0x0002`: post-roll transition — HIGH CONFIDENCE
-- `0x0004`: roll-fire/kneeling-fire context — CONFIRMED
-- `0x0008`: normal-control/update context — exact label unresolved
-- `0x0040`: JLLBFR maniac/chainsaw alternate-player overlay — HIGH CONFIDENCE
-- `0x0080`: lock/fire pose latch — HIGH CONFIDENCE
+- `0x0001`: roll active phase — HIGH CONFIDENCE;
+- `0x0002`: post-roll transition — HIGH CONFIDENCE;
+- `0x0004`: roll-fire/kneeling-fire context — CONFIRMED;
+- `0x0008`: normal-control/update context — exact label unresolved;
+- `0x0040`: JLLBFR alternate-player overlay — HIGH CONFIDENCE;
+- `0x0080`: lock/fire pose latch — HIGH CONFIDENCE.
 
-Higher bits `0x0100–0x4000` occur in terminal/special sequences and remain intentionally unnamed pending stronger cause-level evidence.
+Higher bits `0x0100–0x4000` remain intentionally unnamed pending stronger evidence.
 
 ## Temporary invulnerability
 
 `0x009714` sets:
 
-- `FB90 = 24`
-- `FB92 = 1`
-- `object+0x06 |= 0x0020`
+```text
+FB90 = 24
+FB92 = 1
+object+0x06 |= 0x0020
+```
 
-The constructor uses the same object flag with `FB90 = 100`, providing a longer spawn-protection interval. `0x009CA0` decrements the duration and blink cadence and eventually tears down the protection state.
+Constructor uses the same object flag with `FB90 = 100` for a longer spawn-protection window. `0x009CA0` decrements duration/cadence and tears down protection.
 
-## Player object fields
+## Player native phase fields — CONFIRMED for M0.9C tested path
 
-See `ENTITY_MODEL.md`, `PLAYER_SYSTEM.md` and `ARCHETYPE_SYSTEM.md` for per-object offsets.
+For F9F8 during sprint:
+
+```text
+object+0x1C  base phase = 0x08B6
+object+0x1E  current phase cycles 08B6/08B8/08BA/08BC/08BE/08C0
+object+0x20  resolved mapping-record offset
+object+0x22  observed mirror of resolved record in current trace
+object+0x24  encoded animation entry
+object+0x2A  archetype/stat identity = 139
+object+0x2C  descriptor = 0x000A0000
+```
+
+Raw phase deltas from `+0x1C` are exactly `0,2,4,6,8,10` in the observed cycle.
+
+## Cross-references
+
+See:
+
+- `ENTITY_MODEL.md` for generic object fields;
+- `PLAYER_SYSTEM.md` for control semantics;
+- `ARCHETYPE_SYSTEM.md` for archetype initialization;
+- `docs/M09C_NATIVE_SEQUENCE_SEAM.md` for canonical native-phase integration;
+- `extracted_metadata/m09c_canonical_phase_bridge.json` for persisted runtime evidence.
