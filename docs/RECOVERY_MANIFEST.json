@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "6b0556aac44b960b43fcf7e19e0abe94f64e4305",
+  "generated_from_technical_checkpoint": "385e634b00901071af882ffc8d7c79bfddd40a6e",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -24,51 +24,84 @@
   "active": {
     "milestone": "M0.9D",
     "name": "production Quaid source-frame authoring and budget validation",
-    "status": "PRODUCTION_PLAYER_ART_PIPELINE_ACTIVE",
-    "objective": "replace diagnostic proof pixels with reproducible original Quaid source frames while preserving the closed M09C native phase/cache seam"
+    "status": "TECHNICAL_PIPELINE_PROVEN_ART_QUALITY_FREEZE_OPEN",
+    "objective": "refine the proven original Quaid prototype family to production-quality pixel art and freeze the player-art pipeline without reopening closed native-seam engineering"
   },
   "completed_m09c": {
     "status": "COMPLETE",
     "completion_checkpoint": "6b0556aac44b960b43fcf7e19e0abe94f64e4305",
-    "canonical_player_runtime": {
-      "global_pointer_encoding": "signed_16_bit_RAM_pointer_loaded_via_MOVEA.W",
-      "F9F8_world_render_avatar": "FFFFC632",
-      "FB6E_control_collision_proxy": "FFFFC7FA",
-      "F9F8_archetype": 139,
-      "F9F8_descriptor": "0x000A0000",
-      "descriptor_stable_during_observed_sprint_cycle": true,
-      "native_phase_bridge": "0x009D5E",
-      "writer_cluster": ["0x009D72", "0x009D7E", "0x009D88"],
-      "raw_phase_deltas": [0, 2, 4, 6, 8, 10]
-    },
-    "proof_build": {
-      "size_bytes": 4194304,
-      "sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
-      "genesis_checksum": "0x843C",
-      "render_source_banks": ["0x210000", "0x218000", "0x220000", "0x228000", "0x230000", "0x238000"],
-      "cache_namespaces": ["0x3A00", "0x3B00", "0x3C00", "0x3D00", "0x3E00", "0x3F00"]
-    },
-    "visual_regression": {
-      "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
-      "candidate_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
-      "active_samples": 42,
-      "total_state_samples": 44,
-      "state_mismatches": 0,
-      "first_visible_active_step": 3,
-      "activation_presentation_latency_frames": 2,
-      "observed_max_diff_bbox_scaled_2x": [78, 64],
-      "retail_clip_limit_scaled_2x": [96, 78],
-      "pre_trigger_gameplay_exact": true,
-      "post_release_gameplay_exact": true,
-      "all_six_native_phases_visible": true,
-      "pass": true
-    }
+    "F9F8_descriptor": "0x000A0000",
+    "native_phase_bridge": "0x009D5E",
+    "raw_phase_deltas": [0, 2, 4, 6, 8, 10],
+    "proof_build_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6",
+    "proof_build_checksum": "0x843C",
+    "visual_regression": "PASS"
+  },
+  "m09d_contract": {
+    "evidence": "extracted_metadata/m09d_quaid_sprint_contract.json",
+    "descriptor": "0x000A0000",
+    "native_phases": 6,
+    "runtime_facings": 8,
+    "authored_facings": ["N", "NE", "E", "SE", "S"],
+    "native_mirrors": {"SW": "SE", "W": "E", "NW": "NE"},
+    "unique_mapping_records": 10,
+    "resource_group": 7,
+    "chunk_slot_range": ["0x68", "0x7F"],
+    "reserved_chunk_slots_per_phase": 24,
+    "reserved_chunk_bytes_per_phase": 3072,
+    "six_phase_reserved_bytes": 18432,
+    "max_pieces_per_frame": 4,
+    "max_retail_clip": [48, 64],
+    "transparent_palette_index": 0,
+    "palette_indices": [0, 15],
+    "status": "CLOSED"
+  },
+  "m09d_mapping_compiler": {
+    "tool": "tools/build/m09d_mapping_constrained_sprite_compiler.py",
+    "status": "CLOSED",
+    "source_frames": 30,
+    "used_chunk_slots_per_phase": 17,
+    "mapping_geometry_preserved": true,
+    "chunk_slot_identity_preserved": true,
+    "native_mirroring_preserved": true
+  },
+  "m09d_source_prototype": {
+    "tool": "tools/build/m09d_quaid_sprint_source.py",
+    "status": "ORIGINAL_PRODUCTION_PROTOTYPE_NOT_FINAL_ART",
+    "frame_count": 30,
+    "source_art_fingerprint": "d7affbf3fd6474ae3aead55fecb098e29ef03528",
+    "all_six_phases_distinct_per_direction": true,
+    "indexed_palette_range_valid": true,
+    "transparent_index_zero": true
+  },
+  "m09d_prototype_build": {
+    "tool": "tools/build/m09d_quaid_sprint_build.py",
+    "size_bytes": 4194304,
+    "sha1": "b279469147ff4b7d76290d2da2738a5d4bb58919",
+    "genesis_checksum": "0x968B",
+    "integration_policy": "rebuild canonical M09C parent then replace only the six phase banks and checksum",
+    "status": "CONFIRMED"
+  },
+  "m09d_runtime_regression": {
+    "tool": "tools/runtime/m09d_quaid_runtime_regression.py",
+    "evidence": "extracted_metadata/m09d_quaid_runtime_regression.json",
+    "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+    "candidate_m09d_sha1": "b279469147ff4b7d76290d2da2738a5d4bb58919",
+    "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+    "active_samples": 42,
+    "runtime_state_mismatches": 0,
+    "pre_trigger_scene_exact": true,
+    "post_release_scene_exact": true,
+    "descriptor_preserved": true,
+    "all_six_phases_visible": true,
+    "max_diff_bbox_scaled_2x": [68, 64],
+    "pass": true
   },
   "falsified_models": [
     {
       "claim": "F9F8 world/render avatar descriptor is 0x0F0000",
       "status": "FALSIFIED_BY_CANONICAL_RUNTIME",
-      "replacement": "F9F8 descriptor is 0x000A0000 in the tested sprint path; 0x0F0000 remains player-local visual-component evidence from M0.8"
+      "replacement": "F9F8 descriptor is 0x000A0000 in the tested sprint path; 0x0F0000 remains M0.8 player-local visual-component evidence"
     },
     {
       "claim": "F9F8/FB6E globals are 32-bit pointers reconstructed from adjacent words",
@@ -78,14 +111,18 @@
     {
       "claim": "every +0x24 write is an external animation reselection",
       "status": "FALSIFIED_BY_NATIVE_PHASE_BRIDGE",
-      "replacement": "the 0x009D72 -> 0x009D7E -> 0x009D88 cluster is one native phase-advance transaction"
+      "replacement": "0x009D72 -> 0x009D7E -> 0x009D88 is one native phase-advance transaction"
     }
   ],
   "authoritative_tools": [
     "tools/runtime/m09c_animation_state_trace_v2.py",
     "tools/rom_probe/m09c_phase_bridge_analysis.py",
     "tools/build/m09c_native_phase_pixel_sequence.py",
-    "tools/build/sprite_sequence_compiler.py",
+    "tools/rom_probe/m09d_quaid_sprint_contract_probe.py",
+    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
+    "tools/build/m09d_quaid_sprint_source.py",
+    "tools/build/m09d_quaid_sprint_build.py",
+    "tools/runtime/m09d_quaid_runtime_regression.py",
     "tools/build/sprite_asset_compiler.py"
   ],
   "historical_not_promotion_gates": [
@@ -98,53 +135,51 @@
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
     "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
     "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
-    "static_gate_history": "extracted_metadata/m09c_static_gate.json",
-    "m09c_visual_result": "PASS"
+    "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
+    "m09d_runtime_regression": "extracted_metadata/m09d_quaid_runtime_regression.json",
+    "m09c_result": "COMPLETE",
+    "m09d_engineering_result": "PASS"
   },
   "recovery_validation": {
-    "checkpoint_commit": "ad71c3db832a04de0946253bf5a1bac23192efb3",
-    "actions_run": 38007750295,
-    "static_and_recovery_tests": 45,
+    "checkpoint_commit": "d6de2347995167904c600783b9ee57c05f5d5dc6",
+    "actions_run": 38013011483,
+    "static_and_recovery_tests": 58,
     "tests_result": "PASS",
     "blastem_harness_result": "PASS",
     "recovery_doctor_result": "PASS",
-    "note": "recorded recovery-system validation before the M09C visual gate closed; rerun CI after this promotion"
+    "note": "M09D source/compiler/integration static gate; rerun after current state synchronization"
   },
+  "closed_m09d_engineering_gates": [
+    "production sprite contract",
+    "mapping-constrained compiler",
+    "machine-checkable piece/chunk/palette budgets",
+    "first reproducible original 30-frame source family as technical prototype",
+    "deterministic ROM integration",
+    "player-local runtime integration and exact inactive fallback"
+  ],
   "open": [
     {
       "id": "O1",
       "blocking": true,
-      "name": "production Quaid source-frame contract",
+      "name": "Quaid art-quality refinement and production freeze",
       "completion": [
-        "define canvas/anchor/clip geometry from confirmed F9F8 records",
-        "define palette and transparency policy",
-        "define per-frame piece and sprite-line limits",
-        "define global chunk and cache working-set budgets",
-        "define eight-direction coverage and directional reuse policy",
-        "encode budgets as machine-checkable assertions"
-      ]
-    },
-    {
-      "id": "O2",
-      "blocking": true,
-      "blocked_by": "O1",
-      "name": "first production Quaid locomotion/sprint family",
-      "completion": [
-        "original reproducible source art",
-        "deterministic compile through 16x16 sequence pipeline",
-        "budget checks green",
-        "native M09C integration without F9F8/FB6E semantic changes",
-        "player-local runtime output and exact inactive fallback"
+        "coherent Quaid identity across five authored and eight runtime facings",
+        "production-quality silhouette and animation character",
+        "six native phases remain readable as a sprint/locomotion cycle",
+        "source remains original and reproducible",
+        "compile and budget assertions remain green",
+        "runtime regression remains player-local with exact inactive fallback",
+        "audit final source/bank/ROM fingerprints and freeze the production player-art pipeline"
       ]
     }
   ],
   "next": [
-    "derive the production Quaid sprite specification from confirmed F9F8 mapping geometry and current sprite compiler",
-    "audit compiler limits against piece/chunk/cache/palette/eight-direction requirements",
-    "add machine-readable production budgets and assertions",
-    "build a reproducible original Quaid source-frame template and first locomotion/sprint family",
-    "compile and run static round-trip/budget checks",
-    "integrate through the closed M09C native phase seam and runtime-regress against M07 semantics"
+    "refine the reproducible Quaid sprint source family from prototype quality to production-quality pixel art while preserving the current contract",
+    "visually review all five authored facings and six native phases for silhouette, gait readability and Total Recall identity",
+    "recompile with the mapping-constrained compiler and require all budgets/assertions green",
+    "update audited source/bank/build fingerprints only when art pixels legitimately change",
+    "rerun the M09D runtime regression against M07C and require containment/fallback/control invariants",
+    "if green, mark M0.9D COMPLETE, freeze the production player-art pipeline and establish the first M1.0 vertical-slice integration baseline"
   ],
   "parallel_preserved_branches": [
     "m11e-scene-source-matrix",
@@ -156,8 +191,9 @@
     "same_hypothesis_retry_limit": 2,
     "closed_gate_reopen_requires_new_evidence": true,
     "runtime_identity_evidence_outranks_static_naming": true,
-    "do_not_reopen_JLLBFR_at_0x0F0000_as_F9F8_identity": true,
-    "m09c_visual_gate_closed": true
+    "m09c_visual_gate_closed": true,
+    "m09d_engineering_gates_closed": true,
+    "do_not_expand_mapping_geometry_without_measured_need": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
