@@ -35,6 +35,7 @@ jobs:
             tools/build/m09c_native_phase_pixel_sequence.py \
             tools/build/m09d_mapping_constrained_sprite_compiler.py \
             tools/build/m09d_quaid_sprint_source.py \
+            tools/build/m09d_quaid_sprint_build.py \
             tools/rom_probe/m09c_native_sequence_seam_probe.py \
             tools/rom_probe/m09c_visual_avatar_roundtrip_probe.py \
             tools/rom_probe/m09c_canonical_gate.py \
@@ -58,6 +59,7 @@ jobs:
             tests.test_m09c_native_phase_pixel_sequence_static \
             tests.test_m09d_mapping_constrained_sprite_compiler \
             tests.test_m09d_quaid_sprint_source \
+            tests.test_m09d_quaid_sprint_build_static \
             tests.test_recovery_doctor_static
       - name: Run recovery doctor without ROM
         run: python tools/recovery_doctor.py
