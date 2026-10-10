@@ -1,0 +1,76 @@
+{
+  "schema": "truerecall.m09d.quaid_art_candidate.v1",
+  "candidate": "v10",
+  "status": "PRODUCTION_CANDIDATE_NOT_YET_FROZEN",
+  "source_art_fingerprint": "16df51a3063eaec999b88ad7d35dd8ba7d4fdb04",
+  "source_frames": 30,
+  "authored_facings": ["N", "NE", "E", "SE", "S"],
+  "native_phase_deltas": [0, 2, 4, 6, 8, 10],
+  "art_direction_corrections": [
+    "broader shoulder line and tapered waist replace the rectangular armor-panel silhouette of v9",
+    "shirt shading uses cloth folds and restrained highlights rather than large bright rectangular masses",
+    "upper arms are thicker and forearms taper to give Quaid a heavier physical read",
+    "thighs, boots and stride are heavier and wider to improve sprint weight",
+    "direction-correct Quaid head treatment from v9 is preserved"
+  ],
+  "mapping_contract": {
+    "descriptor": "0x000A0000",
+    "unique_mapping_records": 10,
+    "reserved_chunk_slots_per_phase": 24,
+    "used_chunk_slots_per_phase": [17, 17, 17, 17, 17, 17],
+    "max_pieces_per_frame": 4,
+    "geometry_preserved": true,
+    "native_mirroring_preserved": true,
+    "palette_indices_within_0_15": true
+  },
+  "phase_bank_sha1": [
+    "713264ed4ad4f14cc0bd0ea7bf7a498660bd77c7",
+    "5270f74e4550626ea36275d11da57cbf70512fc0",
+    "3fad55d7310d46347c10b1bcf6b62d48d4bbbcb0",
+    "a1f88979ba18ef4957ab8efedf253339b5de489b",
+    "e31bafa3d922343a8b29f0bf406d22d8c0f7b4da",
+    "ed27b3d7630ae71b8e9dc518a36f1647630edfdb"
+  ],
+  "build": {
+    "size_bytes": 4194304,
+    "sha1": "a7ee31cb12e17965696fbd4591ddc6b5e96d5d87",
+    "genesis_checksum": "0xD3EF",
+    "parent_m09c_sha1": "3256f9dcbc6376624716e3508f41c0439e17cef6"
+  },
+  "runtime_regression": {
+    "parent_m07c_sha1": "55e02728cb0b7f3627f410202c889197c0e3d0d2",
+    "common_native_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
+    "active_frames": 42,
+    "first_visible_step": 3,
+    "max_gameplay_bbox": [65, 64],
+    "state_mismatches": 0,
+    "observed_native_phases": [0, 2, 4, 6, 8, 10],
+    "assertions": {
+      "pre_trigger_gameplay_exact": true,
+      "post_release_gameplay_exact": true,
+      "normalized_y_left_held_all_active_frames": true,
+      "parent_candidate_runtime_state_exact_all_samples": true,
+      "canonical_f9f8_descriptor_preserved": true,
+      "six_native_phase_deltas_observed": true,
+      "activation_presentation_latency_at_most_2_frames": true,
+      "continuous_visible_authored_effect_after_activation": true,
+      "every_native_phase_has_visible_authored_evidence": true,
+      "all_gameplay_differences_fit_retail_actor_clip_envelope": true
+    },
+    "pass": true
+  },
+  "ci": {
+    "commit": "4bb9d49d1dccb0ec4315465d3ce2050ec21c7ea2",
+    "actions_run": 38018819486,
+    "static": "success",
+    "blastem_harness": "success",
+    "static_tests": 58
+  },
+  "art_review": {
+    "v9_to_v10": "clear improvement in silhouette, body mass and gait weight",
+    "retail_quality_baseline": "canonical retail Tasker group-7 player frames decoded from descriptor 0x000A0000",
+    "remaining_gap": "v10 still uses less micro-contrast and anatomical/costume separation than the retail player art, especially at neck, sleeves/hands, torso folds and boot/leg separation",
+    "freeze_ready": false
+  },
+  "promotion_policy": "v10 replaces v9 as the active M09D production candidate because only source pixels and derived phase-bank/build fingerprints changed and all technical gates pass; M09D remains open until final micro-detail/art-quality refinement meets the retail-quality baseline without breaking the closed mapping/runtime contract"
+}
