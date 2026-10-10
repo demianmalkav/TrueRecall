@@ -31,6 +31,7 @@ on:
       - 'tools/runtime/m100b_*'
       - 'tools/runtime/m110b_*'
       - 'tools/runtime/m111*'
+      - 'tools/runtime/m120*'
       - 'tools/recovery_doctor.py'
       - 'tests/test_m09c_*'
       - 'tests/test_m09d_*'
@@ -80,6 +81,7 @@ jobs:
             tools/build/m120b_l3_starter_build.py \
             tools/build/m120c_l3_three_zone_build.py \
             tools/build/m120g_l3_objective_build.py \
+            tools/build/m120h_l3_pursuit_trigger.py \
             tools/build/scene_palette.py \
             tools/build/scene_source_v2.py \
             tools/build/scene_compiler_v2.py \
@@ -104,6 +106,7 @@ jobs:
             tools/runtime/m110b_palette_runtime.py \
             tools/runtime/m111d_graphics_runtime.py \
             tools/runtime/m111e_graphics_regression.py \
+            tools/runtime/m120h_l3_pursuit_runtime.py \
             tools/recovery_doctor.py
       - name: Run active static and recovery tests
         run: |
@@ -125,7 +128,9 @@ jobs:
             tests.test_m110b_palette_runtime_static \
             tests.test_m111c_graphics_vertical_slice_static \
             tests.test_m111d_graphics_runtime_static \
+            tests.test_m120c_l3_three_zone_static \
             tests.test_m120g_l3_objective_static \
+            tests.test_m120h_l3_pursuit_trigger_static \
             tests.test_scene_palette_static \
             tests.test_scene_source_v2_static \
             tests.test_scene_compiler_v2_static \
@@ -147,7 +152,9 @@ jobs:
             tools/runtime/m110b_palette_runtime.py
             tools/runtime/m111d_graphics_runtime.py
             tools/runtime/m111e_graphics_regression.py
+            tools/runtime/m120h_l3_pursuit_runtime.py
             extracted_metadata/m09d_quaid_sprint_contract.json
+            extracted_metadata/m120h_l3_pursuit_runtime.json
           if-no-files-found: error
           retention-days: 7
 
