@@ -1,7 +1,7 @@
 {
   "schema": "truerecall.recovery_manifest.v1",
   "project": "TrueRecall",
-  "generated_from_technical_checkpoint": "79c1e485441f92b536baa00d5401caa5c24076f8",
+  "generated_from_technical_checkpoint": "965d1a54117b9aad69cdc9771e2f679059e91be2",
   "authority": {
     "active_branch": "m09c-native-sequence-seam",
     "human_state": "docs/PROJECT_STATE.md",
@@ -22,10 +22,10 @@
     "repository_policy": "never commit original ROM or extracted copyrighted asset dumps"
   },
   "active": {
-    "milestone": "M1.1C",
-    "name": "canonical scene-source-v3 graphics transaction",
+    "milestone": "M1.2A",
+    "name": "L3 urban pursuit/subway production slice",
     "status": "OPEN",
-    "objective": "migrate the confirmed primary gameplay graphics model into an additive versioned scene source and single allocation transaction while preserving scene_source v1/v2 anchors, then reproduce the closed tile2 runtime proof through the unified v3 path"
+    "objective": "resume the product vertical slice using scene0 as the proven chassis: introduce a source-controlled authored-delta overlay above scene_source.v3, then replace diagnostic proof content with original L3 urban/subway content and add objective/pursuit scripting"
   },
   "completed": {
     "m09c": {
@@ -37,7 +37,6 @@
     },
     "m09d": {
       "status": "COMPLETE_FROZEN",
-      "freeze_commit": "00d9a0e9db501e7f8763515ce34fbe7476dd6c67",
       "source_art_fingerprint": "da0a060e77f9da835b388ffe94a8090d75cd51ea",
       "build_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
       "checksum": "0x266C"
@@ -45,118 +44,55 @@
     "m1_0": {
       "status": "COMPLETE",
       "scene_index": 0,
-      "manifest": "tools/build/examples/m100a_scene0_baseline.json",
       "candidate_sha1": "84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027",
       "checksum": "0x6E6A",
-      "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
       "runtime_assertions": 14,
-      "runtime_pass": true,
-      "ci": {
-        "commit": "e88ffe045d339e43a95de60b8df32fd5ab553c74",
-        "actions_run": 38053439943,
-        "artifact_id": 11670751788,
-        "artifact_sha256": "177a35bfb755f2eea7985d8ff8a61c5c601e974e35f903bc1ec03c7a14d7c5cf",
-        "static": "PASS",
-        "blastem_harness": "PASS"
-      }
+      "runtime_pass": true
     },
     "m1_1a": {
       "status": "COMPLETE",
-      "scene_index": 0,
-      "tools": [
-        "tools/build/scene_palette.py",
-        "tools/build/scene_source_v2.py",
-        "tools/build/scene_compiler_v2.py",
-        "tools/build/m110a_palette_vertical_slice.py",
-        "tools/runtime/m110b_palette_runtime.py"
-      ],
-      "canonical_palette_matrix": {
-        "scene_count": 19,
-        "valid_palettes": 19,
-        "exact_noop_compiles": 19,
-        "invalid_cram_rejected": true
-      },
-      "palette_edit": {
-        "index": 8,
-        "before": "0x0464",
-        "after": "0x0648",
-        "new_pointer": "0x303080",
-        "player_line": [32, 47]
-      },
       "candidate_sha1": "270e1d633db7883c9170bb1e4eb367abdf97a2bd",
       "checksum": "0x6B9E",
-      "runtime": {
-        "actual_vdp_cram": true,
-        "cram_difference_count": 1,
-        "cram_index": 8,
-        "parent": "0x0464",
-        "candidate": "0x0648",
-        "player_line_exact": true,
-        "m100b_assertions": 14,
-        "m100b_pass": true,
-        "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2"
-      },
-      "ci": {
-        "commit": "9db2910e30007ad49ab58b27785055e7753c3f8a",
-        "actions_run": 38068084778,
-        "artifact_id": 11675387267,
-        "artifact_sha256": "2cc4c0c2394f03745e5d362c95e9ce56e475d0fbabc72ee99a765e16c36c6ba6",
-        "static": "PASS",
-        "blastem_harness": "PASS"
-      }
+      "actual_vdp_cram": true,
+      "m100b_pass": true
     },
     "m1_1b": {
       "status": "COMPLETE",
       "scene_index": 0,
+      "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+      "checksum": "0xFAD7",
+      "actual_vdp_vram": true,
+      "vram_diff_range": [64, 96],
+      "m100b_pass": true,
+      "m110b_cram_pass": true
+    },
+    "m1_1c": {
+      "status": "COMPLETE_SCENE0_SCOPE",
       "tools": [
-        "tools/build/scene_graphics.py",
-        "tools/rom_probe/scene_graphics_probe.py",
-        "tools/build/m111c_graphics_vertical_slice.py",
-        "tools/runtime/m111d_graphics_runtime.py",
-        "tools/runtime/m111e_graphics_regression.py"
+        "tools/build/scene_source_v3.py",
+        "tools/build/scene_compiler_v3.py",
+        "tools/build/m112a_scene_source_v3_vertical_slice.py"
       ],
-      "primary_graphics": {
-        "retail_descriptor": "0x00FFAA",
-        "primary_lz": "0x014898",
-        "secondary_pointer": "0x800178DA",
-        "aux_pointer": "0x01BF7A",
-        "decoded_bytes": 24960,
-        "tile_count": 780,
-        "decoded_sha256": "0f73aff41d28f9cae5b17368f78979f720474ce342c85e53f9a46174e3bbb171",
-        "exact_raw_noop": true
-      },
-      "authored_graphics": {
-        "tile_index": 2,
-        "retail_tile_sha256": "e0e77a507412b120f6ede61f62295b1a7b2ff19d3dcc8f7253e51663470c888e",
-        "new_descriptor": "0x304000",
-        "new_primary_lz": "0x304010",
-        "graphics_parent_sha1": "a26f74937233e155e025bcd45a220660c75e110f",
-        "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
-        "checksum": "0xFAD7"
-      },
-      "runtime": {
-        "actual_vdp_vram": true,
-        "vram_diff_range": [64, 96],
-        "vram_changed_bytes": 32,
-        "authored_tile_reaches_vram_exact": true,
-        "m110a_cram_exact": true,
-        "presentation_size": [256, 240],
-        "presentation_changed_pixels": 1440,
-        "presentation_bbox": [15, 9, 199, 45],
-        "m100b_assertions": 14,
-        "m100b_pass": true,
-        "m110b_cram_pass": true,
-        "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2"
+      "scene_index": 0,
+      "scene_parent_sha1": "4a169bec49ca6fd571c6ea621e525d7968cc79c5",
+      "scene_parent_checksum": "0x3245",
+      "candidate_sha1": "b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0",
+      "checksum": "0xFAD7",
+      "closed_m111c_reproduced_byte_exact": true,
+      "runtime_vram_presentation_pass": true,
+      "closed_gate_regression_pass": true,
+      "scope_matrix": {
+        "exact_noop_scene_count": 18,
+        "out_of_confirmed_scope": [10],
+        "reason": "scene10 C000 references tile outside primary set; secondary/auxiliary graphics semantics unresolved"
       },
       "ci": {
-        "commit": "79c1e485441f92b536baa00d5401caa5c24076f8",
-        "actions_run": 38073075203,
-        "artifact_id": 11677736118,
-        "artifact_sha256": "be0b0a2cdc1016f33cb9828b7c970fc50f9898d7dea3e79d77564b38ff862c58",
+        "commit": "965d1a54117b9aad69cdc9771e2f679059e91be2",
+        "actions_run": 38074354446,
+        "artifact_id": 11677847802,
+        "artifact_sha256": "c26452066d123b81f4f63b02e2b07cf297c794a175b5f9843c9067ff99c8a2b3",
         "static": "PASS",
-        "blastem_harness": "PASS",
-        "artifact_rebuild_exact": true,
-        "artifact_runtime_reproduced": true
+        "blastem_harness": "PASS"
       }
     }
   },
@@ -164,69 +100,55 @@
     "v1_anchor": "tools/build/scene_source.py",
     "v2_palette_source": "tools/build/scene_source_v2.py",
     "v2_transaction": "tools/build/scene_compiler_v2.py",
+    "v3_graphics_source": "tools/build/scene_source_v3.py",
+    "v3_transaction": "tools/build/scene_compiler_v3.py",
     "primary_graphics_source": "tools/build/scene_graphics.py",
-    "graphics_runtime_contract": "docs/M111_GAMEPLAY_GRAPHICS_AUTHORING.md",
-    "policy": "scene_source.v1 and v2 remain unchanged; M1.1C may add v3 because primary graphics semantics are now runtime-confirmed, but secondary/auxiliary graphics semantics remain unresolved and immutable"
+    "policy": "v1/v2 and the closed v3 scene0 contract remain regression anchors; production content is stored as authored deltas above v3; do not guess secondary/auxiliary graphics semantics"
   },
   "authoritative_tools": [
     "tools/runtime/m09c_animation_state_trace_v2.py",
     "tools/rom_probe/m09c_phase_bridge_analysis.py",
     "tools/build/m09c_native_phase_pixel_sequence.py",
-    "tools/build/m09d_mapping_constrained_sprite_compiler.py",
-    "tools/build/m09d_quaid_sprint_source.py",
     "tools/build/m09d_quaid_sprint_build.py",
     "tools/runtime/m09d_quaid_runtime_regression.py",
     "tools/build/scene_source.py",
-    "tools/build/scene_palette.py",
     "tools/build/scene_source_v2.py",
     "tools/build/scene_compiler_v2.py",
     "tools/build/scene_graphics.py",
-    "tools/build/m100a_vertical_slice_baseline.py",
+    "tools/build/scene_source_v3.py",
+    "tools/build/scene_compiler_v3.py",
+    "tools/build/m112a_scene_source_v3_vertical_slice.py",
     "tools/runtime/m100b_vertical_slice_runtime.py",
-    "tools/build/m110a_palette_vertical_slice.py",
     "tools/runtime/m110b_palette_runtime.py",
-    "tools/build/m111c_graphics_vertical_slice.py",
     "tools/runtime/m111d_graphics_runtime.py",
     "tools/runtime/m111e_graphics_regression.py"
   ],
   "evidence": {
     "canonical_phase_bridge": "extracted_metadata/m09c_canonical_phase_bridge.json",
     "trampoline_runtime": "extracted_metadata/m09c_native_phase_trampoline_runtime.json",
-    "native_visual_regression": "extracted_metadata/m09c_native_visual_regression.json",
-    "m09d_contract": "extracted_metadata/m09d_quaid_sprint_contract.json",
     "m09d_freeze": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
-    "m11d_scene_source": "extracted_metadata/m11d_scene_source.json",
-    "m100a": "extracted_metadata/m100a_vertical_slice_baseline.json",
     "m100b": "extracted_metadata/m100b_vertical_slice_runtime.json",
-    "m11f_palette_canonical": "extracted_metadata/m11f_scene_palette_canonical.json",
-    "m11h_v2_transaction": "extracted_metadata/m11h_scene_source_v2_transaction_canonical.json",
-    "m110a": "extracted_metadata/m110a_palette_vertical_slice.json",
     "m110b": "extracted_metadata/m110b_palette_runtime.json",
     "m111b_graphics_noop": "extracted_metadata/m111b_scene_graphics_primary.json",
-    "m111c_graphics_build": "extracted_metadata/m111c_graphics_vertical_slice.json",
     "m111d_graphics_runtime": "extracted_metadata/m111d_graphics_runtime.json",
-    "m111e_graphics_regression": "extracted_metadata/m111e_graphics_regression.json"
+    "m111e_graphics_regression": "extracted_metadata/m111e_graphics_regression.json",
+    "m112a": "extracted_metadata/m112a_scene_source_v3_vertical_slice.json",
+    "m112b": "extracted_metadata/m112b_v3_graphics_runtime.json",
+    "m112c": "extracted_metadata/m112c_v3_regression.json",
+    "m112_scope": "extracted_metadata/m112_scene_source_v3_scope_matrix.json"
   },
   "open": [
-    {"id": "O1", "blocking": true, "name": "add confirmed primary graphics to additive scene_source.v3 while keeping v1/v2 immutable"},
-    {"id": "O2", "blocking": true, "name": "single allocator ledger for maps/objects/world/palette/primary graphics with one final checksum"},
-    {"id": "O3", "blocking": true, "name": "exact v2-v3 migration and no-op graphics source gate"},
-    {"id": "O4", "blocking": true, "name": "reproduce closed scene0 tile2 proof through v3"},
-    {"id": "O5", "blocking": true, "name": "rerun M111D and M111E against the v3-generated candidate"}
+    {"id": "O1", "blocking": true, "name": "authored-delta scene_overlay.v1 above canonical scene_source.v3"},
+    {"id": "O2", "blocking": true, "name": "original L3 urban/subway production environment skeleton"},
+    {"id": "O3", "blocking": true, "name": "one objective/interact path plus one scripted pursuit/chase trigger"},
+    {"id": "O4", "blocking": true, "name": "pinned BlastEm production runtime regression"}
   ],
   "next": [
-    "define scene_source.v3 by extending v2 with the confirmed primary graphics identity and tile payload while preserving unresolved secondary and aux identity",
-    "implement v2-to-v3 and v3-to-v2 migration helpers plus strict identity validation",
-    "extend the scene transaction allocator so primary graphics are allocated after existing scene and palette resources in the same ledger",
-    "establish exact no-op and migration probes before any new graphics edits",
-    "rebuild the already-confirmed scene0 tile2 proof through v3",
-    "run M111D and M111E on the v3 candidate and freeze M1.1C only if both remain green"
-  ],
-  "parallel_preserved_branches": [
-    "m11e-scene-source-matrix",
-    "m11f-palette-authoring",
-    "m11g-scene-source-v2",
-    "m11h-scene-transaction-v2"
+    "implement scene_overlay.v1 containing only authored palette/map/object/world/primary-graphics deltas and stable identity references",
+    "apply the overlay to an in-memory exported scene_source.v3 and lower only through scene_compiler_v3",
+    "encode the closed tile2/palette/pickup/wall proof as the first overlay and require exact b6c0303b83b6ac3ce8790171702c3d7f4a7eb7b0 / 0xFAD7 reproduction",
+    "replace diagnostic visual proof data with a small original L3 urban/subway environment starter kit",
+    "after the production environment is runtime-visible, add one objective and one scene-specific pursuit trigger"
   ],
   "anti_loop": {
     "same_hypothesis_retry_limit": 2,
@@ -236,11 +158,13 @@
     "m1_0_closed": true,
     "m1_1a_closed": true,
     "m1_1b_closed": true,
+    "m1_1c_closed_scene0_scope": true,
     "do_not_modify_v11_player_pixels": true,
     "keep_scene_source_v1_immutable": true,
     "keep_scene_source_v2_immutable": true,
-    "primary_graphics_semantics_confirmed": true,
-    "do_not_guess_secondary_or_aux_graphics_semantics": true
+    "keep_scene_source_v3_contract_stable": true,
+    "do_not_guess_secondary_or_aux_graphics_semantics": true,
+    "do_not_commit_exported_retail_scene_sources": true
   },
   "fresh_context_recovery_order": [
     "refresh active branch HEAD",
