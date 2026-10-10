@@ -1,0 +1,88 @@
+{
+  "schema": "truerecall.m100a.vertical_slice_baseline_evidence.v1",
+  "status": "STATIC_BUILD_CONFIRMED_RUNTIME_PENDING",
+  "canonical_base": {
+    "size_bytes": 2097152,
+    "sha1": "d39174bed46ede85531b86df7ba49123ce2f8411"
+  },
+  "verified_builder_snapshot": {
+    "commit": "4215703ad8c8312f84daf54fbdd54c4aa03893e8",
+    "workflow_run": 38052310069,
+    "artifact_id": 11669731651,
+    "artifact_sha256": "cc2cfb8d28ed5e234adc18679a0b33b3e92d76f0e8fdcf8f8dea83756db335aa"
+  },
+  "player_parent": {
+    "milestone": "M0.9D v11 frozen production family",
+    "sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "source_art_fingerprint": "da0a060e77f9da835b388ffe94a8090d75cd51ea",
+    "phase_bank_sha1": [
+      "97a9f024374b75810dd060ff8c03b4b703cd7ab6",
+      "fce14e16bc2325ea603f7ad973a0033c56f68098",
+      "38c2f905c4f05cc01938f440f2e7cd8a9fa28d74",
+      "12fd0abb168d4983fc3b6d2d46a4589317c8f6c2",
+      "0cd1b90c15c55504e2e55e992197022a5856204f",
+      "416007b12132f06ff30fa009649e4b1c6379d5c1"
+    ]
+  },
+  "scene_parent": {
+    "scene_index": 18,
+    "sha1": "ad84aaf45676d619c39eaa3ad8b711e40954db76",
+    "checksum": "0x4C3A",
+    "manifest": "tools/build/examples/m100a_scene18_baseline.json",
+    "objects": {
+      "base_count": 40,
+      "new_count": 41,
+      "operation": {
+        "op": "add",
+        "type_id": 54,
+        "semantic_identity": "health_pickup",
+        "status_flags": "0x7800",
+        "stride": 6,
+        "x": 128,
+        "y": 120
+      }
+    },
+    "world": {
+      "retail_record_count": 0,
+      "new_record_count": 1,
+      "operation": {
+        "op": "add",
+        "id": "m100a_wall_0000",
+        "type": 9,
+        "rect": [64, 64, 80, 256]
+      }
+    },
+    "allocations": [
+      {"name": "object_desc", "address": 3145728, "size": 16},
+      {"name": "object_lz", "address": 3145744, "size": 229},
+      {"name": "world_resource", "address": 3145984, "size": 416}
+    ]
+  },
+  "composition": {
+    "policy": "build frozen player and authored scene independently from the same canonical base; reject incompatible overlapping deltas; merge scene delta into frozen player parent; recompute Genesis checksum",
+    "player_delta_bytes": 204681,
+    "scene_delta_bytes": 642,
+    "shared_nonchecksum_bytes": 1,
+    "shared_ranges": [[421, 422]],
+    "shared_byte_semantics": "identical 4 MiB ROM-end header byte",
+    "assertions": {
+      "no_incompatible_overlap": true,
+      "scene_delta_preserved": true,
+      "player_only_delta_preserved": true,
+      "frozen_player_parent_exact": true,
+      "frozen_player_phase_banks_preserved": true,
+      "scene_index_is_18": true,
+      "scene_build_is_nonempty": true
+    }
+  },
+  "candidate": {
+    "size_bytes": 4194304,
+    "sha1": "37c8549dd06e8b506f0e53ae8cf2be15a521a30f",
+    "genesis_checksum": "0x14CC",
+    "direct_runtime_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021"
+  },
+  "runtime": {
+    "status": "NOT_YET_PROVEN",
+    "required_next": "enter scene 18 deterministically under BlastEm and prove player/control identity plus authored pickup/world-collision behavior against the frozen v11 direct parent"
+  }
+}
