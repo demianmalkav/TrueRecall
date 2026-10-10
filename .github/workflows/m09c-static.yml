@@ -6,6 +6,7 @@ on:
     paths:
       - 'tools/build/m09c_*'
       - 'tools/build/m09d_*'
+      - 'tools/build/m10a_*'
       - 'tools/build/scene_source.py'
       - 'tools/build/world_collision_manifest.py'
       - 'tools/rom_probe/m09c_*'
@@ -42,6 +43,7 @@ jobs:
             tools/build/m09d_mapping_constrained_sprite_compiler.py \
             tools/build/m09d_quaid_sprint_source.py \
             tools/build/m09d_quaid_sprint_build.py \
+            tools/build/m10a_vertical_slice_composer.py \
             tools/build/scene_source.py \
             tools/build/world_collision_manifest.py \
             tools/rom_probe/m09c_native_sequence_seam_probe.py \
@@ -70,6 +72,7 @@ jobs:
             tests.test_m09d_mapping_constrained_sprite_compiler \
             tests.test_m09d_quaid_sprint_source \
             tests.test_m09d_quaid_sprint_build_static \
+            tests.test_m10a_vertical_slice_composer_static \
             tests.test_recovery_doctor_static
       - name: Run recovery doctor without ROM
         run: python tools/recovery_doctor.py
