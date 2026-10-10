@@ -17,17 +17,19 @@ Machine-readable companion: `docs/RECOVERY_MANIFEST.json`.
 
 ```text
 branch:     m09c-native-sequence-seam
-milestone:  M1.1A — canonical palette + scene-source-v2 promotion
-checkpoint: 0942f0d9ef58a37c37c19d9da9a5e8caa37d92d0
+milestone:  M1.1B — gameplay tile-graphics authoring and runtime proof
+checkpoint: 9db2910e30007ad49ab58b27785055e7753c3f8a
 ```
 
 **M0.9C is COMPLETE.**
 
 **M0.9D is COMPLETE and FROZEN.**
 
-**M1.0A/B is COMPLETE.** The first Total Recall integration baseline now proves that the frozen Quaid player, declarative persistent objects and authored world collision coexist in one reproducible gameplay scene and behave correctly at runtime.
+**M1.0A/B is COMPLETE.** Frozen Quaid, persistent object authoring and world collision coexist in one reproducible scene0 gameplay baseline and are runtime-confirmed.
 
-The active task is M1.1A: promote the preserved M11F/M11G/M11H palette + scene-source-v2 work onto the current branch, execute it against the canonical ROM now available in raw form, and integrate it with the closed M1.0 scene0 baseline without reopening player/control/object/collision gates.
+**M1.1A is COMPLETE.** Palette authoring is now canonical, source-level, transactional and runtime-confirmed at actual VDP CRAM while preserving every closed M1.0 behavior invariant.
+
+The active task is M1.1B: recover and author gameplay tile graphics for scene0 without reopening the frozen player, object, collision or palette gates.
 
 ## Canonical ROM identity
 
@@ -41,9 +43,9 @@ SHA-1: d39174bed46ede85531b86df7ba49123ce2f8411
 
 The original ROM is immutable and never committed. Generated builds remain reproducible from source/manifests plus this verified base.
 
-## Stable engine foundation
+## Closed engine/integration foundation
 
-Stable and closed unless contradictory evidence appears:
+Stable unless contradictory runtime evidence appears:
 
 - M0.1–M0.6 ROM/entity/VM/map/authoring reconstruction;
 - M0.7 deterministic held-Y sprint;
@@ -52,7 +54,8 @@ Stable and closed unless contradictory evidence appears:
 - M0.9D frozen production Quaid sprint family;
 - M0.10 world-collision authoring;
 - M0.11A–D canonical scene-source authoring;
-- M1.0A/B player + object + collision integration baseline.
+- M1.0A/B player + object + collision scene0 integration;
+- M1.1A palette + scene-source-v2 transaction/runtime proof.
 
 ## M0.9D production player — CLOSED / FROZEN
 
@@ -64,168 +67,162 @@ F9F8 descriptor:   0x000A0000
 native phases:     0,2,4,6,8,10
 ```
 
-Evidence:
+Do not edit v11 player pixels or mapping geometry during M1.1B.
 
-`extracted_metadata/m09d_quaid_v11_production_freeze.json`
-
-Do not edit v11 player pixels or mapping geometry during M1.1.
-
-## M1.0A static integration — COMPLETE / CONFIRMED
-
-Scene 18 was initially selected because it had a sparse static world-collision baseline. Runtime evidence later showed that scene18 follows a scripted/non-normal player-control path: distinct directional inputs produced the same scripted trajectory. That is new evidence and formally retires scene18 as the vertical-slice gameplay sandbox.
-
-The active integration sandbox is **scene 0**, already used by the deterministic player/runtime harness.
+## M1.0 scene0 gameplay baseline — CLOSED / CONFIRMED
 
 Source manifest:
 
 `tools/build/examples/m100a_scene0_baseline.json`
 
-Authored additions:
+Authored resources:
 
 ```text
 shotgun pickup: type 69, stride 6, x=690, y=558
 world wall:     type 9, rect=[668,540,676,580]
 ```
 
-Compositor:
-
-`tools/build/m100a_vertical_slice_baseline.py`
-
-Static scene-only parent:
-
-```text
-SHA-1:   fe2d8f7bbffba42379aa72d697b91364f9734c96
-checksum: 0xA5D8
-```
-
 Integrated M1.0A candidate:
 
 ```text
-size:     4,194,304 bytes
 SHA-1:    84d3baf0fad9aaf5cf68f1d10c4afe3f003f3027
 checksum: 0x6E6A
 direct parent: 49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021
 ```
 
-Containment proof:
-
-- frozen v11 phase banks remain byte-exact;
-- scene/object/world deltas are preserved exactly;
-- player and scene deltas have no incompatible overlap;
-- the only shared non-checksum byte is the identical 4 MiB ROM-end header byte;
-- final checksum is recomputed once after composition.
+M1.0B runtime proves the pickup grants shotgun + five shells only in the candidate, the type-9 wall blocks the candidate while the direct parent crosses the zone, F9F8 remains `FFC632` with descriptor `0x000A0000`, and all 14 behavioral/control assertions pass.
 
 Evidence:
 
-`extracted_metadata/m100a_vertical_slice_baseline.json`
+- `extracted_metadata/m100a_vertical_slice_baseline.json`
+- `extracted_metadata/m100b_vertical_slice_runtime.json`
 
-## M1.0B runtime integration — COMPLETE / CONFIRMED
+## M1.1A canonical palette/source-v2 — COMPLETE / CONFIRMED
 
-Runner:
-
-`tools/runtime/m100b_vertical_slice_runtime.py`
-
-Verified CI snapshot:
+Minimal preserved M11F/G/H functionality was deliberately ported instead of merging historical branches:
 
 ```text
-commit:          e88ffe045d339e43a95de60b8df32fd5ab553c74
-Actions run:     38053439943
-artifact id:     11670751788
-artifact SHA256: 177a35bfb755f2eea7985d8ff8a61c5c601e974e35f903bc1ec03c7a14d7c5cf
+tools/build/scene_palette.py
+tools/build/scene_source_v2.py
+tools/build/scene_compiler_v2.py
+```
+
+`scene_source.v1` remains unchanged as a regression anchor. `scene_source.v2` moves palette identity out of immutable metadata and exposes explicit `colors[64]`. `scene_compiler_v2` runs the existing scene transaction first, allocates palette data after the highest allocation, checks non-overlap and repairs the final checksum once.
+
+### Canonical palette matrix
+
+Against canonical SHA-1 `d39174...f8411`:
+
+- 19/19 gameplay scenes export valid 64-word Genesis CRAM palettes;
+- 19/19 palette no-op compiles return byte-exact canonical ROM bytes;
+- invalid CRAM words are rejected;
+- source-v2 exact no-op is confirmed across all 19 scenes.
+
+Evidence: `extracted_metadata/m11f_scene_palette_canonical.json`.
+
+### Canonical v2 transaction
+
+The canonical transaction probe combines a map-word edit and palette relocation through one allocation ledger with no overlap and exact reparse/checksum validation.
+
+Evidence: `extracted_metadata/m11h_scene_source_v2_transaction_canonical.json`.
+
+### Scene0 integrated palette baseline
+
+Builder: `tools/build/m110a_palette_vertical_slice.py`.
+
+The closed scene0 pickup/wall baseline is rebuilt through `scene_source.v2` and receives one environment-palette proof edit outside the frozen player line:
+
+```text
+palette index:     8
+retail word:       0x0464
+authored word:     0x0648
+player line:       indices 32..47, untouched
+palette allocation:0x303080
+scene-v2 parent:   427b842188b29e4fa040802c94b7d60fe44976cc / 0xA30C
+integrated SHA-1:  270e1d633db7883c9170bb1e4eb367abdf97a2bd
+checksum:          0x6B9E
+```
+
+The single scene ledger contains object descriptor/LZ, world resource and palette allocations with no overlap. All six frozen v11 phase banks remain byte-exact. Player and scene deltas have no incompatible overlap.
+
+Evidence: `extracted_metadata/m110a_palette_vertical_slice.json`.
+
+### Actual VDP CRAM runtime proof
+
+Runner: `tools/runtime/m110b_palette_runtime.py`.
+
+The pinned BlastEm native savestate format was parsed structurally. In the pinned core, VDP section id `3`, state version `5`, serializes 64 KiB VRAM followed by the 64-word `context->cram` array. Parent and M1.1A candidate were run through the same scene0 sequence and quicksaved at the same deterministic stage.
+
+Result:
+
+```text
+CRAM words compared: 64
+difference count:    1
+CRAM[8], parent:     0x0464
+CRAM[8], candidate:  0x0648
+CRAM[32..47]:        byte/word exact parent == candidate
+M1.0B assertions:    14/14 PASS
+```
+
+This is actual VDP CRAM evidence, not merely ROM or RAM-shadow inspection.
+
+Evidence: `extracted_metadata/m110b_palette_runtime.json`.
+
+### M1.1A CI checkpoint
+
+```text
+commit:          9db2910e30007ad49ab58b27785055e7753c3f8a
+Actions run:     38068084778
+artifact id:     11675387267
+artifact SHA256: 2cc4c0c2394f03745e5d362c95e9ce56e475d0fbabc72ee99a765e16c36c6ba6
 static:          PASS
 BlastEm harness: PASS
 ```
 
-Runtime comparison uses frozen v11 as the direct parent and the exact M1.0A candidate as child.
-
-Confirmed behavior under 30 frames of normalized `Y+Left = 0x2044`:
-
-```text
-spawn, both:     x=701 y=558
-parent final:    x=652 y=558, ownership=0x01, shotgun ammo=0
-candidate final: x=688 y=558, ownership=0x03, shotgun ammo=5
-```
-
-Interpretation:
-
-- the authored type-69 pickup grants the shotgun ownership bit and five shells only in the candidate;
-- the authored type-9 wall blocks the candidate at player-center x=688;
-- the direct parent crosses the authored wall zone and reaches x=652;
-- F9F8 remains `FFC632` and retains descriptor `0x000A0000`;
-- adding the pickup shifts FB6E from `FFC7FA` to `FFC86C`, but the proxy retains exact semantic type/state/mapping/facing/descriptor fields (`type 1`, descriptor `0x000F0000`), so raw slot-address equality is deliberately not an invariant;
-- all 14 runtime assertions pass.
-
-Evidence:
-
-`extracted_metadata/m100b_vertical_slice_runtime.json`
-
-## Why M1.1A is now justified
-
-M11D is sufficient for map words, persistent objects and world collision, but it intentionally treats palette identity as immutable metadata and does not provide a production source-level palette transaction. A real Total Recall environment needs authored color language before a Mars/industrial art pass can be evaluated.
-
-Preserved branches provide the minimum next layer:
-
-```text
-m11f-palette-authoring     scene_palette.v1 + CRAM relocation/validation
-m11g-scene-source-v2      versioned source schema with explicit colors[64]
-m11h-scene-transaction-v2 one allocation ledger for maps/objects/world/palette
-```
-
-Those branches were left at static/synthetic status only because raw canonical ROM access was unavailable. That blocker is now closed. This is the recorded evidence-based reason to promote their minimal functionality onto the current branch.
-
-M1.1A does **not** yet authorize new tile graphics. Palette authoring is isolated first; tile-graphics authoring becomes the next gate only after palette transactions are canonical- and runtime-confirmed.
+The exact artifact-published `m110b` runner was then executed locally against the verified canonical-derived parent/candidate and produced the persisted CRAM/runtime evidence above.
 
 ## OPEN
 
-### O1 — port minimal M11F/G/H authoring layer
+### O1 — recover gameplay plane graphics-resource format at authoring fidelity
 
-Bring only the palette/source-v2/transaction-v2 modules, probes and tests required for canonical palette transactions onto the active branch. Do not merge historical project-state files or unrelated branch changes.
+M11D currently carries each plane's `graphics_descriptor` as immutable identity while tile words are authorable. M1.1B must determine the exact graphics-resource ownership/encoding used by scene0 C000/E000 and establish a deterministic extract/rebuild boundary. Existing asset knowledge may be reused, but no graphics descriptor semantics may be guessed.
 
-### O2 — canonical execution
+### O2 — exact no-op graphics round-trip
 
-Against the verified 2 MiB ROM:
+For the selected scene0 graphics resource, decode/export/recompile must reproduce the original resource exactly or produce a mechanically equivalent relocated representation with exact decoded bytes. The allocator must coexist with the M1.1A object/world/palette ledger.
 
-- validate 19/19 retail palettes;
-- require 19/19 palette no-op compiles to exact retail bytes;
-- execute source-v2 exact no-op;
-- execute one deterministic scene0 palette edit through the single v2 transaction arena;
-- pin output SHA-1/checksum only after successful execution.
+### O3 — one authored environment tile/chunk
 
-### O3 — integrate palette transaction with M1.0 baseline
+Replace or add one deliberately obvious environment graphics unit while preserving tile-map indices, palette contract and frozen player graphics. The build must remain deterministic and collision-free.
 
-Compose or lower the palette transaction into the closed M1.0 scene0 build without changing v11 player banks, pickup semantics or wall behavior. Allocation overlap must be mechanically impossible or rejected.
+### O4 — runtime graphics proof
 
-### O4 — runtime palette confirmation
-
-Boot the palette-authored M1.1 candidate under pinned BlastEm, confirm the expected CRAM/palette change is actually loaded, and rerun the M1.0B pickup/wall/control invariants.
+Boot the integrated candidate under pinned BlastEm and prove the authored environment pixels reach VRAM/presentation while all M110B CRAM assertions and all 14 M100B gameplay assertions remain green.
 
 ## NEXT
 
-1. Copy the minimal M11F `scene_palette.py` + tests/probe from `m11f-palette-authoring` onto the active branch.
-2. Copy the M11G `scene_source_v2.py` semantic migration layer and static tests.
-3. Copy M11H `scene_compiler_v2.py` + canonical transaction probe/tests, preserving M11D/v1 unchanged.
-4. Run all imported static suites on the active branch.
-5. Execute the M11F canonical 19-scene palette probe against SHA-1 `d39174...f8411` and persist evidence.
-6. Execute a scene0 source-v2 palette transaction, then integrate it with M1.0A and prove no overlap with the frozen player/object/collision resources.
-7. Runtime-confirm CRAM/presentation plus all closed M1.0B invariants.
-8. If green, mark M1.1A complete and open the tile-graphics authoring gate.
+1. Audit scene0 C000/E000 `graphics_descriptor` structures and trace their load/decompression path from ROM to VRAM.
+2. Cross-check existing asset/graphics-format documentation and probes before introducing a new decoder.
+3. Identify the smallest scene0 environment graphics resource that can be independently extracted and rebuilt.
+4. Implement an exact no-op graphics probe/round-trip with machine-checkable fingerprints.
+5. Only after the no-op gate is green, add one authored environment tile/chunk through the transaction allocator.
+6. Integrate with M110A, then runtime-confirm VRAM/presentation and rerun M110B + M100B invariants.
 
 ## Retry / anti-loop rules
 
 - Maximum two implementation retries for the same failing hypothesis without new evidence.
-- Closed M09C/M09D/M1.0 gates reopen only on contradictory evidence.
-- Do not modify v11 player pixels during M1.1.
-- Keep `scene_source.v1` readable and unchanged as a regression anchor.
-- Do not merge whole M11F/G/H branches; port the minimum proven files deliberately.
-- Do not start new tile graphics until M1.1A palette transactions are canonical + runtime green.
+- Closed M09C/M09D/M1.0/M1.1A gates reopen only on contradictory evidence.
+- Do not modify v11 player pixels during M1.1B.
+- Keep `scene_source.v1` unchanged; evolve source schemas only when the graphics model is actually recovered.
+- Do not infer graphics descriptor semantics from visual appearance alone.
 - Generated ROMs/PNGs are outputs; source code + manifests + verified canonical ROM remain source truth.
 - Prefer small semantic Git commits.
 
 ## CONTINUATION FOOTER
 
 ```text
-DONE     M09C complete; M09D frozen; M1.0A/B static + runtime integration baseline complete on scene0.
-EVIDENCE extracted_metadata/m100a_vertical_slice_baseline.json + extracted_metadata/m100b_vertical_slice_runtime.json + Actions run 38053439943.
-OPEN     M1.1A canonical palette + scene-source-v2 promotion.
-NEXT     port minimal M11F/G/H palette/v2 transaction layer, run canonical ROM probes, then integrate palette authoring with the closed M1.0 scene0 baseline.
+DONE     M09C complete; M09D frozen; M1.0A/B complete; M1.1A palette/source-v2 canonical + actual VDP CRAM runtime proof complete.
+EVIDENCE m11f_scene_palette_canonical.json + m11h_scene_source_v2_transaction_canonical.json + m110a_palette_vertical_slice.json + m110b_palette_runtime.json + Actions run 38068084778.
+OPEN     M1.1B gameplay tile-graphics authoring and runtime proof.
+NEXT     recover scene0 gameplay graphics descriptors/load path, establish exact no-op graphics round-trip, then author one environment tile/chunk and runtime-regress against M110B/M100B.
 ```
