@@ -88,16 +88,40 @@ def apply_overlay_to_source(source: dict[str, Any], overlay: dict[str, Any]) -> 
         plane = str(op["plane"])
         if plane not in edited["planes"]:
             raise ValueError(f"unknown plane: {plane}")
+        action = str(op.get("op", "set_tile"))
+        plane_row = edited["planes"][plane]
+        plane_width = int(plane_row["width"])
+        plane_height = int(plane_row["height"])
         x, y = parse_int(op["x"]), parse_int(op["y"])
-        width = int(edited["planes"][plane]["width"])
-        height = int(edited["planes"][plane]["height"])
-        if not (0 <= x < width and 0 <= y < height):
-            raise ValueError(f"map coordinate outside {plane}: {(x, y)}")
-        index = y * width + x
-        before = int(edited["planes"][plane]["tile_words"][index])
-        if "expect" in op and before != parse_int(op["expect"]):
-            raise ValueError(f"map expectation mismatch {plane} {(x, y)}: 0x{before:04X}")
-        edited["planes"][plane]["tile_words"][index] = parse_int(op["value"])
+        if action == "set_tile":
+            if not (0 <= x < plane_width and 0 <= y < plane_height):
+                raise ValueError(f"map coordinate outside {plane}: {(x, y)}")
+            index = y * plane_width + x
+            before = int(plane_row["tile_words"][index])
+            if "expect" in op and before != parse_int(op["expect"]):
+                raise ValueError(f"map expectation mismatch {plane} {(x, y)}: 0x{before:04X}")
+            plane_row["tile_words"][index] = parse_int(op["value"])
+        elif action == "replace_rect":
+            rect_width = parse_int(op["width"])
+            rect_height = parse_int(op["height"])
+            if rect_width <= 0 or rect_height <= 0 or x < 0 or y < 0 or x + rect_width > plane_width or y + rect_height > plane_height:
+                raise ValueError(f"map rectangle outside {plane}: {(x, y, rect_width, rect_height)}")
+            indices = [
+                (y + dy) * plane_width + (x + dx)
+                for dy in range(rect_height)
+                for dx in range(rect_width)
+            ]
+            original_words = [int(plane_row["tile_words"][index]) for index in indices]
+            original_bytes = b"".join(word.to_bytes(2, "big") for word in original_words)
+            if "expect_sha256" in op and hashlib.sha256(original_bytes).hexdigest() != str(op["expect_sha256"]).lower():
+                raise ValueError(f"map rectangle expectation mismatch {plane} {(x, y, rect_width, rect_height)}")
+            authored_words = [parse_int(value) for value in op["tile_words"]]
+            if len(authored_words) != len(indices):
+                raise ValueError("map replace_rect tile_words length mismatch")
+            for index, value in zip(indices, authored_words):
+                plane_row["tile_words"][index] = value
+        else:
+            raise ValueError(f"unsupported map overlay operation: {action}")
 
     object_rows = edited["objects"]["records"]
     for op in overlay["objects"]:
