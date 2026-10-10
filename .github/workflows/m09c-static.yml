@@ -76,6 +76,7 @@ jobs:
             tools/build/m111c_graphics_vertical_slice.py \
             tools/build/m112a_scene_source_v3_vertical_slice.py \
             tools/build/m120a_scene_overlay_vertical_slice.py \
+            tools/build/m120b_l3_starter_build.py \
             tools/build/scene_palette.py \
             tools/build/scene_source_v2.py \
             tools/build/scene_compiler_v2.py \
