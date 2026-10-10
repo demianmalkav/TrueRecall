@@ -1,17 +1,19 @@
 # M0.9 — Sprite Sequence Authoring Pipeline
 
-M0.9 begins the production-facing player-art pipeline that follows the M0.8 runtime proof. It does **not** claim that final Quaid artwork exists yet. It proves that multiple source frames can be compiled into one deduplicated True Lies sprite resource set and reconstructed without pixel loss, and now includes a runtime-stable four-phase authored-pixel sequence proof.
+Status: **COMPILER + RUNTIME AUTHORING PROVEN / M09C NATIVE SIX-PHASE INTEGRATION ONE VISUAL GATE FROM COMPLETION**
 
-## Compiler
+For the exact live `NEXT`, defer to `docs/PROJECT_STATE.md`. This document describes the cumulative M0.9 pipeline and its current production boundary.
 
-`tools/build/sprite_sequence_compiler.py` accepts a sequence of indexed/RGBA source frames and emits:
+## Compiler — CONFIRMED
+
+`tools/build/sprite_sequence_compiler.py` accepts indexed/RGBA source frames and emits:
 
 - one shared raw 16×16 chunk bank;
 - one mapping record per frame;
 - global chunk deduplication across the sequence;
-- a manifest containing piece counts, chunk IDs, record sizes and per-frame working-set size.
+- manifest metadata for piece counts, chunk IDs, record sizes and per-frame working-set size.
 
-Each chunk remains the recovered retail unit:
+Each chunk is the recovered retail unit:
 
 ```text
 16×16 pixels
@@ -19,32 +21,24 @@ Each chunk remains the recovered retail unit:
 = 128 bytes
 ```
 
-The compiler currently targets one resource group per sequence and preserves palette index 0 as transparent.
+Palette index 0 remains transparent.
 
-## Global deduplication
+## Global deduplication — CONFIRMED
 
-Unlike the earlier single-frame compiler, chunk identity is shared across all frames in the sequence. Reused body/limb pieces therefore retain one chunk ID instead of being duplicated per animation frame.
-
-This gives us an explicit production metric:
+Chunk identity is shared across all frames rather than reset per frame. Production metrics include:
 
 ```text
 global_unique_chunks
 max_frame_working_set
 ```
 
-The first is ROM/resource cost; the second is a lower-bound indicator of dynamic VRAM-cache pressure for the sequence.
+The first measures ROM/resource cost; the second is a lower-bound indicator of dynamic VRAM-cache pressure.
 
 ## Retail round-trip probe — CONFIRMED
 
-`tools/rom_probe/sprite_sequence_roundtrip_probe.py` reconstructs four real player frames from archetype 191, selectors:
+`tools/rom_probe/sprite_sequence_roundtrip_probe.py` reconstructs four real player frames from the retail archetype-191 descriptor path, recompiles them through the sequence compiler and requires pixel-exact reconstruction.
 
-```text
-2, 258, 260, 262
-```
-
-It recompiles them through the sequence compiler with newly assigned shared chunk indices, renders those generated mapping records/chunks back to indexed pixels and requires exact equality against the reconstructed retail frames.
-
-Observed proof result:
+Observed proof:
 
 ```text
 frames                    4
@@ -54,44 +48,37 @@ max per-frame working set 2
 piece count per frame     2
 ```
 
-Two of the four frames reuse the same pair of chunks, proving that cross-frame deduplication is active rather than merely concatenating per-frame outputs.
+Cross-frame reuse is real: two frames share the same chunk pair.
 
-The rendered output is pixel-identical for all four frames.
+This compiler proof is independent from the later canonical F9F8 runtime-identity correction. Archetype-table descriptor identity and the live linked-player F9F8 descriptor are distinct facts.
 
-## M09A native-sequence experiment — NOT PROMOTED
+## M09A native-sequence experiment — HISTORICAL / NOT PROMOTED
 
-An initial runtime experiment attempted to replace the active player-control descriptor with a fully synthetic four-frame descriptor and let the retail `FDDC` animation updater advance it.
+M09A replaced an active player descriptor wholesale with a synthetic four-frame descriptor. Although the resource sequence was structurally valid, runtime comparison developed gameplay/camera divergence.
 
-The sequence itself was structurally valid, but runtime comparison showed gameplay/camera divergence after the sequence had been active for several frames. Because the player is represented by linked avatar/proxy objects and the control path depends on retail descriptor/geometry semantics, replacing the active control descriptor is not considered safe.
+Conclusion retained:
 
-M09A therefore remains an investigative experiment and is **not** a milestone proof.
+- descriptor substitution of the controlled player representation is not an acceptable integration architecture;
+- linked F9F8/FB6E semantics must remain intact;
+- a valid authored presentation path must preserve canonical runtime identity rather than merely feed structurally valid sprite data.
 
-## M09B2 four-phase authored-pixel runtime proof — CONFIRMED
+## M09B2 four-phase authored-pixel proof — CONFIRMED / DIAGNOSTIC
 
-M09B2 deliberately isolates pixels from animation geometry/state. It keeps the M0.7 sprint behavior and retail mapping/geometry, but selects one of four original authored 16×16 chunk banks while Y is held.
+Builder:
 
-Build tool:
+```text
+tools/build/m09b2_vblank_pixel_sequence.py
+```
 
-`tools/build/m09b2_vblank_pixel_sequence.py`
+M09B2 keeps M07 sprint behavior and retail mapping geometry but swaps among four authored raw chunk banks while Y is held.
 
-The phase is selected from the VBlank counter:
+Diagnostic phase source:
 
 ```text
 phase = (FFFFF712 >> 2) & 3
 ```
 
-Each phase lasts four frames. Four separate cache-key namespaces are used:
-
-```text
-0x3C00 | chunk_index
-0x3D00 | chunk_index
-0x3E00 | chunk_index
-0x3F00 | chunk_index
-```
-
-This prevents the dynamic VRAM cache from reusing a previous phase's bytes under the same key.
-
-The build expands the ROM to 4 MiB and stores the four raw authored banks at:
+Banks:
 
 ```text
 0x210000
@@ -100,17 +87,16 @@ The build expands the ROM to 4 MiB and stores the four raw authored banks at:
 0x228000
 ```
 
-### Corrected renderer trampoline
-
-The first M09B laboratory build reconstructed the branch at `0x01143C` backwards. The retail control flow is:
+Cache namespaces:
 
 ```text
-MOVE.L source,D1
-BPL     0x01145C
-; negative source falls through to 0x011442
+0x3C00 | chunk_index
+0x3D00 | chunk_index
+0x3E00 | chunk_index
+0x3F00 | chunk_index
 ```
 
-M09B2 restores those exact semantics after its scoped source override:
+The corrected renderer trampoline preserves the retail sign branch around `0x01143C`:
 
 ```text
 TST.L D1
@@ -120,73 +106,187 @@ positive:
 JMP 0x01145C
 ```
 
-This correction was required for a valid baseline comparison.
+Deterministic regression against the correct M07C sprint parent shows:
 
-### Deterministic runtime regression
+- frame 2098 before Y: 0 gameplay-region pixel differences;
+- sampled active frames 2102..2140: non-zero avatar-local differences;
+- maximum active bounding box: 30×17 px;
+- frame 2144 after Y release: 0 gameplay-region pixel differences.
 
-The candidate is compared against its correct logical parent, M07C sprint, under the same deterministic BlastEm framescript.
-
-Regression tool:
-
-`tools/runtime/m09b2_runtime_regression.py`
-
-Persisted measurements:
-
-`extracted_metadata/m09b2_runtime_regression.json`
-
-Key results:
-
-- frame `2098`, before Y: **0 gameplay-region pixels differ** from M07C;
-- every sampled active frame `2102..2140`: non-zero authored-pixel difference confined to an avatar-sized box;
-- maximum active difference bounding box: **30×17 px**;
-- frame `2144`, after Y is released: **0 gameplay-region pixels differ** from M07C.
-
-The sampled active boxes track the moving player rather than the map/camera. Therefore the four-phase authored resource path does not introduce scene/camera divergence in this test.
-
-Small differences may appear in bottom non-gameplay/HUD raster rows; gameplay assertions deliberately compare the 224-line gameplay region.
-
-### What M09B2 proves
-
-M09B2 proves a stable runtime chain:
+Evidence:
 
 ```text
-new player mechanic (M07 sprint)
-→ trigger-scoped authored pixel source
-→ four distinct runtime phases
-→ separate cache namespaces
-→ renderer/cache/VRAM path
-→ avatar-local visible change
-→ exact gameplay convergence when trigger is released
+extracted_metadata/m09b2_runtime_regression.json
 ```
 
-It is stronger than M0.8's single authored-pixel source because the source changes across time while gameplay remains stable.
+M09B2 proves multi-phase authored presentation and cache isolation, but **not** actor-native sequencing because `F712` supplies timing.
 
-It is **not yet the final engine-native sequence authoring solution**: timing is driven by the VBlank counter and retail mapping geometry is retained. The next target is to let retail animation sequencing (`FDDC`/mapping records) advance authored frames while preserving the correct player descriptor/geometry and dual-object semantics.
+## M09C canonical runtime correction — CONFIRMED
 
-## What the current M0.9 pipeline proves
+M09C canonical tracing corrected two earlier assumptions.
 
-The player-art path now supports:
+### Player globals are word pointers
+
+Retail loads F9F8 and FB6E via `MOVEA.W`. Observed values:
 
 ```text
-source animation frames
-→ 16×16 decomposition
-→ transparent-cell pruning
-→ global chunk deduplication
-→ stable chunk IDs
-→ mapping records per frame
-→ resource/cost manifest
-→ pixel-exact reconstruction
-→ multi-phase authored pixels visible in runtime
+FFFFF9F8 -> FFFFC632  world/render avatar
+FFFFFB6E -> FFFFC7FA  control/collision proxy
 ```
 
-This is sufficient to begin production-quality Quaid frame generation while the final native sequence-integration seam is still being cleaned up.
+They are not 32-bit pointers reconstructed from adjacent words.
 
-## Remaining work before final Quaid animation
+### Canonical F9F8 identity
 
-1. Build M09C: preserve the active retail player descriptor/geometry semantics while integrating authored records through the native `FDDC` sequence path.
-2. Do not replace the player proxy/control descriptor wholesale; identify or extend the correct animation row/mapping seam.
-3. Support controlled multi-group spill when an animation set exceeds 256 unique chunks.
-4. Continue enforcing sprite-per-line and VRAM/cache-pressure budgets.
-5. Replace diagnostic proof glyphs with original Total Recall Quaid source art and validate all eight directions.
+During held-Y sprint:
 
-M0.9 should now be considered **compiler + runtime multi-phase authored-pixel path demonstrated / native sequence integration in progress**.
+```text
+F9F8 object+0x2A = 139
+F9F8 object+0x2C = 0x000A0000
+```
+
+The descriptor remains stable during the observed native cycle.
+
+M0.8 `0x0F0000` remains a valid player-local visual-component renderer/cache proof, but the claim that it is the canonical F9F8 world/render-avatar descriptor is **FALSIFIED**.
+
+## Native phase bridge — CONFIRMED
+
+The linked-object bridge at `0x009D5E` transfers phase from proxy to F9F8 avatar:
+
+```text
+phase_delta = proxy(+0x1E) - proxy(+0x1C)
+current     = avatar(+0x1C) + phase_delta
+avatar(+0x1E) = current
+avatar(+0x24) = encoded_entry(avatar_descriptor, current)
+avatar(+0x20) = mapping_record(avatar_descriptor, current)
+```
+
+Writer transaction:
+
+```text
+0x009D72  +0x1E
+0x009D7E  +0x24
+0x009D88  +0x20
+```
+
+The `+0x24` write inside this cluster is native progression, not automatically external reselection.
+
+Evidence:
+
+```text
+extracted_metadata/m09c_canonical_phase_bridge.json
+```
+
+## Native six-position sprint cycle — CONFIRMED
+
+Base phase:
+
+```text
+F9F8 +0x1C = 0x08B6
+```
+
+Current phase cycle:
+
+```text
+0x08B6 -> 0x08B8 -> 0x08BA -> 0x08BC -> 0x08BE -> 0x08C0 -> wrap
+```
+
+Raw deltas:
+
+```text
+0, 2, 4, 6, 8, 10
+```
+
+Mapping records:
+
+```text
+0x2C08 0x2C24 0x2C44 0x2C64 0x2C80 0x2CA0
+```
+
+No descriptor write occurs in the observed cycle.
+
+## M09C six-bank native-phase build — IMPLEMENTED
+
+Authoritative builder:
+
+```text
+tools/build/m09c_native_phase_pixel_sequence.py
+```
+
+It replaces M09B2's VBlank phase source with:
+
+```text
+raw_delta = (object+0x1E) - (object+0x1C)
+```
+
+and scopes the authored substitution to:
+
+```text
+object+0x2C == 0x000A0000
+```
+
+Resource mapping:
+
+```text
+phase 0 -> bank 0x210000 / cache namespace 0x3A00
+phase 1 -> bank 0x218000 / cache namespace 0x3B00
+phase 2 -> bank 0x220000 / cache namespace 0x3C00
+phase 3 -> bank 0x228000 / cache namespace 0x3D00
+phase 4 -> bank 0x230000 / cache namespace 0x3E00
+phase 5 -> bank 0x238000 / cache namespace 0x3F00
+```
+
+Audited proof build:
+
+```text
+size:     4,194,304
+SHA-1:    3256f9dcbc6376624716e3508f41c0439e17cef6
+checksum: 0x843C
+```
+
+Twelve exact trampoline executions pass under the pinned BlastEm 68000 core: six render-source dispatches and six cache-key dispatches.
+
+Evidence:
+
+```text
+extracted_metadata/m09c_native_phase_trampoline_runtime.json
+```
+
+VERIFY also caught an invalid zero-displacement short `BRA`; the assembler now rejects that case and CI protects the fix.
+
+## Current production boundary
+
+The structural compiler and native six-phase runtime dispatch are strong enough to define the production architecture, but **final Quaid artwork must not be integrated yet**.
+
+The remaining M09C gate is full-game visual containment/fallback regression against the correct M07 sprint parent:
+
+1. exact pre-Y convergence;
+2. player-local held-Y differences;
+3. one-to-one visual correlation with F9F8 deltas `0,2,4,6,8,10` rather than `F712`;
+4. no cache contamination of unrelated actors;
+5. exact post-Y convergence;
+6. unchanged M07 movement/control behavior;
+7. preserved F9F8/FB6E link semantics;
+8. F9F8 descriptor remains `0x000A0000`.
+
+Only after this gate is green should diagnostic chunks be replaced with compiler-produced production Quaid frames.
+
+## Production work after M09C closes
+
+- author a coherent original Quaid cycle rather than proof glyphs/pixel mutations;
+- retain source-art -> palette/index conversion -> 16×16 decomposition -> deduplicated chunks -> mapping/resource build reproducibility;
+- track global unique chunks, frame working set, incoming churn, cache pressure, sprite-per-line overlap and ROM bytes;
+- support controlled multi-group spill if a production sequence exceeds the current group budget;
+- validate all required directions/weapon families incrementally against the same containment/fallback invariants.
+
+## Status summary
+
+```text
+compiler / retail round-trip        CONFIRMED
+M09B2 authored multi-phase runtime  CONFIRMED diagnostic path
+canonical F9F8 identity             CONFIRMED
+native six-phase bridge             CONFIRMED
+six-bank dispatch trampolines       CONFIRMED 12/12
+full-game six-phase visual gate     OPEN
+production Quaid frames             BLOCKED ON VISUAL GATE
+```
