@@ -1,0 +1,47 @@
+{
+  "schema": "truerecall.m10a.vertical_slice_baseline.v1",
+  "status": "PASS",
+  "canonical_rom_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "selected_donor_scene": 15,
+  "scene_noop_evidence": "extracted_metadata/m10a_scene15_noop.json",
+  "player_freeze_evidence": "extracted_metadata/m09d_quaid_v11_production_freeze.json",
+  "composer": "tools/build/m10a_vertical_slice_composer.py",
+  "player_build": {
+    "size_bytes": 4194304,
+    "sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "genesis_checksum": "0x266C",
+    "changed_bytes_vs_canonical_4m_excluding_checksum": 204678,
+    "authored_phase_bank_bytes_changed": 196189,
+    "authored_phase_bank_range": ["0x210000", "0x240000"],
+    "changes_at_or_above_0x300000": 0
+  },
+  "scene_transform": {
+    "exact_noop": true,
+    "changed_bytes": 0,
+    "output_size": 2097152,
+    "output_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411"
+  },
+  "merge": {
+    "output_size": 4194304,
+    "output_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+    "genesis_checksum": "0x266C",
+    "changed_byte_overlap": 0,
+    "conflict_bytes": 0,
+    "byte_identical_to_frozen_m09d_v11": true,
+    "runtime_equivalence": "Because the integrated no-op output is byte-identical to the frozen v11 ROM already validated by the 10/10 M09D runtime regression, no new runtime behavior exists at this baseline checkpoint."
+  },
+  "allocation_policy": {
+    "player_art": "0x210000..0x23FFFF",
+    "m11d_default_scene_arena_start": "0x300000",
+    "minimum_gap_bytes": 786432,
+    "policy": "composer computes byte-level transformations against one canonical 4MiB base and rejects unequal overlaps before checksum regeneration"
+  },
+  "ci": {
+    "commit": "8987c4e37651cfe9f2af84f15c59d621a3457399",
+    "actions_run": 38019919711,
+    "static_tests": 63,
+    "static": "success",
+    "blastem_harness": "success"
+  },
+  "conclusion": "O2 unified M09D-v11 plus M11D no-op baseline is closed. The next material gate is the first authored scene-15 apartment delta and its runtime validation."
+}
