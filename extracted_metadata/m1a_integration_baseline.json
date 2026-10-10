@@ -1,0 +1,72 @@
+{
+  "schema": "truerecall.m1a.integration_baseline.v1",
+  "status": "PASS",
+  "canonical_base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "frozen_m09d": {
+    "sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
+    "genesis_checksum": "0x7DCB",
+    "source_art_fingerprint": "94db7b28dca13720fd2656c37de4e57dc74d6dd4"
+  },
+  "canonical_m11d_scene18_component": {
+    "sha1": "fac81fdc87b76a75c9b590d58707b16fcd6a5f04",
+    "genesis_checksum": "0x3E9A",
+    "mutation": {
+      "c000_tile_0": 1,
+      "health_object": {"type_id": 54, "x": 128, "y": 120, "stride": 6},
+      "world_wall": {"type": 9, "rect": [64, 64, 80, 256]}
+    },
+    "allocations": [
+      {"name": "C000_map_desc", "address": "0x300000", "size": 8},
+      {"name": "C000_map_lz", "address": "0x300010", "size": 266},
+      {"name": "object_desc", "address": "0x300120", "size": 16},
+      {"name": "object_lz", "address": "0x300130", "size": 229},
+      {"name": "world_resource", "address": "0x300300", "size": 416}
+    ],
+    "local_report_sha256": "0f412f7a7cc7dee6a395fb34b6d95c9ad86aec3d2f3c035329ec001860067ec1"
+  },
+  "composition": {
+    "tool": "tools/build/m1a_integration_baseline.py",
+    "output_size": 4194304,
+    "output_sha1": "b96cfb9652a4c5dce7142fe0e03bfb1b257cc474",
+    "genesis_checksum": "0x5E8B",
+    "m09d_changed_ranges": 384,
+    "m09d_changed_bytes": 204612,
+    "scene_changed_ranges": 14,
+    "scene_changed_bytes": 915,
+    "range_intersections": 0,
+    "allocation_policy": "M09D expanded resources remain below 0x240000; M11D scene allocations begin at 0x300000; first-2MiB patch ranges were also intersected exactly",
+    "local_range_audit_sha256": "8f36a47990c3335ebd3e7ce32b5ddfdff4a9927c13e7e3c5876c427ffd7383af"
+  },
+  "scene_reparse": {
+    "c000_tile_0": 1,
+    "matching_health_objects": 1,
+    "matching_world_walls": 1,
+    "pass": true
+  },
+  "runtime_regression": {
+    "logical_parent_sha1": "eccbd54596c932ba3d7d2361af2437e59087b853",
+    "candidate_sha1": "b96cfb9652a4c5dce7142fe0e03bfb1b257cc474",
+    "common_native_state_sha256": "72f3caa0f49d8d1548f897df67078994381efb5db37cd0a4ee4372ac76b35a8f",
+    "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+    "capture_method": "pinned BlastEm normal renderer; common native pre-Y state; XTest Y+Left; external X11 scrot",
+    "captures_compared": 44,
+    "active_samples": 42,
+    "phase_deltas": [0, 2, 4, 6, 8, 10],
+    "state_mismatch_count": 0,
+    "pixel_mismatch_count": 0,
+    "parent_capture_set_sha256": "16bddbeb0fa220f51350298c780a5caa76ac522a6ea22075014724443c44f152",
+    "combined_capture_set_sha256": "16bddbeb0fa220f51350298c780a5caa76ac522a6ea22075014724443c44f152",
+    "parent_run_json_sha256": "f6a044a529071c781297d892296d16319ea8165f067e17b3b2c51fa65f61ca85",
+    "candidate_run_json_sha256": "da2406dc3cb9ebbacf419fe7cb1bed71e15ba69c4daa5031551b31933d3209d7",
+    "local_regression_report_sha256": "d9f9f33de41f412f077a6333e2be63ec05f2145d7e2490ed406e1ee9e32493b6",
+    "assertions": {
+      "all_captures_pixel_exact": true,
+      "all_compared_runtime_state_exact": true,
+      "all_six_native_phases_observed": true,
+      "canonical_descriptor_preserved": true,
+      "active_input_y_left": true
+    },
+    "pass": true
+  },
+  "conclusion": "The frozen M09D player presentation and canonical M11D/M10 authored scene stack compose deterministically with zero unplanned ROM-range overlap. Scene-18 semantic edits reparse exactly and are fully inert in the scene-0 runtime regression, which is pixel- and state-exact to the M09D logical parent."
+}
