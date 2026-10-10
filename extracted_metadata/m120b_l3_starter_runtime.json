@@ -1,0 +1,51 @@
+{
+  "schema": "truerecall.m120b.l3_starter_runtime_evidence.v1",
+  "status": "PROTOTYPE_NOT_ART_FREEZE",
+  "base_sha1": "d39174bed46ede85531b86df7ba49123ce2f8411",
+  "direct_parent_sha1": "49a6f19a0d6a1351f75ee5ecd72dff9da2e5e021",
+  "scene_parent_sha1": "e4da8446303f96be04dadc0db8f3edd565f9b5c1",
+  "candidate_sha1": "f0d232b3f6e181ccb9bb06cf07f475a3e7b70837",
+  "genesis_checksum": "0xC4DC",
+  "overlay": "tools/build/examples/m120b_l3_urban_subway_starter_overlay.json",
+  "authored_primary_tiles": [565, 566, 567, 568, 569, 570],
+  "retail_reference_boundary": {
+    "scene0_union_max_referenced_tile": 564,
+    "authored_tiles_were_unreferenced_before_overlay": true
+  },
+  "authored_map_rect": {
+    "plane": "E000",
+    "x": 0,
+    "y": 12,
+    "width": 27,
+    "height": 11,
+    "retail_rect_sha256": "9c71e0899ec8c3e74189209e8976ad2aabfca2d65289bef96dfc824427e16967"
+  },
+  "presentation": {
+    "comparison_parent": "closed M120A/M112A presentation",
+    "size": [256, 240],
+    "changed_pixels": 37948,
+    "bbox": [0, 9, 256, 185],
+    "parent_png_sha256": "c4e7eb5a49ae102759da87ec4b11bff4d12e0a36475718e815295b1752a1093e",
+    "candidate_png_sha256": "f9bfe07c00d72b73f1b40580ac663985ebedb409c742e2f0e907c7dc666c9e3e",
+    "interpretation": "original starter tiles are runtime-visible across the intended initial environment region; visual quality is not frozen"
+  },
+  "viewport_localization": {
+    "status": "HIGH_CONFIDENCE",
+    "dominant_visible_e000_rows_tested": [12, 22],
+    "dominant_visible_e000_columns_tested": [0, 26],
+    "complementary_partition_result": "no map-driven presentation change in rows 23..44 or columns 27..106 during the deterministic initial capture",
+    "note": "localization is a production placement aid, not a recovered universal camera/map formula"
+  },
+  "m100b": {
+    "pass": true,
+    "assertion_count": 14
+  },
+  "m110b_cram": {
+    "pass": true,
+    "difference_count": 1,
+    "difference": {"index": 8, "parent": "0x0464", "candidate": "0x0648"},
+    "player_palette_line_exact": true
+  },
+  "blastem_sha256": "b511890bd1cd6616050e8b009aa9bf1d5d791a326682d3da76d9524467dfb0d2",
+  "pass": true
+}
